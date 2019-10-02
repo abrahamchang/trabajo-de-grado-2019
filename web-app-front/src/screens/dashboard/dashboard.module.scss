@@ -1,0 +1,35 @@
+.root {
+  height: calc(100vh - 56px);
+  background: lightgray url("../../images/main-background-image.jpg") no-repeat center;
+  background-size: cover;
+
+  .dropzone {
+    width: 100%;
+    border: 5px dashed lightgray;
+    border-radius: 4px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+
+  .dropzone:hover,
+  .dropzoneActive,
+  .dropzoneAccept {
+    opacity: 0.7;
+    border-color: #007bff;
+  }
+
+  .dropzoneReject {
+    opacity: 0.7;
+    border-color: #dc3545;
+  }
+
+  .uploadIcon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+  }
+}
