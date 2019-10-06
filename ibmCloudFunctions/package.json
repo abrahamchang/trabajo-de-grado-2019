@@ -4,12 +4,15 @@
   "description": "IBM Cloud functions for Tesis",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "file-type": "^12.3.0",
     "ibm-watson": "^4.5.1",
+    "mammoth": "^1.4.8",
     "pdfjs-dist": "^2.1.266"
   },
   "devDependencies": {

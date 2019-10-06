@@ -249,3 +249,121 @@ exports.requestAll = functions.https.onRequest(async (req, res) => {
   }
 });
 
+const mammoth = require("mammoth");
+const fileType = require('file-type');
+const pdfjsLib = require('pdfjs-dist/build/pdf');
+
+exports.extractDocx = functions.https.onRequest(async (req, res) => {
+    const documentBuffer = new Buffer( req.body, 'base64' );
+  try {
+
+  return res.status(200).send('hola')
+  }
+  catch(err) {
+    return res.status(500).send({
+      err: err,
+      req: req
+    })
+  }
+  if (documentBuffer) {
+    if (fileType(documentBuffer).ext == 'docx' || fileType(documentBuffer).ext == 'zip' ) {
+      try {
+      const result = await mammoth.extractRawText({buffer: documentBuffer});
+      console.log(result)
+      return res.status(200).send({
+        text: result.value,
+        messages: result.messages
+        }
+      )
+      }
+      catch(err) {
+        return res.status(500).send(
+              {
+            error: 'There was a problem extracting text from a docx file.',
+            err: err
+          }
+          )
+
+      }
+    }
+    else {
+      return (res.status(400).send({
+        error: 'A file with an invalid file type was sent in the request. Only PDF and docx is allowed',
+        typeDetected: fileType(documentBuffer)
+      }))
+    }
+
+  }
+
+  else {
+    return (res.status(400).send({
+      error: 'No file was found in the request',
+      typeDetected: fileType(documentBuffer)
+    }))
+  }
+})
+
+exports.extractFile = functions.https.onRequest(async (req, res) => {
+  let documentString = req.body;
+  const documentBuffer = new Buffer( documentString, 'base64' );
+  console.log(fileType(documentBuffer).ext);
+  if (documentBuffer) {
+    if (fileType(documentBuffer).ext == 'pdf') {
+      try {
+        let finalString = '';
+        const pdf = await pdfjsLib.getDocument({data: documentBuffer});
+        const totalPages = await pdf._pdfInfo.numPages;
+        for (let i = 1; i <= totalPages; i++) {
+           const pdfPage = await pdf.getPage(i);
+           const textContent = await pdfPage.getTextContent();
+           console.log(textContent);
+           textContent.items.forEach(item => {
+             finalString += item.str + ' ';
+           })
+        }
+        finalString = finalString.replace(/\s+/g,' ').trim();
+        return res.status(200).send({text: finalString});
+      }
+      catch(err) {
+        return res.status(500).send({
+          error: 'There was a problem extracting text from a docx file.',
+          err: err
+        });
+      }
+    }
+    else if (fileType(documentBuffer).ext == 'docx' || fileType(documentBuffer).ext == 'zip' ) {
+      try {
+      const result = await mammoth.extractRawText({buffer: documentBuffer});
+      console.log(result)
+      return res.status(200).send({
+        text: result.value,
+        messages: result.messages
+        }
+      )
+      }
+      catch(err) {
+        return res.status(500).send(
+              {
+            error: 'There was a problem extracting text from a docx file.',
+            err: err
+          }
+          )
+
+      }
+    }
+    else {
+      return (res.status(400).send({
+        error: 'A file with an invalid file type was sent in the request. Only PDF and docx is allowed',
+        typeDetected: fileType(documentBuffer)
+      }))
+    }
+
+  }
+
+  else {
+    return (res.status(400).send({
+      error: 'No file was found in the request',
+      typeDetected: fileType(documentBuffer)
+    }))
+  }
+})
