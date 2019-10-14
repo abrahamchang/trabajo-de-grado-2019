@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1.js');
-
+const https = require('https');
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -366,4 +366,29 @@ exports.extractFile = functions.https.onRequest(async (req, res) => {
       typeDetected: fileType(documentBuffer)
     }))
   }
+})
+
+exports.extractText = functions.https.onRequest(async (req, res) => {
+const doc = req.body;
+
+const postData = req.body;
+const options = {
+  host: 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/extractFile',
+  port: 80,
+  method: 'POST',
+  headers: {
+  }
+};
+
+const request = http.request(options, (res) => {
+  console.log(res)
+
+});
+
+request.on('error', (e) => {
+  console.error(`problem with request: ${e.message}`);
+});
+request.write(postData);
+request.end();
+
 })
