@@ -15,17 +15,38 @@ import s from './dashboard.module.scss';
 const Dashboard = () => {
     const [fileComponents, setFileComponents] = useState([]);
 
-    const onDrop = useCallback(acceptedFiles => {
+    const onDrop = useCallback(  (acceptedFiles) => {
+        const fileRequests = [];
         const resumes = acceptedFiles.map((file, index) => {
-
-            //const requestAll = Llamar a la Function aqui
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                var b64 = reader.result.replace(/^data:.+;base64,/, '');
+                const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/curriculumUpload'
+                const postParams = {
+                    method: 'POST',
+                    body: b64,
+                }
+                try {
+                const analysisResponse = await fetch(url, postParams);
+                const data = await analysisResponse.json();
+                fileRequests.push(data)
+                index + 1 === acceptedFiles.length && console.log(fileRequests)
+                } catch(err) {
+                    console.log(err)
+                }
+            }
+            //Enviar a Watson
+            reader.readAsDataURL(file);
 
             //Aqui se carga a Firebase
-            const uploadTask = Firebase.uploadFile(file);            
+            const uploadTask = Firebase.uploadFile(file);
             return <Resume key={`resumes-${index}`} uploadTask={uploadTask} file={file} />
         });
-
         setFileComponents(resumes);
+        // for (const file of acceptedFiles) {
+        //     reader.readAsDataURL(file)
+        //     reader.read
+        // }
     }, []);
 
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({ onDrop });
