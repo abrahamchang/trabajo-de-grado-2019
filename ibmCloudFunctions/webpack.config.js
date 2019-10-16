@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack = require("webpack");
 module.exports = {
-  entry: './curriculumUpload.js',
+  entry: './naturalLanguagueQuery.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
