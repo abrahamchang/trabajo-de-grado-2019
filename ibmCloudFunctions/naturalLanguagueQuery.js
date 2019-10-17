@@ -14,8 +14,10 @@ async function main(params) {
       const queryParams = {
           environment_id: '65ccf592-7de2-4f26-9eaf-1b06baa90367',
           collection_id: '34ca2aa1-9a06-47e6-b6dc-dc4cb7194b9a',
-          naturalLanguagueQuery: nlpQuery
+          query: nlpQuery,
+          passages: true
       };
+      discovery.qu
       const queryResponse = await discovery.query(queryParams);
       return queryResponse;
   }

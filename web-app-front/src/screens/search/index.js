@@ -9,10 +9,12 @@ const Search = () => {
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
     const [didFirstLoad, setDidFirstLoad] = useState(false);
+    const [userInput, setUserInput] = useState('')
     const onSearchSubmit = async () => {
         setLoading(true)
         setDidFirstLoad(true)
-        const query = 'UNIMET';
+        const query = userInput;
+        console.log(query)
         const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/naturalLanguagueQuery'
         const postParams = {
             method: 'POST',
@@ -20,7 +22,7 @@ const Search = () => {
                'Content-Type': 'application/json'
              },
             body: JSON.stringify({
-       "nlpQuery": "Universidad"
+       "nlpQuery": query
        }),
         }
         try {
@@ -35,6 +37,13 @@ const Search = () => {
         }
        }
 
+    const _handleKeyDown = (e) => {
+        return e.key === 'Enter' ? onSearchSubmit() : null;
+    }
+
+    const _handleChange = (e) => {
+        setUserInput(e.target.value)
+    }
 
     const displayResults = () => {
         return (
@@ -70,7 +79,7 @@ const Search = () => {
                 <CardTitle>
                   <Col lg={12} className="mx-auto mt-3">
                     <InputGroup>
-                      <Input type="search" placeholder="Inserte su búsqueda" />
+                      <Input type="search" placeholder="Inserte su búsqueda" onChange={_handleChange} onKeyDown={_handleKeyDown}/>
                       <InputGroupAddon addonType="append">
                         <Button
                           type="submit"
