@@ -10,6 +10,7 @@ const Search = () => {
     const [loading, setLoading] = useState(false);
     const [didFirstLoad, setDidFirstLoad] = useState(false);
     const [userInput, setUserInput] = useState('')
+
     const onSearchSubmit = async () => {
         setLoading(true)
         setDidFirstLoad(true)
@@ -46,15 +47,16 @@ const Search = () => {
     }
 
     const displayResults = () => {
+        if (searchResult && searchResult.length != 0) {
         return (
           <Table>
             <thead>
-                <tr>
+              <tr>
                 <th> Nombre </th>
                 <th> Apellido </th>
                 <th> Nombre de archivo </th>
                 <th></th>
-                </tr>
+              </tr>
             </thead>
             <tbody>
               {searchResult.map((curriculum, index) => (
@@ -62,12 +64,20 @@ const Search = () => {
                   <td>Data de Firebase </td>
                   <td>Data de Firebase</td>
                   <td>{curriculum.extracted_metadata.filename}</td>
-                  <td><Button color="primary"> Ver más </Button>  </td>
+                  <td>
+                    <Button color="primary"> Ver más </Button>{' '}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </Table>
         );
+              }
+              else {
+                  return (
+                      <p> La búsqueda no tuvo resultados. </p>
+                  )
+              }
     }
 
     return (
