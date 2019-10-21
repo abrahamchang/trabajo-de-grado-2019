@@ -12,9 +12,10 @@ import Resume from './resume';
 
 import s from './dashboard.module.scss';
 
+import uploadForm from './uploadForm'
+
 const Dashboard = () => {
     const [fileComponents, setFileComponents] = useState([]);
-    const [languagues, setLanguagues] = useState(['Español', 'Ingles'])
     const onDrop = useCallback(  (acceptedFiles) => {
         const fileRequests = [];
         const resumes = acceptedFiles.map((file, index) => {
@@ -30,7 +31,8 @@ const Dashboard = () => {
                 const analysisResponse = await fetch(url, postParams);
                 const data = await analysisResponse.json();
                 fileRequests.push(data)
-                index + 1 === acceptedFiles.length && console.log(fileRequests)
+                index + 1 === acceptedFiles.length && console.log(fileRequests);
+                index + 1 === acceptedFiles.length && organizeData(fileRequests)
                 } catch(err) {
                     console.log(err)
                 }
@@ -49,152 +51,140 @@ const Dashboard = () => {
         // }
     }, []);
 
-    const uploadForm = () => {
-      const educationExperience = ['a','b']
-      const workExperience = ['c', 'd']
-      const phones = ['e, f']
-        return (
-          <Row className="justify-content-center">
-            <Col lg={12} className="d-flex flex-column">
-              <Card className="my-lg-5 my-md-4 my-3">
-                <CardBody>
-                  <Form>
-                    <Row form>
-                      <Col lg={6}>
-                        <FormGroup>
-                          <Label for="Nombres">Nombres</Label>
-                          <Input
-                            type="text"
-                            name="Nombres"
-                            id="nombres"
-                            placeholder="Luciano"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg={6}>
-                        <FormGroup>
-                          <Label for="Apellidos">Apellidos</Label>
-                          <Input
-                            type="text"
-                            name="Apellidos"
-                            id="apellidos"
-                            placeholder="Pinedo"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <FormGroup>
-                      <Label for="Email">Correo</Label>
-                      <Input
-                        type="email"
-                        name="email"
-                        id="email"
-                        placeholder="abc@correo.com"
-                      />
-                    </FormGroup>
-                    <Row form>
-                      <Col lg={4}>
-                        <FormGroup>
-                          <Label for="Municipio">Municipio</Label>
-                          <Input
-                            type="text"
-                            name="Municipio"
-                            id="Municipio"
-                            placeholder="Municipio"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg={4}>
-                        <FormGroup>
-                          <Label for="Ciudad">Ciudad</Label>
-                          <Input
-                            type="text"
-                            name="Ciudad"
-                            id="Ciudad"
-                            placeholder="Ciudad"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg={4}>
-                        <FormGroup>
-                          <Label for="Estado">Estado</Label>
-                          <Input
-                            type="text"
-                            name="Estado"
-                            id="Estado"
-                            placeholder="Estado"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <FormGroup>
-                      <Label for="Idiomas">Idiomas</Label>
-                      {languagues.map((languague, i) => (
-                        <Input
-                          type="text"
-                          name={`Idioma${i}`}
-                          id={`Idioma${i}`}
-                          placeholder={languague}
-                          className="mb-3"
-                        />
-                      ))}
-                      <Button> Agregar Idioma</Button>
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="Idiomas">Teléfonos</Label>
-                      {phones.map((telephone, i) => (
-                        <Input
-                          type="text"
-                          name={`telephone${i}`}
-                          id={`telephone${i}`}
-                          placeholder={telephone}
-                          className="mb-3"
-                        />
-                      ))}
-                      <Button> Agregar Teléfono</Button>
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="Idiomas">Información Educativa</Label>
-                      {educationExperience.map((education, i) => (
-                        <Input
-                          type="text"
-                          name={`education${i}`}
-                          id={`education${i}`}
-                          placeholder={education}
-                          className="mb-3"
-                        />
-                      ))}
-                      <Button> Agregar Experiencia Educativa</Button>
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="Idiomas">Información Vocacional</Label>
-                      {workExperience.map((work, i) => (
-                        <Input
-                          type="text"
-                          name={`work${i}`}
-                          id={`work${i}`}
-                          placeholder={work}
-                          className="mb-3"
-                        />
-                      ))}
-                      <Button> Agregar Experiencia Vocacional</Button>
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="exampleText">Habilidades</Label>
-                      <Input type="textarea" name="skills" id="skills" />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="exampleText">Palabras clave</Label>
-                      <Input type="textarea" name="keywords" id="keywords" />
-                    </FormGroup>
-                    <Button>Submit</Button>
-                  </Form>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        );
+    const organizeData = (curriculums) => {
+      //TODO: Move this inside analysisResult.
+      let result = {
+        //Personal data
+        firstName: '',
+        lastName: '',
+        email: '',
+        birthDate: '',
+        //Residence data
+        municipality: '',
+        city: '',
+        state: '',
+        //Skills data:
+        languagues: [],
+        skills: [],
+        //Education data
+        educationData: [],
+        courses: [],
+        //Work data
+        workData: []
+      }
+      curriculums.forEach(curriculum => {
+        const {entities, relations} = curriculum.analysisResult;
+        entities.forEach(entity => {
+          const {type, confidence, text } = entity
+          if (confidence > 0.5) {
+          //Personal data extraction
+          if (type === 'personFirstName' && !result.firstName) {
+            result.firstName = text
+          }
+          else if (type === 'personLastName' && !result.lastName) {
+            result.lastName = text;
+          }
+          else if (type === 'email' && !result.email) {
+            result.email = text;
+          }
+          else if (type === 'municipality' && !result.municipality) {
+            result.municipality = text;
+          }
+          else if (type === 'city' && !result.city) {
+            result.city = text;
+          }
+          else if (type === 'state' && !result.state) {
+            result.state = text;
+          }
+          //TODO: Add a check so date isn't so soon.
+          else if (type === 'date' && !result.bithDate) {
+            result.birthDate = text;
+          }
+          //Skills data
+          else if (type === 'languague') {
+            result.languagues.push(text)
+          }
+          else if (type === 'skill') {
+            result.skills.push(text)
+          }
+        }
+        })
+        relations.forEach(relation => {
+          const {type, arguments: relationArguments} = relation
+          //Work experience extraction (Must know date)
+          //Education experience extraction
+          if (type === 'graduated_as') {
+            const educationInstitution = relationArguments[0].text;
+            const educationTitle = relationArguments[1].text;
+            let studyRange = null;
+            const {location} = relationArguments[0]
+            const institutionTextStart = location[0]
+            const institutionTextEnd = location[1]
+          //Try to find date
+            relations.forEach(relation => {
+              const {type, arguments: relationArguments} = relation
+              const {location} = relationArguments[0]
+              if (type == 'studied_range') {
+                const studyRangeFound = relationArguments[1].text;
+                //Assure it's the same location in the text
+                if (location[0] === institutionTextStart && location[1] === institutionTextEnd) {
+                  studyRange = studyRangeFound;
+                }
+              }
+            })
+            //Create object and push
+            const educationExperience = {
+              educationInstitution: educationInstitution,
+              educationTitle: educationTitle,
+              studyRange: studyRange
+            }
+            result.educationData.push(educationExperience)
+          }
+          else if (type === 'worked_range') {
+            const workplace = relationArguments[0].text;
+            const workRange = relationArguments[1].text;
+            const workplaceTextStart = relationArguments[0].location[0];
+            const workplaceTextEnd = relationArguments[1].location[1];
+            let workPosition = null;
+            let workSpecialization = null;
+            //Try to find work position
+            relations.forEach(relation => {
+              const {type, arguments: relationArguments} = relation
+              if (type === 'worked_as') {
+                const foundWorkPosition = relationArguments[1];
+                const workplaceTextLocation = relationArguments[0].location;
+
+                if (workplaceTextLocation[0] === workplaceTextStart && workplaceTextLocation[1] === workplaceTextEnd) {
+                  workPosition = foundWorkPosition.text;
+                  const workPositionTextStart = foundWorkPosition.location[0];
+                  const workPositionTextEnd = foundWorkPosition.location[1];
+                  //Attemp to find specialization
+                  relations.forEach(relation => {
+                    const {type, arguments: relationArguments} = relation;
+                    if (type === 'specialized_in') {
+                      const foundWorkPosition = relationArguments[0]
+                      if (foundWorkPosition.location[0] === workPositionTextStart && foundWorkPosition.location[1] === workPositionTextEnd ) {
+                        workSpecialization = relationArguments[1].text;
+                      }
+                    }
+                  })
+                }
+              }
+            })
+            const workExperience = {
+              workplace: workplace,
+              workRange: workRange,
+              workPosition: workPosition,
+              workSpecialization: workSpecialization
+            }
+            result.workData.push(workExperience)
+          }
+        })
+      })
+      console.log(result);
     }
+
+
 
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({ onDrop });
 
