@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormText, Input, Label, Button } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardTitle, Button } from 'reactstrap';
 
 import { useDropzone } from 'react-dropzone';
 
@@ -124,10 +124,10 @@ const Dashboard = () => {
             relations.forEach(relation => {
               const {type, arguments: relationArguments} = relation
               const {location} = relationArguments[0]
-              if (type == 'studied_range') {
+              if (type === 'studied_range') {
                 const studyRangeFound = relationArguments[1].text;
                 //Assure it's the same location in the text
-                if (location[0] === institutionTextStart && location[1] === institutionTextEnd) {
+                if (location[0] === institutionTextStart) {
                   studyRange = studyRangeFound;
                 }
               }
@@ -153,8 +153,12 @@ const Dashboard = () => {
               if (type === 'worked_as') {
                 const foundWorkPosition = relationArguments[1];
                 const workplaceTextLocation = relationArguments[0].location;
-
-                if (workplaceTextLocation[0] === workplaceTextStart && workplaceTextLocation[1] === workplaceTextEnd) {
+                console.log(workplaceTextLocation)
+                console.log(workplaceTextStart, workplaceTextEnd)
+                console.log(workplaceTextLocation[0] === workplaceTextStart)
+                console.log(workplaceTextLocation[1] === workplaceTextEnd)
+                if (workplaceTextLocation[0] === workplaceTextStart) {
+                  console.log('Entered here')
                   workPosition = foundWorkPosition.text;
                   const workPositionTextStart = foundWorkPosition.location[0];
                   const workPositionTextEnd = foundWorkPosition.location[1];
@@ -163,7 +167,7 @@ const Dashboard = () => {
                     const {type, arguments: relationArguments} = relation;
                     if (type === 'specialized_in') {
                       const foundWorkPosition = relationArguments[0]
-                      if (foundWorkPosition.location[0] === workPositionTextStart && foundWorkPosition.location[1] === workPositionTextEnd ) {
+                      if (foundWorkPosition.location[0] === workPositionTextStart) {
                         workSpecialization = relationArguments[1].text;
                       }
                     }

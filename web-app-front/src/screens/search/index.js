@@ -47,7 +47,7 @@ const Search = () => {
     }
 
     const displayResults = () => {
-        if (searchResult && searchResult.length != 0) {
+        if (searchResult && searchResult.length !== 0) {
         return (
           <Table>
             <thead>
