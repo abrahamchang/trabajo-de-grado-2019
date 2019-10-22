@@ -4,6 +4,10 @@ import React, { useState, useCallback } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormText, Input, Label, Button } from 'reactstrap';
 
   const uploadForm = () => {
+    //  const [educationExperience, setEducationExperience] = useState([])
+    //  const [telephones, setTelephones] = useState([])
+    //  const [workExperience, setWorkExperience] = useState([])
+    //  const [languagues, setLanguagues] = useState([]);
     const educationExperience = ['a','b']
     const workExperience = ['c', 'd']
     const phones = ['e, f']
