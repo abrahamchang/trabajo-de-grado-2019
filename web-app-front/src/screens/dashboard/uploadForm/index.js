@@ -101,6 +101,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                           name="Ciudad"
                           id="Ciudad"
                           placeholder="Ciudad"
+                          value= {city? city: ''}
+                          onChange={e => setCity(e.target.value)}
                         />
                       </FormGroup>
                     </Col>
@@ -112,6 +114,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                           name="Estado"
                           id="Estado"
                           placeholder="Estado"
+                          value= {curriculumState? curriculumState: ''}
+                          onChange={e => setCurriculumState(e.target.value)}
                         />
                       </FormGroup>
                     </Col>

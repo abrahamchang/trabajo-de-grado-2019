@@ -126,8 +126,8 @@ async function analyzeText(text) {
             }
           });
           analysisResults.relations[index].dates = dates;
-          index++;
         }
+        index++;
       }
       return analysisResults;
      }
