@@ -1,17 +1,39 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormText, Input, Label, Button } from 'reactstrap';
 
-  const uploadForm = () => {
-    //  const [educationExperience, setEducationExperience] = useState([])
-    //  const [telephones, setTelephones] = useState([])
-    //  const [workExperience, setWorkExperience] = useState([])
-    //  const [languagues, setLanguagues] = useState([]);
-    const educationExperience = ['a','b']
-    const workExperience = ['c', 'd']
-    const phones = ['e, f']
-    const languagues = ['Español', 'Inglés']
+  const UploadForm = (props) => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState( '');
+    const [email, setEmail] = useState( '');
+    const [birthDate, setBirthDate] = useState( '');
+    const [municipality, setMunicipality] = useState('');
+    const [curriculumState, setCurriculumState] = useState( '');
+    const [city, setCity] = useState( '');
+     const [educationExperience, setEducationExperience] = useState( []);
+     const [telephones, setTelephones] = useState( []);
+     const [workExperience, setWorkExperience] = useState([]);
+     const [languagues, setLanguagues] = useState([]);
+    useEffect(() => {
+      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languagues: languaguesArray, skills: skillsArray, educationData: educationArray, workData: workArray, telephones: telephonesArray } = props
+
+      setFirstName(firstNameExtracted ? firstNameExtracted : '')
+      setLastName(lastNameExtracted ? lastNameExtracted : '')
+      setEmail(emailExtracted ? emailExtracted : '')
+      setBirthDate(birthDateExtracted ? birthDateExtracted : '')
+      setMunicipality(municipalityExtracted ? municipalityExtracted : '');
+      setCurriculumState(stateExtracted ? stateExtracted : '');
+      setCity(cityExtracted ? cityExtracted: '')
+      setEducationExperience(educationArray ? educationArray : []);
+      setTelephones(telephonesArray ? telephonesArray : []);
+      setWorkExperience(workArray ? workArray : []);
+      setLanguagues(languaguesArray ? languaguesArray : []);
+    }, [props.update])
+    // const educationExperience = ['a','b']
+    // const workExperience = ['c', 'd']
+    // const telephones = ['e, f']
+    // const languagues = ['Español', 'Inglés']
       return (
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
@@ -25,6 +47,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                         <Input
                           type="text"
                           name="Nombres"
+                          value= {firstName? firstName: ''}
+                          onChange={e => setFirstName(e.target.value)}
                           id="nombres"
                           placeholder="Luciano"
                         />
@@ -38,6 +62,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                           name="Apellidos"
                           id="apellidos"
                           placeholder="Pinedo"
+                          value= {lastName? lastName: ''}
+                          onChange={e => setLastName(e.target.value)}
                         />
                       </FormGroup>
                     </Col>
@@ -49,6 +75,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                       name="email"
                       id="email"
                       placeholder="abc@correo.com"
+                      value= {email? email: ''}
+                      onChange={e => setEmail(e.target.value)}
                     />
                   </FormGroup>
                   <Row form>
@@ -60,6 +88,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                           name="Municipio"
                           id="Municipio"
                           placeholder="Municipio"
+                          value= {municipality? municipality: ''}
+                          onChange={e => setMunicipality(e.target.value)}
                         />
                       </FormGroup>
                     </Col>
@@ -92,7 +122,7 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                       <Input
                         type="text"
                         name={`Idioma${i}`}
-                        id={`Idioma${i}`}
+                        id={`${languague}${i}`}
                         placeholder={languague}
                         className="mb-3"
                       />
@@ -101,7 +131,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                   </FormGroup>
                   <FormGroup>
                     <Label for="Idiomas">Teléfonos</Label>
-                    {phones.map((telephone, i) => (
+                    {telephones.map((telephone, i) => (
+                      <>
                       <Input
                         type="text"
                         name={`telephone${i}`}
@@ -109,6 +140,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                         placeholder={telephone}
                         className="mb-3"
                       />
+                      <Button outline> Hi</Button>
+                      </>
                     ))}
                     <Button> Agregar Teléfono</Button>
                   </FormGroup>
@@ -118,7 +151,7 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                       <Input
                         type="text"
                         name={`education${i}`}
-                        id={`education${i}`}
+                        id={`${education}${i}`}
                         placeholder={education}
                         className="mb-3"
                       />
@@ -155,4 +188,4 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
       );
   }
 
-  export default uploadForm;
+  export default UploadForm;

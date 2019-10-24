@@ -12,17 +12,19 @@ import Resume from './resume';
 
 import s from './dashboard.module.scss';
 
-import uploadForm from './uploadForm'
+import UploadForm from './uploadForm'
 
 const Dashboard = () => {
     const [fileComponents, setFileComponents] = useState([]);
+    const [curriculumsInformation, setCurriculumsInformation] = useState([])
+    const [files, setFiles] = useState([])
     const onDrop = useCallback(  (acceptedFiles) => {
         const fileRequests = [];
         const resumes = acceptedFiles.map((file, index) => {
             const reader = new FileReader();
             reader.onload = async (event) => {
                 var b64 = reader.result.replace(/^data:.+;base64,/, '');
-                const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/curriculumUpload'
+                const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/curriculumAnalysis'
                 const postParams = {
                     method: 'POST',
                     body: b64,
@@ -40,39 +42,38 @@ const Dashboard = () => {
             //Enviar a Watson
             reader.readAsDataURL(file);
 
-            //Aqui se carga a Firebase
-            const uploadTask = Firebase.uploadFile(file);
-            return <Resume key={`resumes-${index}`} uploadTask={uploadTask} file={file} />
         });
-        setFileComponents(resumes);
-        // for (const file of acceptedFiles) {
-        //     reader.readAsDataURL(file)
-        //     reader.read
-        // }
-    }, []);
+        setFiles(resumes);
 
+    }, []);
+    const uploadDocumentFirebase = () => {
+      setFileComponents(files.map((file, index) => {
+        const uploadTask = Firebase.uploadFile(file);
+        return <Resume key={`resumes-${index}`} uploadTask={uploadTask} file={file} />
+      }))
+    }
     const organizeData = (curriculums) => {
-      //TODO: Move this inside analysisResult.
-      let result = {
-        //Personal data
-        firstName: '',
-        lastName: '',
-        email: '',
-        birthDate: '',
-        //Residence data
-        municipality: '',
-        city: '',
-        state: '',
-        //Skills data:
-        languagues: [],
-        skills: [],
-        //Education data
-        educationData: [],
-        courses: [],
-        //Work data
-        workData: []
-      }
+      let extractedData = [];
       curriculums.forEach(curriculum => {
+        let result = {
+          //Personal data
+          firstName: '',
+          lastName: '',
+          email: '',
+          birthDate: '',
+          //Residence data
+          municipality: '',
+          city: '',
+          state: '',
+          //Skills data:
+          languagues: [],
+          skills: [],
+          //Education data
+          educationData: [],
+          courses: [],
+          //Work data
+          workData: []
+        }
         const {entities, relations} = curriculum.analysisResult;
         entities.forEach(entity => {
           const {type, confidence, text } = entity
@@ -153,10 +154,6 @@ const Dashboard = () => {
               if (type === 'worked_as') {
                 const foundWorkPosition = relationArguments[1];
                 const workplaceTextLocation = relationArguments[0].location;
-                console.log(workplaceTextLocation)
-                console.log(workplaceTextStart, workplaceTextEnd)
-                console.log(workplaceTextLocation[0] === workplaceTextStart)
-                console.log(workplaceTextLocation[1] === workplaceTextEnd)
                 if (workplaceTextLocation[0] === workplaceTextStart) {
                   console.log('Entered here')
                   workPosition = foundWorkPosition.text;
@@ -184,8 +181,10 @@ const Dashboard = () => {
             result.workData.push(workExperience)
           }
         })
+        extractedData.push(result)
       })
-      console.log(result);
+      console.log(extractedData)
+      setCurriculumsInformation(extractedData)
     }
 
 
@@ -215,7 +214,7 @@ const Dashboard = () => {
                                 </div>
                             </CardBody>
                         </Card>
-                        {uploadForm()}
+                        {UploadForm(curriculumsInformation[0] ? {...curriculumsInformation[0], update: true} : {update: false})}
                         {fileComponents.length > 0 && (
                             <Card>
                                 <CardBody>

@@ -3,7 +3,7 @@ const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-unde
 const https = require('https');
 
 // // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
+// // https://firebase.google.com/docs/gmfunctions/gmwrite-firebase-functions
 //
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
@@ -392,3 +392,55 @@ request.write(postData);
 request.end();
 
 })
+let chrono = require('chrono-node');
+
+function formatDate(entryDate)  {
+  let date = entryDate.trim().toLowerCase();
+  date = date.replace(/\sde\s|\sdel\s/gm,' ')
+  if ( date.match(/ene\s|enero\s/gm) ) {
+    date = date.replace(/ene\s|enero\s/gm, 'January ');
+  }
+  else if (date.match(/feb\s|febrero\s/gm) ) {
+    date = date.replace(/feb\s|febrero\s/gm, 'February ');
+  }
+  else if (date.match(/mar\s|marzo\s/gm) ) {
+    date = date.replace(/mar\s|marzo\s/gm, 'March ');
+  }
+  else if (date.match(/abr|abril\s/gm)) {
+    date = date.replace(/abr|abril\s/gm, 'April ')
+  }
+  else if (date.match(/may\s|mayo\s/gm)) {
+    date = date.replace(/may\s|mayo\s/gm, 'May ');
+  }
+  else if(date.match(/jun\s|junio\s/gm)) {
+    date = date.replace( /jun\s|junio\s/gm, 'June ');
+  }
+  else if (date.match(/jul\s|julio\s/gm)) {
+    date = date.replace( /jul\s|julio\s/gm, 'July ');
+  }
+  else if (date.match(/ago\s|agosto\s/gm)) {
+    date = date.replace(/ago\s|agosto\s/gm, 'August ');
+  }
+  else if (date.match(/sep\s|septiembre\s|set\s|setiembre\s/gm)) {
+    date = date.replace(/sep\s|septiembre\s|set\s|setiembre\s/gm, 'September ');
+  }
+  else if (date.match(/oct\s|octubre\s/gm)) {
+    date = date.replace(/oct\s|octubre\s/gm, 'October ');
+  }
+  else if (date.match(/nov\s|noviembre\s/gm)) {
+    date = date.replace(/nov\s|noviembre\s/gm, 'November ');
+  }
+  else if (date.match(/dic\s|diciembre\s/gm)) {
+    date = date.replace(/dic\s|diciembre\s/gm, 'December ');
+  }
+  console.log(date);
+  return date;
+}
+exports.extractDate = functions.https.onRequest(async (req, res) => {
+  const date = req.body.date;
+  const parsedDate = chrono.parseDate(formatDate(date));
+  console.log(parsedDate)
+  return res.status(200).send({date: date, parsedDate: parsedDate, formatDate: formatDate(date)})
+
+
+  })
