@@ -66,7 +66,7 @@ const Dashboard = () => {
           city: '',
           state: '',
           //Skills data:
-          languagues: [],
+          languages: [],
           skills: [],
           //Education data
           educationData: [],
@@ -103,7 +103,7 @@ const Dashboard = () => {
           }
           //Skills data
           else if (type === 'languague') {
-            result.languagues.push(text)
+            result.languages.push(text)
           }
           else if (type === 'skill') {
             result.skills.push(text)

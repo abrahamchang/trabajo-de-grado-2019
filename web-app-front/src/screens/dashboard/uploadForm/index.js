@@ -1,7 +1,12 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
+import 'react-widgets/dist/css/react-widgets.css';
+import DateTimePicker from 'react-widgets/lib/DateTimePicker'
+import Moment from 'moment'
+import momentLocalizer from 'react-widgets-moment';
+import { Container, Row, Col, Card, CardBody, CardTitle, CardSubtitle, Form, FormGroup, FormText, Input, Label, Button } from 'reactstrap';
 
-import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormText, Input, Label, Button } from 'reactstrap';
+Moment.locale('en')
+momentLocalizer()
 
   const UploadForm = (props) => {
     const [firstName, setFirstName] = useState('');
@@ -14,9 +19,9 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
      const [educationExperience, setEducationExperience] = useState( []);
      const [telephones, setTelephones] = useState( []);
      const [workExperience, setWorkExperience] = useState([]);
-     const [languagues, setLanguagues] = useState([]);
+     const [languages, setlanguages] = useState([]);
     useEffect(() => {
-      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languagues: languaguesArray, skills: skillsArray, educationData: educationArray, workData: workArray, telephones: telephonesArray } = props
+      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, language: languagesArray, skills: skillsArray, educationData: educationArray, workData: workArray, telephones: telephonesArray } = props
 
       setFirstName(firstNameExtracted ? firstNameExtracted : '')
       setLastName(lastNameExtracted ? lastNameExtracted : '')
@@ -28,12 +33,12 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
       setEducationExperience(educationArray ? educationArray : []);
       setTelephones(telephonesArray ? telephonesArray : []);
       setWorkExperience(workArray ? workArray : []);
-      setLanguagues(languaguesArray ? languaguesArray : []);
+      setlanguages(languagesArray ? languagesArray : []);
     }, [props.update])
     // const educationExperience = ['a','b']
     // const workExperience = ['c', 'd']
     // const telephones = ['e, f']
-    // const languagues = ['Español', 'Inglés']
+    // const language = ['Español', 'Inglés']
       return (
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
@@ -122,33 +127,48 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                   </Row>
                   <FormGroup>
                     <Label for="Idiomas">Idiomas</Label>
-                    {languagues.map((languague, i) => (
+                    {languages.length > 0 ? languages.map((languague, i) => (
                       <Input
                         type="text"
                         name={`Idioma${i}`}
                         id={`${languague}${i}`}
-                        placeholder={languague}
+                        placeholder="Inserte un idioma"
                         className="mb-3"
                       />
-                    ))}
-                    <Button> Agregar Idioma</Button>
+                    )) :                       <Input
+                    type="text"
+                    name={`Idioma`}
+                    placeholder="Inserte un idioma"
+                    className="mb-3"
+                  />  }
+                  <Row className="justify-content-around">
+                  <Button color="primary"> Agregar Idioma</Button>
+                  <Button disabled={languages.length <= 0}> Remover Idioma</Button>
+                  </Row>
                   </FormGroup>
                   <FormGroup>
                     <Label for="Idiomas">Teléfonos</Label>
-                    {telephones.map((telephone, i) => (
+                    {telephones.length > 0 ? telephones.map((telephone, i) => (
                       <>
                       <Input
                         type="text"
                         name={`telephone${i}`}
                         id={`telephone${i}`}
-                        placeholder={telephone}
                         className="mb-3"
                       />
-                      <Button outline> Hi</Button>
                       </>
-                    ))}
-                    <Button> Agregar Teléfono</Button>
+                    )) :
+                    <Input
+                    type="text"
+                    name={`telephone`}
+                    placeholder="Inserte un teléfono. Ej: +584121111100"
+                    className="mb-3"
+                  /> }
                   </FormGroup>
+                  <Row className="justify-content-around">
+                  <Button color="primary"> Agregar Telefono </Button>
+                  <Button disabled={telephones.length <= 0}> Remover Telefono</Button>
+                  </Row>
                   <FormGroup>
                     <Label for="Idiomas">Información Educativa</Label>
                     {educationExperience.map((education, i) => (
@@ -160,11 +180,14 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                         className="mb-3"
                       />
                     ))}
-                    <Button> Agregar Experiencia Educativa</Button>
                   </FormGroup>
-                  <FormGroup>
-                    <Label for="Idiomas">Información Vocacional</Label>
-                    {workExperience.map((work, i) => (
+                  <Row className="justify-content-around">
+                  <Button color="primary"> Agregar Experiencia Educativa</Button>
+                  <Button> Remover Experiencia Educativa</Button>
+                  </Row>
+                    <CardTitle>Información Vocacional</CardTitle>
+                    {workExperience.length > 0 ? workExperience.map((work, i) => (
+                      <Row form>
                       <Input
                         type="text"
                         name={`work${i}`}
@@ -172,9 +195,64 @@ import { Container, Row, Col, Card, CardBody, CardTitle, Form, FormGroup, FormTe
                         placeholder={work}
                         className="mb-3"
                       />
-                    ))}
-                    <Button> Agregar Experiencia Vocacional</Button>
-                  </FormGroup>
+                      </Row>
+                    )):
+                    <>
+                    <Row form>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label for="startDate"> Fecha Inicio </Label>
+                      <DateTimePicker/>
+                      </FormGroup>
+                    </Col>
+                    <Col md={6}>
+                      <FormGroup>
+                      <Label for="startDate"> Fecha Culminación </Label>
+                      <DateTimePicker/>
+                      </FormGroup>
+                    </Col>
+                    </Row>
+                    <Row form>
+                    <Col md={4}>
+                      <FormGroup>
+                      <Label for="workplace"> Empresa/Institución </Label>
+                    <Input
+                      type="text"
+                      name="workExperience"
+                      placeholder="Empresa/Institución"
+                      className="mb-3"
+                    />
+                    </FormGroup>
+                    </Col>
+                    <Col md={4}>
+                    <FormGroup>
+                    <Label for="work position"> Posición laboral </Label>
+                    <Input
+                      type="text"
+                      name="workExperience"
+                      placeholder="Posición laboral"
+                      className="mb-3"
+                    />
+                    </FormGroup>
+                    </Col>
+                    <Col md={4}>
+                      <FormGroup>
+                      <Label for="Specialization"> Especialización </Label>
+                    <Input
+                      type="text"
+                      name="workExperience"
+                      placeholder="Especialización"
+                      className="mb-3"
+                    />
+                    </FormGroup>
+                    </Col>
+                      </Row>
+                    </> }
+                  <Row className="justify-content-around">
+                  <Button color="primary"> Agregar Experiencia Vocacional</Button>
+                  <Button> Remover Experiencia Vocacional</Button>
+                  </Row>
+
                   <FormGroup>
                     <Label for="exampleText">Habilidades</Label>
                     <Input type="textarea" name="skills" id="skills" />
