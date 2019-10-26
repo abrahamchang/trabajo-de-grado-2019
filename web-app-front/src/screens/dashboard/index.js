@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-import { Container, Row, Col, Card, CardBody, CardTitle, Button } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 
 import { useDropzone } from 'react-dropzone';
 
@@ -68,6 +68,9 @@ const Dashboard = () => {
           //Skills data:
           languages: [],
           skills: [],
+          concepts: [],
+          keywords: [],
+          categories: [],
           //Education data
           educationData: [],
           courses: [],
@@ -118,6 +121,7 @@ const Dashboard = () => {
             const educationInstitution = relationArguments[0].text;
             const educationTitle = relationArguments[1].text;
             let studyRange = null;
+            let studyDates = null;
             const {location} = relationArguments[0]
             const institutionTextStart = location[0]
             const institutionTextEnd = location[1]
@@ -130,6 +134,7 @@ const Dashboard = () => {
                 //Assure it's the same location in the text
                 if (location[0] === institutionTextStart) {
                   studyRange = studyRangeFound;
+                  studyDates = relation.dates;
                 }
               }
             })
@@ -137,7 +142,9 @@ const Dashboard = () => {
             const educationExperience = {
               educationInstitution: educationInstitution,
               educationTitle: educationTitle,
-              studyRange: studyRange
+              studyRange: studyRange,
+              startDate: studyDates ? new Date(studyDates[0]) : null,
+              endDate:  studyDates ? new Date(studyDates[1]) : null
             }
             result.educationData.push(educationExperience)
           }
@@ -146,6 +153,7 @@ const Dashboard = () => {
             const workRange = relationArguments[1].text;
             const workplaceTextStart = relationArguments[0].location[0];
             const workplaceTextEnd = relationArguments[1].location[1];
+            const workDates = relation.dates;
             let workPosition = null;
             let workSpecialization = null;
             //Try to find work position
@@ -176,11 +184,17 @@ const Dashboard = () => {
               workplace: workplace,
               workRange: workRange,
               workPosition: workPosition,
-              workSpecialization: workSpecialization
+              workSpecialization: workSpecialization,
+              startDate: workDates ? new Date(workDates[0]) : null,
+              endDate:  workDates ? new Date(workDates[1]) : null
             }
             result.workData.push(workExperience)
           }
         })
+        const {keywords, concepts, categories} =  curriculum.analysisResult;
+        result.keywords = keywords.map(keyword => keyword.text);
+        result.concepts = concepts.map(concept => concept.text);
+        result.categories = categories.map(category => category.label);
         extractedData.push(result)
       })
       console.log(extractedData)
