@@ -16,10 +16,10 @@ momentLocalizer()
     const [municipality, setMunicipality] = useState('');
     const [curriculumState, setCurriculumState] = useState( '');
     const [city, setCity] = useState( '');
-     const [educationExperience, setEducationExperience] = useState( []);
-     const [telephones, setTelephones] = useState( []);
-     const [workExperience, setWorkExperience] = useState([]);
-     const [languages, setlanguages] = useState([]);
+     const [educationExperience, setEducationExperience] = useState( ['']);
+     const [telephones, setTelephones] = useState( ['']);
+     const [workExperience, setWorkExperience] = useState(['']);
+     const [languages, setLanguages] = useState(['']);
     useEffect(() => {
       const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, language: languagesArray, skills: skillsArray, educationData: educationArray, workData: workArray, telephones: telephonesArray } = props
 
@@ -30,10 +30,10 @@ momentLocalizer()
       setMunicipality(municipalityExtracted ? municipalityExtracted : '');
       setCurriculumState(stateExtracted ? stateExtracted : '');
       setCity(cityExtracted ? cityExtracted: '')
-      setEducationExperience(educationArray ? educationArray : []);
-      setTelephones(telephonesArray ? telephonesArray : []);
-      setWorkExperience(workArray ? workArray : []);
-      setlanguages(languagesArray ? languagesArray : []);
+      setEducationExperience(educationArray ? educationArray : ['']);
+      setTelephones(telephonesArray ? telephonesArray : ['']);
+      setWorkExperience(workArray ? workArray : ['']);
+      setLanguages(languagesArray ? languagesArray : ['']);
     }, [props.update])
     // const educationExperience = ['a','b']
     // const workExperience = ['c', 'd']
@@ -125,132 +125,163 @@ momentLocalizer()
                       </FormGroup>
                     </Col>
                   </Row>
-                  <FormGroup>
-                    <Label for="Idiomas">Idiomas</Label>
-                    {languages.length > 0 ? languages.map((languague, i) => (
+                    <CardTitle><b>Idiomas </b> </CardTitle>
+                    {languages.map((language, i) => (
+                      <FormGroup>
+                      <Label for={`language${i}`}> Idioma {i}</Label>
                       <Input
                         type="text"
                         name={`Idioma${i}`}
-                        id={`${languague}${i}`}
+                        id={`${language}${i}`}
                         placeholder="Inserte un idioma"
                         className="mb-3"
                       />
-                    )) :                       <Input
-                    type="text"
-                    name={`Idioma`}
-                    placeholder="Inserte un idioma"
-                    className="mb-3"
-                  />  }
-                  <Row className="justify-content-around">
-                  <Button color="primary"> Agregar Idioma</Button>
-                  <Button disabled={languages.length <= 0}> Remover Idioma</Button>
+                      </FormGroup>
+                    ))
+                  }
+                  <Row className="justify-content-around mb-2">
+                  <Button color="primary" onClick={() => {setLanguages([...languages, ''])}}> Agregar Idioma</Button>
+                  <Button disabled={languages.length <= 1} onClick={() => {languages.pop('')}}> Remover Idioma</Button>
                   </Row>
-                  </FormGroup>
-                  <FormGroup>
-                    <Label for="Idiomas">Teléfonos</Label>
-                    {telephones.length > 0 ? telephones.map((telephone, i) => (
+                    <CardTitle> <b> Teléfonos </b></CardTitle>
+                    {telephones.map((telephone, i) => (
                       <>
+                      <FormGroup>
+                      <Label for={`telephone ${i+1}`}> Teléfono {i + 1} </Label>
                       <Input
                         type="text"
                         name={`telephone${i}`}
                         id={`telephone${i}`}
                         className="mb-3"
+                        value={telephone}
+                        placeholder="Inserte un teléfono. Ej: +584122100011"
                       />
+                      </FormGroup>
                       </>
-                    )) :
-                    <Input
-                    type="text"
-                    name={`telephone`}
-                    placeholder="Inserte un teléfono. Ej: +584121111100"
-                    className="mb-3"
-                  /> }
-                  </FormGroup>
-                  <Row className="justify-content-around">
+                    ))}
+
+                  <Row className="justify-content-around mb-2">
                   <Button color="primary"> Agregar Telefono </Button>
-                  <Button disabled={telephones.length <= 0}> Remover Telefono</Button>
+                  <Button disabled={telephones.length <= 1}> Remover Telefono</Button>
                   </Row>
                   <FormGroup>
-                    <Label for="Idiomas">Información Educativa</Label>
+                    <CardTitle> <b>Información Educativa</b>  </CardTitle>
                     {educationExperience.map((education, i) => (
-                      <Input
-                        type="text"
-                        name={`education${i}`}
-                        id={`${education}${i}`}
-                        placeholder={education}
-                        className="mb-3"
-                      />
+                <>
+                <CardSubtitle >  Educación {i+1}  </CardSubtitle>
+                <Row form>
+                <Col md={6}>
+                  <FormGroup>
+                    <Label for="startDate"> Fecha Inicio </Label>
+                  <DateTimePicker/>
+                  </FormGroup>
+                </Col>
+                <Col md={6}>
+                  <FormGroup>
+                  <Label for="startDate"> Fecha Culminación </Label>
+                  <DateTimePicker/>
+                  </FormGroup>
+                </Col>
+                </Row>
+                <Row form>
+                <Col md={4}>
+                  <FormGroup>
+                  <Label for="institution"> Institución Educativa </Label>
+                <Input
+                  type="text"
+                  name="educationInstitution"
+                  placeholder="Institución Educativa"
+                  className="mb-3"
+                />
+                </FormGroup>
+                </Col>
+                <Col md={4}>
+                <FormGroup>
+                <Label for="university title"> Título Universitario </Label>
+                <Input
+                  type="text"
+                  name="university tite"
+                  placeholder="Título Universitario"
+                  className="mb-3"
+                />
+                </FormGroup>
+                </Col>
+                <Col md={4}>
+                  <FormGroup>
+                  <Label for="educationGrade"> Grado de educación (Opcional) </Label>
+                <Input
+                  type="text"
+                  name="educationGrade"
+                  placeholder="Grado de educación. Ej: TSU, Lic, etc."
+                  className="mb-3"
+                />
+                </FormGroup>
+                </Col>
+                  </Row>
+                </>
                     ))}
                   </FormGroup>
-                  <Row className="justify-content-around">
+                  <Row className="justify-content-around mb-2">
                   <Button color="primary"> Agregar Experiencia Educativa</Button>
-                  <Button> Remover Experiencia Educativa</Button>
+                  <Button disabled={educationExperience.length <= 1 }> Remover Experiencia Educativa</Button>
                   </Row>
-                    <CardTitle>Información Vocacional</CardTitle>
-                    {workExperience.length > 0 ? workExperience.map((work, i) => (
-                      <Row form>
-                      <Input
-                        type="text"
-                        name={`work${i}`}
-                        id={`work${i}`}
-                        placeholder={work}
-                        className="mb-3"
-                      />
-                      </Row>
-                    )):
-                    <>
-                    <Row form>
-                    <Col md={6}>
-                      <FormGroup>
-                        <Label for="startDate"> Fecha Inicio </Label>
-                      <DateTimePicker/>
-                      </FormGroup>
-                    </Col>
-                    <Col md={6}>
-                      <FormGroup>
-                      <Label for="startDate"> Fecha Culminación </Label>
-                      <DateTimePicker/>
-                      </FormGroup>
-                    </Col>
-                    </Row>
-                    <Row form>
-                    <Col md={4}>
-                      <FormGroup>
-                      <Label for="workplace"> Empresa/Institución </Label>
-                    <Input
-                      type="text"
-                      name="workExperience"
-                      placeholder="Empresa/Institución"
-                      className="mb-3"
-                    />
-                    </FormGroup>
-                    </Col>
-                    <Col md={4}>
+                    <CardTitle> <b> Información Vocacional </b></CardTitle>
+                    {workExperience.map((work, i) => (
+                  <>
+                  <Row form>
+                  <Col md={6}>
                     <FormGroup>
-                    <Label for="work position"> Posición laboral </Label>
-                    <Input
-                      type="text"
-                      name="workExperience"
-                      placeholder="Posición laboral"
-                      className="mb-3"
-                    />
+                      <Label for="startDate"> Fecha Inicio </Label>
+                    <DateTimePicker/>
                     </FormGroup>
-                    </Col>
-                    <Col md={4}>
-                      <FormGroup>
-                      <Label for="Specialization"> Especialización </Label>
-                    <Input
-                      type="text"
-                      name="workExperience"
-                      placeholder="Especialización"
-                      className="mb-3"
-                    />
+                  </Col>
+                  <Col md={6}>
+                    <FormGroup>
+                    <Label for="startDate"> Fecha Culminación </Label>
+                    <DateTimePicker/>
                     </FormGroup>
-                    </Col>
-                      </Row>
-                    </> }
-                  <Row className="justify-content-around">
-                  <Button color="primary"> Agregar Experiencia Vocacional</Button>
-                  <Button> Remover Experiencia Vocacional</Button>
+                  </Col>
+                  </Row>
+                  <Row form>
+                  <Col md={4}>
+                    <FormGroup>
+                    <Label for="workplace"> Empresa/Institución </Label>
+                  <Input
+                    type="text"
+                    name="workExperience"
+                    placeholder="Empresa/Institución"
+                    className="mb-3"
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col md={4}>
+                  <FormGroup>
+                  <Label for="work position"> Posición laboral </Label>
+                  <Input
+                    type="text"
+                    name="workExperience"
+                    placeholder="Posición laboral"
+                    className="mb-3"
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col md={4}>
+                    <FormGroup>
+                    <Label for="Specialization"> Especialización </Label>
+                  <Input
+                    type="text"
+                    name="workExperience"
+                    placeholder="Especialización"
+                    className="mb-3"
+                  />
+                  </FormGroup>
+                  </Col>
+                    </Row>
+                  </>
+                    )) }
+                  <Row className="justify-content-around mb-2">
+                  <Button color="primary" onClick={() => {}}> Agregar Experiencia Vocacional</Button>
+                  <Button disabled={workExperience.length <= 1} onClick={() => {}}> Remover Experiencia Vocacional</Button>
                   </Row>
 
                   <FormGroup>
