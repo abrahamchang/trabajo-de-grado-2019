@@ -35,10 +35,30 @@ momentLocalizer()
       setWorkExperience(workArray ? workArray : ['']);
       setLanguages(languagesArray ? languagesArray : ['']);
     }, [props.update])
-    // const educationExperience = ['a','b']
-    // const workExperience = ['c', 'd']
-    // const telephones = ['e, f']
-    // const language = ['Español', 'Inglés']
+
+    function removeLanguage() {
+      let languagesCopy = [...languages];
+      languagesCopy.pop();
+      setLanguages(languagesCopy);
+    }
+
+    function removeTelephone() {
+      let telephonesCopy = [...telephones]
+      telephonesCopy.pop();
+      setTelephones(telephonesCopy);
+    }
+
+    function removeWorkExperience() {
+      let workExperienceCopy = [...workExperience];
+      workExperienceCopy.pop();
+      setWorkExperience(workExperienceCopy)
+    }
+
+    function removeEducationExperience() {
+      let educationExperienceCopy = [...educationExperience];
+      educationExperienceCopy.pop();
+      setEducationExperience(educationExperienceCopy)
+    }
       return (
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
@@ -128,7 +148,7 @@ momentLocalizer()
                     <CardTitle><b>Idiomas </b> </CardTitle>
                     {languages.map((language, i) => (
                       <FormGroup>
-                      <Label for={`language${i}`}> Idioma {i}</Label>
+                      <Label for={`language${i}`}> Idioma {i+1}</Label>
                       <Input
                         type="text"
                         name={`Idioma${i}`}
@@ -141,7 +161,7 @@ momentLocalizer()
                   }
                   <Row className="justify-content-around mb-2">
                   <Button color="primary" onClick={() => {setLanguages([...languages, ''])}}> Agregar Idioma</Button>
-                  <Button disabled={languages.length <= 1} onClick={() => {languages.pop('')}}> Remover Idioma</Button>
+                  <Button disabled={languages.length <= 1} onClick={() => {removeLanguage()}}> Remover Idioma</Button>
                   </Row>
                     <CardTitle> <b> Teléfonos </b></CardTitle>
                     {telephones.map((telephone, i) => (
@@ -161,8 +181,8 @@ momentLocalizer()
                     ))}
 
                   <Row className="justify-content-around mb-2">
-                  <Button color="primary"> Agregar Telefono </Button>
-                  <Button disabled={telephones.length <= 1}> Remover Telefono</Button>
+                  <Button color="primary" onClick={() => {setTelephones([...telephones, ''])}}> Agregar Telefono </Button>
+                  <Button disabled={telephones.length <= 1} onClick={() => {removeTelephone()}}> Remover Telefono</Button>
                   </Row>
                   <FormGroup>
                     <CardTitle> <b>Información Educativa</b>  </CardTitle>
@@ -192,6 +212,7 @@ momentLocalizer()
                   name="educationInstitution"
                   placeholder="Institución Educativa"
                   className="mb-3"
+                  value={education.educationInstitution}
                 />
                 </FormGroup>
                 </Col>
@@ -203,6 +224,7 @@ momentLocalizer()
                   name="university tite"
                   placeholder="Título Universitario"
                   className="mb-3"
+                  value={education.educationTitle}
                 />
                 </FormGroup>
                 </Col>
@@ -222,8 +244,8 @@ momentLocalizer()
                     ))}
                   </FormGroup>
                   <Row className="justify-content-around mb-2">
-                  <Button color="primary"> Agregar Experiencia Educativa</Button>
-                  <Button disabled={educationExperience.length <= 1 }> Remover Experiencia Educativa</Button>
+                  <Button color="primary" onClick={() => {setEducationExperience([...educationExperience, {}])}}> Agregar Experiencia Educativa</Button>
+                  <Button disabled={educationExperience.length <= 1 } onClick={() => {removeEducationExperience()}}> Remover Experiencia Educativa</Button>
                   </Row>
                     <CardTitle> <b> Información Vocacional </b></CardTitle>
                     {workExperience.map((work, i) => (
@@ -280,8 +302,8 @@ momentLocalizer()
                   </>
                     )) }
                   <Row className="justify-content-around mb-2">
-                  <Button color="primary" onClick={() => {}}> Agregar Experiencia Vocacional</Button>
-                  <Button disabled={workExperience.length <= 1} onClick={() => {}}> Remover Experiencia Vocacional</Button>
+                  <Button color="primary" onClick={() => {setWorkExperience([...workExperience, {}])}}> Agregar Experiencia Vocacional</Button>
+                  <Button disabled={workExperience.length <= 1} onClick={() => {removeWorkExperience()}}> Remover Experiencia Vocacional</Button>
                   </Row>
 
                   <FormGroup>
