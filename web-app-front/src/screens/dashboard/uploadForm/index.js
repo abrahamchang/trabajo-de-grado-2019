@@ -84,12 +84,37 @@ momentLocalizer()
       setEducationExperience(educationExperienceCopy)
     }
 
+    function uploadForm() {
+      const curriculumData = {
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: birthDate,
+        email: email,
+        city: city,
+        state: curriculumState,
+        telephones: telephones,
+        languages: languages,
+        workExperience: workExperience,
+        educationExperience: educationExperience,
+        skills: props.skills,
+        concepts: props.concepts,
+        keywords: props.keywords,
+        categories: props.categories
+      }
+      console.log(curriculumData)
+
+    }
+
       return (
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
             <Card className="my-lg-5 my-md-4 my-3">
               <CardBody>
                 <Form>
+                  <CardTitle>
+                    {' '}
+                    <b> Información Personal </b>
+                  </CardTitle>
                   <Row form>
                     <Col lg={6}>
                       <FormGroup>
@@ -118,17 +143,34 @@ momentLocalizer()
                       </FormGroup>
                     </Col>
                   </Row>
-                  <FormGroup>
-                    <Label for="Email">Correo</Label>
-                    <Input
-                      type="email"
-                      name="email"
-                      id="email"
-                      placeholder="abc@correo.com"
-                      value={email ? email : ''}
-                      onChange={e => setEmail(e.target.value)}
-                    />
-                  </FormGroup>
+                  <Row form>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label for="Email">Correo</Label>
+                        <Input
+                          type="email"
+                          name="email"
+                          id="email"
+                          placeholder="abc@correo.com"
+                          value={email ? email : ''}
+                          onChange={e => setEmail(e.target.value)}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label for="birthDate"> Fecha de Nacimiento </Label>
+                        <DateTimePicker
+                          defaultCurrentDate={birthDate ? birthDate : null}
+                          value={birthDate ? birthDate : null}
+                          onChange={value => {
+                            setBirthDate(value);
+                          }}
+                          time={false}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
                   <Row form>
                     <Col lg={4}>
                       <FormGroup>
@@ -174,7 +216,7 @@ momentLocalizer()
                     <b>Idiomas </b>
                   </CardTitle>
                   {languages.map((language, i) => (
-                    <FormGroup key={`${language}${i}`}>
+                    <FormGroup key={` ${i} `}>
                       <Label for={`language${i}`}> Idioma {i + 1}</Label>
                       <Input
                         type="text"
@@ -183,7 +225,9 @@ momentLocalizer()
                         placeholder="Inserte un idioma"
                         className="mb-3"
                         value={language}
-                        onChange={e => {modifyLanguage(e.target.value)}}
+                        onChange={e => {
+                          modifyLanguage(e.target.value, i);
+                        }}
                       />
                     </FormGroup>
                   ))}
@@ -250,18 +294,32 @@ momentLocalizer()
                     <CardTitle>
                       <b>Información Educativa</b>
                     </CardTitle>
+                    {/* Need to think of custom IDs which do not depend on mutable elements from the data. */}
                     {educationExperience.map((education, i) => (
-                      <div key ={`education-${education.educationTitle}-${i}`}>
+                      <div key={`education${i}`}>
                         <CardSubtitle> Educación {i + 1} </CardSubtitle>
                         <Row form>
                           <Col md={6}>
                             <FormGroup>
                               <Label for="startDate"> Fecha Inicio </Label>
                               <DateTimePicker
-                              defaultCurrentDate={education.startDate? education.startDate : null}
-                              defaultValue={education.startDate? education.startDate : null}
-                              onChange={(value) => {modifyEducationExperience({...education, startDate: value }, i)}}
-                              time={false}
+                                defaultCurrentDate={
+                                  education.startDate
+                                    ? education.startDate
+                                    : null
+                                }
+                                value={
+                                  education.startDate
+                                    ? education.startDate
+                                    : null
+                                }
+                                onChange={value => {
+                                  modifyEducationExperience(
+                                    { ...education, startDate: value },
+                                    i
+                                  );
+                                }}
+                                time={false}
                               />
                             </FormGroup>
                           </Col>
@@ -269,10 +327,19 @@ momentLocalizer()
                             <FormGroup>
                               <Label for="endDate"> Fecha Culminación </Label>
                               <DateTimePicker
-                              defaultCurrentDate={education.endDate? education.endDate : null}
-                              defaultValue={education.endDate? education.endDate : null}
-                              onChange={(value) => {modifyEducationExperience({...education, endDate: value }, i)}}
-                              time={false}
+                                defaultCurrentDate={
+                                  education.endDate ? education.endDate : null
+                                }
+                                value={
+                                  education.endDate ? education.endDate : null
+                                }
+                                onChange={value => {
+                                  modifyEducationExperience(
+                                    { ...education, endDate: value },
+                                    i
+                                  );
+                                }}
+                                time={false}
                               />
                             </FormGroup>
                           </Col>
@@ -334,7 +401,7 @@ momentLocalizer()
                                 name="educationGrade"
                                 placeholder="Grado de educación. Ej: TSU, Lic, etc."
                                 className="mb-3"
-                                value={''}
+                                value={education.educationGrade ? education.educationGrade : ''}
                                 onChange={e => {
                                   modifyEducationExperience(
                                     {
@@ -382,10 +449,19 @@ momentLocalizer()
                           <FormGroup>
                             <Label for="startDate"> Fecha Inicio </Label>
                             <DateTimePicker
-                            defaultCurrentDate={work.startDate? work.startDate : null}
-                            defaultValue={work.startDate? work.startDate : null}
-                            onChange={(value) => {modifyWorkExperience({...work, startDate: value }, i)}}
-                            time={false}
+                              defaultCurrentDate={
+                                work.startDate ? work.startDate : null
+                              }
+                              value={
+                                work.startDate ? work.startDate : null
+                              }
+                              onChange={value => {
+                                modifyWorkExperience(
+                                  { ...work, startDate: value },
+                                  i
+                                );
+                              }}
+                              time={false}
                             />
                           </FormGroup>
                         </Col>
@@ -393,10 +469,17 @@ momentLocalizer()
                           <FormGroup>
                             <Label for="startDate"> Fecha Culminación </Label>
                             <DateTimePicker
-                            defaultCurrentDate={work.endDate? work.endDate : null}
-                            defaultValue={work.endDate? work.endDate : null}
-                            onChange={(value) => {modifyWorkExperience({...work, endDate: value }, i)}}
-                            time={false}
+                              defaultCurrentDate={
+                                work.endDate ? work.endDate : null
+                              }
+                              value={work.endDate ? work.endDate : null}
+                              onChange={value => {
+                                modifyWorkExperience(
+                                  { ...work, endDate: value },
+                                  i
+                                );
+                              }}
+                              time={false}
                             />
                           </FormGroup>
                         </Col>
@@ -487,24 +570,49 @@ momentLocalizer()
                       Remover Experiencia Vocacional
                     </Button>
                   </Row>
-
                   <FormGroup>
                     <Label for="skills">Habilidades</Label>
-                    <Input type="textarea" name="skills" id="skills" />
+                    <Input
+                      type="textarea"
+                      readOnly
+                      name="skills"
+                      id="skills"
+                      value={props.skills ? props.skills.toString() : ''}
+                    />
                   </FormGroup>
                   <FormGroup>
                     <Label for="keywords">Palabras clave</Label>
-                    <Input type="textarea" name="keywords" id="keywords" />
+                    <Input
+                      type="textarea"
+                      readOnly
+                      name="keywords"
+                      id="keywords"
+                      value={props.keywords ? props.keywords.toString() : ''}
+                    />
                   </FormGroup>
                   <FormGroup>
                     <Label for="concepts">Conceptos</Label>
-                    <Input type="textarea" name="concepts" id="concepts" />
+                    <Input
+                      type="textarea"
+                      readOnly
+                      name="concepts"
+                      id="concepts"
+                      value={props.concepts ? props.concepts.toString() : ''}
+                    />
                   </FormGroup>
                   <FormGroup>
                     <Label for="categories">Categorías</Label>
-                    <Input type="textarea" name="categories" id="categories" />
+                    <Input
+                      type="textarea"
+                      readOnly
+                      name="categories"
+                      id="categories"
+                      value={
+                        props.categories ? props.categories.toString() : ''
+                      }
+                    />
                   </FormGroup>
-                  <Button>Submit</Button>
+                  <Button onClick={() => uploadForm()}>Submit</Button>
                 </Form>
               </CardBody>
             </Card>

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-
+import Moment from 'moment'
 import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 
 import { useDropzone } from 'react-dropzone';
@@ -102,7 +102,14 @@ const Dashboard = () => {
           }
           //TODO: Add a check so date isn't so soon.
           else if (type === 'date' && !result.bithDate) {
-            result.birthDate = text;
+            let momentDate = Moment(text, 'DD/MM/YYYY')
+            if (momentDate.isValid()) {
+              result.birthDate = momentDate.toDate();
+            }
+            else {
+              momentDate = Moment(text, 'DD/MM/YY');
+              result.birthDate = momentDate.isValid() ? momentDate : new Date(text)
+            }
           }
           //Skills data
           else if (type === 'languague') {
