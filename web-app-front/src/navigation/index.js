@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router } from '@reach/router';
 
-import AuthWall from '../components/auth-wall';
+//import AuthWall from '../components/auth-wall';
 
 import Login from '../screens/login';
 import Dashboard from '../screens/dashboard';

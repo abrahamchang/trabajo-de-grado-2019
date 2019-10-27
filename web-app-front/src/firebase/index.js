@@ -65,8 +65,9 @@ class Firebase {
         return task;
     }
 
-    async uploadCurriculum(curriculumData) {
+    uploadCurriculum(curriculumData) {
 
+        return this.db.collection('Curriculums').add(curriculumData)
     }
 }
 

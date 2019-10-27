@@ -19,8 +19,12 @@ const Dashboard = () => {
     const [curriculumsInformation, setCurriculumsInformation] = useState([])
     const [files, setFiles] = useState([])
     const [storedB64, setB64] = useState(null);
+
+    //Loading vars
     const [loadingAnalysis, setLoadingAnalysis] = useState(false)
     const [firstLoad, setFirstLoad] = useState(true)
+    const [loadingUpload, setLoadingUpload] = useState(false)
+    const [loadingDiscovery, setLoadingDiscovery] = useState(false)
     const onDrop = useCallback(  (acceptedFiles) => {
         const fileRequests = [];
         setFirstLoad(false)
@@ -29,7 +33,7 @@ const Dashboard = () => {
             const reader = new FileReader();
             reader.onload = async (event) => {
                 let b64 = reader.result.replace(/^data:.+;base64,/, '');
-                index == 0 && setB64(b64);
+                index === 0 && setB64(b64);
                 const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/curriculumAnalysis'
                 const postParams = {
                     method: 'POST',
@@ -53,22 +57,30 @@ const Dashboard = () => {
         setFiles(acceptedFiles);
 
     }, []);
-    const uploadDocumentFirebase = () => {
+    const uploadDocumentStorage = () => {
       setFileComponents(files.map((file, index) => {
         const uploadTask = Firebase.uploadFile(file);
         return <Resume key={`resumes-${index}`} uploadTask={uploadTask} file={file} />
       }))
     }
-    const uploadDocumentData = async (curriculumDocument) => {
+    const uploadDocumentData = async (curriculumData) => {
       const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/uploadDocumentDiscovery'
       const postParams = {
         method: 'POST',
         body: storedB64,
     }
     try {
+    setLoadingDiscovery(true);
     const uploadResponse = await fetch(url, postParams);
     const uploadJson = await uploadResponse.json();
     console.log(uploadJson);
+    setLoadingDiscovery(false);
+    setLoadingUpload(true);
+    const curriculumDocument = {...curriculumData, discoveryId: uploadJson.document_id, storageRef: `/resumes/${files[0].name}`}
+    await Firebase.uploadCurriculum(curriculumDocument);
+    uploadDocumentStorage();
+    setLoadingUpload(false);
+
     }
     catch(err) {
       console.log(err)
@@ -154,7 +166,7 @@ const Dashboard = () => {
             let studyDates = null;
             const {location} = relationArguments[0]
             const institutionTextStart = location[0]
-            const institutionTextEnd = location[1]
+            //const institutionTextEnd = location[1]
           //Try to find date
             relations.forEach(relation => {
               const {type, arguments: relationArguments} = relation
@@ -182,7 +194,7 @@ const Dashboard = () => {
             const workplace = relationArguments[0].text;
             const workRange = relationArguments[1].text;
             const workplaceTextStart = relationArguments[0].location[0];
-            const workplaceTextEnd = relationArguments[1].location[1];
+            //const workplaceTextEnd = relationArguments[1].location[1];
             const workDates = relation.dates;
             let workPosition = null;
             let workSpecialization = null;
@@ -196,7 +208,7 @@ const Dashboard = () => {
                   console.log('Entered here')
                   workPosition = foundWorkPosition.text;
                   const workPositionTextStart = foundWorkPosition.location[0];
-                  const workPositionTextEnd = foundWorkPosition.location[1];
+                  //const workPositionTextEnd = foundWorkPosition.location[1];
                   //Attemp to find specialization
                   relations.forEach(relation => {
                     const {type, arguments: relationArguments} = relation;
@@ -236,47 +248,82 @@ const Dashboard = () => {
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({ onDrop });
 
     return (
-        <div className={s.root}>
-            <Container>
-                <Row className='justify-content-center'>
-                    <Col lg={8} className='d-flex flex-column'>
-                        <Card className='my-lg-5 my-md-4 my-3'>
-                            <CardBody>
-                                <CardTitle className='text-center'><h3>Cargar Currículos</h3></CardTitle>
-                                <hr />
-                                <div {...getRootProps({
-                                    className: `
+      <div className={s.root}>
+        <Container>
+          <Row className="justify-content-center">
+            <Col lg={8} className="d-flex flex-column">
+              <Card className="my-lg-5 my-md-4 my-3">
+                <CardBody>
+                  <CardTitle className="text-center">
+                    <h3>Cargar Currículos</h3>
+                  </CardTitle>
+                  <hr />
+                  <div
+                    {...getRootProps({
+                      className: `
                                     ${s.dropzone}
                                     ${isDragActive && s.dropzoneActive}
                                     ${isDragAccept && s.dropzoneAccept}
                                     ${isDragReject && s.dropzoneReject}
-                                    `})}>
-                                    <input {...getInputProps()} />
-                                    {loadingAnalysis ? <Spinner className={s.uploadIcon}/> :
-                                    <img className={s.uploadIcon} src={FileUploadIcon} alt="File upload icon." />}
-                                    <h5>Arrastre los documentos aquí o Haga clic.</h5>
-                                    <p className="h6">Solo formatos PDF o DOC.</p>
-                                </div>
-                            </CardBody>
-                        </Card>
-                        <div className={firstLoad || loadingAnalysis ? `${s.hidden}` : null}>
-                        {UploadForm(curriculumsInformation[0] ? {...curriculumsInformation[0], update: true, onSubmit: uploadDocumentData} : {update: false})}
-                        </div>
-                        {fileComponents.length > 0 && (
-                            <Card>
-                                <CardBody>
-                                    <CardTitle className='text-center'><h3>Vista Previa</h3></CardTitle>
-                                    <hr />
-                                    <Container>
-                                        {fileComponents}
-                                    </Container>
-                                </CardBody>
-                            </Card>
-                        )}
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+                                    `
+                    })}
+                  >
+                    <input {...getInputProps()} />
+                    {loadingAnalysis ? (
+                      <Spinner className={s.uploadIcon} />
+                    ) : (
+                      <img
+                        className={s.uploadIcon}
+                        src={FileUploadIcon}
+                        alt="File upload icon."
+                      />
+                    )}
+                    <h5>Arrastre los documentos aquí o Haga clic.</h5>
+                    <p className="h6">Solo formatos PDF o DOC.</p>
+                  </div>
+                </CardBody>
+              </Card>
+              <div
+                className={firstLoad || loadingAnalysis ? `${s.hidden}` : null}
+              >
+                {UploadForm(
+                  curriculumsInformation[0]
+                    ? {
+                        ...curriculumsInformation[0],
+                        update: true,
+                        onSubmit: uploadDocumentData
+                      }
+                    : { update: false }
+                )}
+              </div>
+              {fileComponents.length > 0 && (
+                <Card>
+                  <CardBody>
+                    <CardTitle className="text-center">
+                      <h3>Vista Previa</h3>
+                    </CardTitle>
+                    <hr />
+                    <Container>{fileComponents}</Container>
+                  </CardBody>
+                </Card>
+              )}
+            </Col>
+          </Row>
+          {loadingUpload
+            ? fileComponents.map(fileComponent => fileComponent)
+            : null}
+          {loadingDiscovery ? (
+            <Row className="justify-content-center">
+              <Col className="d-flex flex-column" lg={8} >
+                <Card className="justify-content-center">
+                  <CardTitle> <h3> Cargando Discovery </h3></CardTitle>
+                  <Spinner/>
+                </Card>
+              </Col>
+              </Row>
+          ) : null}
+        </Container>
+      </div>
     );
 };
 

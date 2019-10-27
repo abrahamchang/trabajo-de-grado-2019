@@ -26,8 +26,7 @@ const Resume = ({ uploadTask, file }) => {
         <Row>
             <Col lg={4} className='text-truncate'>{name}</Col>
             <Col lg={4}><Progress animated value={progress}>{progress === 100 ? 'Carga exitosa!' : ''}</Progress></Col>
-            <Col lg={2}>{(size / (1024 * 1024)).toFixed(2)} MB</Col>
-            <Col lg={2}>Ver</Col>
+            <Col lg={4}>{(size / (1024 * 1024)).toFixed(2)} MB</Col>
         </Row>
     );
 };
