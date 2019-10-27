@@ -101,8 +101,7 @@ momentLocalizer()
         keywords: props.keywords,
         categories: props.categories
       }
-      console.log(curriculumData)
-
+      props.onSubmit(curriculumData)
     }
 
       return (

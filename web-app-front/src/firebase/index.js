@@ -64,6 +64,10 @@ class Firebase {
         const task = storageRef.put(file);
         return task;
     }
+
+    async uploadCurriculum(curriculumData) {
+
+    }
 }
 
 export default new Firebase();

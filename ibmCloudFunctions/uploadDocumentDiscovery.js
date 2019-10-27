@@ -17,7 +17,10 @@ async function main(params) {
   };
   try {
     const documentAccepted = await discovery.addDocument(addDocumentParams);
-    return documentAccepted;
+    return ({
+      statusCode: 200,
+      body: documentAccepted
+  })
   }
   catch(err) {
     console.log(err)

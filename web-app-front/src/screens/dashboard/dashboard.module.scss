@@ -1,6 +1,7 @@
 .root {
   height: calc(100vh - 56px);
-  background: lightgray url("../../images/main-background-image.jpg") no-repeat center;
+  background: lightgray url('../../images/main-background-image.jpg') no-repeat
+    center;
   background-size: cover;
 
   .dropzone {
@@ -31,5 +32,8 @@
     width: 100px;
     height: 100px;
     margin-bottom: 20px;
+  }
+  .hidden {
+    display: none;
   }
 }

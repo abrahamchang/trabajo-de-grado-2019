@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Moment from 'moment'
-import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardTitle, Spinner } from 'reactstrap';
 
 import { useDropzone } from 'react-dropzone';
 
@@ -18,12 +18,18 @@ const Dashboard = () => {
     const [fileComponents, setFileComponents] = useState([]);
     const [curriculumsInformation, setCurriculumsInformation] = useState([])
     const [files, setFiles] = useState([])
+    const [storedB64, setB64] = useState(null);
+    const [loadingAnalysis, setLoadingAnalysis] = useState(false)
+    const [firstLoad, setFirstLoad] = useState(true)
     const onDrop = useCallback(  (acceptedFiles) => {
         const fileRequests = [];
-        const resumes = acceptedFiles.map((file, index) => {
+        setFirstLoad(false)
+        setLoadingAnalysis(true)
+        acceptedFiles.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = async (event) => {
-                var b64 = reader.result.replace(/^data:.+;base64,/, '');
+                let b64 = reader.result.replace(/^data:.+;base64,/, '');
+                index == 0 && setB64(b64);
                 const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/curriculumAnalysis'
                 const postParams = {
                     method: 'POST',
@@ -34,7 +40,8 @@ const Dashboard = () => {
                 const data = await analysisResponse.json();
                 fileRequests.push(data)
                 index + 1 === acceptedFiles.length && console.log(fileRequests);
-                index + 1 === acceptedFiles.length && organizeData(fileRequests)
+                index + 1 === acceptedFiles.length && organizeData(fileRequests);
+                index + 1 === acceptedFiles.length && setLoadingAnalysis(false);
                 } catch(err) {
                     console.log(err)
                 }
@@ -43,7 +50,7 @@ const Dashboard = () => {
             reader.readAsDataURL(file);
 
         });
-        setFiles(resumes);
+        setFiles(acceptedFiles);
 
     }, []);
     const uploadDocumentFirebase = () => {
@@ -52,6 +59,22 @@ const Dashboard = () => {
         return <Resume key={`resumes-${index}`} uploadTask={uploadTask} file={file} />
       }))
     }
+    const uploadDocumentData = async (curriculumDocument) => {
+      const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/uploadDocumentDiscovery'
+      const postParams = {
+        method: 'POST',
+        body: storedB64,
+    }
+    try {
+    const uploadResponse = await fetch(url, postParams);
+    const uploadJson = await uploadResponse.json();
+    console.log(uploadJson);
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
+
     const organizeData = (curriculums) => {
       let extractedData = [];
       curriculums.forEach(curriculum => {
@@ -229,13 +252,16 @@ const Dashboard = () => {
                                     ${isDragReject && s.dropzoneReject}
                                     `})}>
                                     <input {...getInputProps()} />
-                                    <img className={s.uploadIcon} src={FileUploadIcon} alt="File upload icon." />
+                                    {loadingAnalysis ? <Spinner className={s.uploadIcon}/> :
+                                    <img className={s.uploadIcon} src={FileUploadIcon} alt="File upload icon." />}
                                     <h5>Arrastre los documentos aquí o Haga clic.</h5>
                                     <p className="h6">Solo formatos PDF o DOC.</p>
                                 </div>
                             </CardBody>
                         </Card>
-                        {UploadForm(curriculumsInformation[0] ? {...curriculumsInformation[0], update: true} : {update: false})}
+                        <div className={firstLoad || loadingAnalysis ? `${s.hidden}` : null}>
+                        {UploadForm(curriculumsInformation[0] ? {...curriculumsInformation[0], update: true, onSubmit: uploadDocumentData} : {update: false})}
+                        </div>
                         {fileComponents.length > 0 && (
                             <Card>
                                 <CardBody>
