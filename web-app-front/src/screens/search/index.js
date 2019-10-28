@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner} from 'reactstrap';
 import { FaSearch } from 'react-icons/fa';
 
-
 const Search = (props) => {
-  console.log(props)
+
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
     const [didFirstLoad, setDidFirstLoad] = useState(false);
@@ -59,13 +58,13 @@ const Search = (props) => {
               </tr>
             </thead>
             <tbody>
-              {searchResult.map((curriculum, index) => (
-                <tr key={curriculum.id}>
+              {searchResult.map((searchEntry, index) => (
+                <tr key={searchEntry.id}>
                   <td>Data de Firebase </td>
                   <td>Data de Firebase</td>
-                  <td>{curriculum.extracted_metadata.filename}</td>
+                  <td>{searchEntry.extracted_metadata.filename}</td>
                   <td>
-                    <Button color="primary" onClick={() => props.navigate(curriculum.id, {discoveryId: curriculum.id})}> Ver más </Button>
+                    <Button color="primary" onClick={() => props.navigate(searchEntry.id, {state: searchEntry})}> Ver más </Button>
                   </td>
                 </tr>
               ))}

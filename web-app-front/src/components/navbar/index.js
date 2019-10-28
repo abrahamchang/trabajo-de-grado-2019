@@ -8,6 +8,12 @@ import Firebase from '../../firebase';
 
 
 const MainNavbar = () => {
+
+    //Temporary solution
+    function findActiveKey(string) {
+        const root = string.split('/')
+        return '/' + root[1];
+    }
     return (
         <Location>
             {({ location }) => (
@@ -17,7 +23,7 @@ const MainNavbar = () => {
                         {(location.pathname !== '/') && <>
                             <Navbar.Toggle aria-controls="navbar-wrapper" />
                             <Navbar.Collapse id="navbar-wrapper">
-                                <Nav activeKey={location.pathname}>
+                                <Nav activeKey={findActiveKey(location.pathname)}>
                                     <Nav.Link href="/dashboard" >Tablero</Nav.Link>
                                     <Nav.Link href="/search" >Búsquedas</Nav.Link>
                                     <Nav.Link href="/admin" >Administrar</Nav.Link>

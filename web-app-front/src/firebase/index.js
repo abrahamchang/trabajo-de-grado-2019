@@ -64,13 +64,16 @@ class Firebase {
         const task = storageRef.put(file);
         return task;
     }
-
+    retrieveFileURL(route) {
+        const pathReference = this.storage.ref()
+        const pathChild = pathReference.child(route)
+        return pathChild.getDownloadURL();
+    }
     uploadCurriculum(curriculumData) {
         return this.db.collection('Curriculums').add(curriculumData)
     }
 
     getCurriculumByDiscoveryId(id) {
-
         return this.db.collection('Curriculums').where('discoveryId', '==', id).get();
     }
 }
