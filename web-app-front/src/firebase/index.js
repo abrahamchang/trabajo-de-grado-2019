@@ -66,8 +66,12 @@ class Firebase {
     }
 
     uploadCurriculum(curriculumData) {
-
         return this.db.collection('Curriculums').add(curriculumData)
+    }
+
+    getCurriculumByDiscoveryId(id) {
+
+        return this.db.collection('Curriculums').where('discoveryId', '==', id).get();
     }
 }
 

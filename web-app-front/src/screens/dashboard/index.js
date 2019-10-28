@@ -12,7 +12,7 @@ import Resume from './resume';
 
 import s from './dashboard.module.scss';
 
-import UploadForm from './uploadForm'
+import UploadForm from '../../components/uploadForm'
 
 const Dashboard = () => {
     const [fileComponents, setFileComponents] = useState([]);
@@ -107,10 +107,10 @@ const Dashboard = () => {
           keywords: [],
           categories: [],
           //Education data
-          educationData: [],
+          educationExperience: [],
           courses: [],
           //Work data
-          workData: []
+          workExperience: []
         }
         const {entities, relations} = curriculum.analysisResult;
         entities.forEach(entity => {
@@ -188,7 +188,7 @@ const Dashboard = () => {
               startDate: studyDates ? new Date(studyDates[0]) : null,
               endDate:  studyDates ? new Date(studyDates[1]) : null
             }
-            result.educationData.push(educationExperience)
+            result.educationExperience.push(educationExperience)
           }
           else if (type === 'worked_range') {
             const workplace = relationArguments[0].text;
@@ -230,7 +230,7 @@ const Dashboard = () => {
               startDate: workDates ? new Date(workDates[0]) : null,
               endDate:  workDates ? new Date(workDates[1]) : null
             }
-            result.workData.push(workExperience)
+            result.workExperience.push(workExperience)
           }
         })
         const {keywords, concepts, categories} =  curriculum.analysisResult;

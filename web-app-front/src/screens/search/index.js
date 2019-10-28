@@ -4,8 +4,8 @@ import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupA
 import { FaSearch } from 'react-icons/fa';
 
 
-
-const Search = () => {
+const Search = (props) => {
+  console.log(props)
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
     const [didFirstLoad, setDidFirstLoad] = useState(false);
@@ -23,7 +23,7 @@ const Search = () => {
                'Content-Type': 'application/json'
              },
             body: JSON.stringify({
-       "nlpQuery": query
+       "query": query
        }),
         }
         try {
@@ -65,7 +65,7 @@ const Search = () => {
                   <td>Data de Firebase</td>
                   <td>{curriculum.extracted_metadata.filename}</td>
                   <td>
-                    <Button color="primary"> Ver más </Button>{' '}
+                    <Button color="primary" onClick={() => props.navigate(curriculum.id, {discoveryId: curriculum.id})}> Ver más </Button>
                   </td>
                 </tr>
               ))}
@@ -80,9 +80,11 @@ const Search = () => {
               }
     }
 
+
     return (
       <div>
-        <Container>
+        {props.location.pathname === '/search' ?
+ <Container>
           <Row className="justify-content-center">
             <Col lg={12} className="d-flex flex-column">
               <Card className="my-lg-5 my-md-4 my-3">
@@ -118,6 +120,7 @@ const Search = () => {
             </Col>
           </Row>
         </Container>
+         : props.children}
       </div>
     );
 };

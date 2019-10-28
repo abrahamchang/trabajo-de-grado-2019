@@ -21,7 +21,8 @@ momentLocalizer()
      const [workExperience, setWorkExperience] = useState(['']);
      const [languages, setLanguages] = useState(['']);
     useEffect(() => {
-      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, language: languagesArray, educationData: educationArray, workData: workArray, telephones: telephonesArray } = props
+      console.log(props)
+      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, language: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray } = props
 
       setFirstName(firstNameExtracted ? firstNameExtracted : '')
       setLastName(lastNameExtracted ? lastNameExtracted : '')
@@ -125,6 +126,7 @@ momentLocalizer()
                           onChange={e => setFirstName(e.target.value)}
                           id="nombres"
                           placeholder="Luciano"
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </Col>
@@ -138,6 +140,7 @@ momentLocalizer()
                           placeholder="Pinedo"
                           value={lastName ? lastName : ''}
                           onChange={e => setLastName(e.target.value)}
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </Col>
@@ -153,6 +156,7 @@ momentLocalizer()
                           placeholder="abc@correo.com"
                           value={email ? email : ''}
                           onChange={e => setEmail(e.target.value)}
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </Col>
@@ -166,6 +170,7 @@ momentLocalizer()
                             setBirthDate(value);
                           }}
                           time={false}
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </Col>
@@ -181,6 +186,7 @@ momentLocalizer()
                           placeholder="Municipio"
                           value={municipality ? municipality : ''}
                           onChange={e => setMunicipality(e.target.value)}
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </Col>
@@ -194,6 +200,7 @@ momentLocalizer()
                           placeholder="Ciudad"
                           value={city ? city : ''}
                           onChange={e => setCity(e.target.value)}
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </Col>
@@ -207,6 +214,7 @@ momentLocalizer()
                           placeholder="Estado"
                           value={curriculumState ? curriculumState : ''}
                           onChange={e => setCurriculumState(e.target.value)}
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </Col>
@@ -227,10 +235,11 @@ momentLocalizer()
                         onChange={e => {
                           modifyLanguage(e.target.value, i);
                         }}
+                        disabled={props.readOnly}
                       />
                     </FormGroup>
                   ))}
-                  <Row className="justify-content-around mb-2">
+                  {!props.readOnly && <Row className="justify-content-around mb-2">
                     <Button
                       color="primary"
                       onClick={() => {
@@ -247,7 +256,7 @@ momentLocalizer()
                     >
                       Remover Idioma
                     </Button>
-                  </Row>
+                  </Row>}
                   <CardTitle>
                     <b> Teléfonos </b>
                   </CardTitle>
@@ -267,11 +276,12 @@ momentLocalizer()
                             modifyTelephone(e.target.value, i);
                           }}
                           placeholder="Inserte un teléfono. Ej: +584122100011"
+                          disabled={props.readOnly}
                         />
                       </FormGroup>
                     </div>
                   ))}
-                  <Row className="justify-content-around mb-2">
+                  {!props.readOnly && <Row className="justify-content-around mb-2">
                     <Button
                       color="primary"
                       onClick={() => {
@@ -288,7 +298,7 @@ momentLocalizer()
                     >
                       Remover Telefono
                     </Button>
-                  </Row>
+                  </Row>}
                   <FormGroup>
                     <CardTitle>
                       <b>Información Educativa</b>
@@ -318,6 +328,7 @@ momentLocalizer()
                                     i
                                   );
                                 }}
+                                disabled={props.readOnly}
                                 time={false}
                               />
                             </FormGroup>
@@ -339,6 +350,8 @@ momentLocalizer()
                                   );
                                 }}
                                 time={false}
+                                readOnly={props.readOnly}
+                                disabled={props.readOnly}
                               />
                             </FormGroup>
                           </Col>
@@ -364,6 +377,7 @@ momentLocalizer()
                                     i
                                   );
                                 }}
+                                disabled={props.readOnly}
                               />
                             </FormGroup>
                           </Col>
@@ -387,6 +401,7 @@ momentLocalizer()
                                     i
                                   );
                                 }}
+                                disabled={props.readOnly}
                               />
                             </FormGroup>
                           </Col>
@@ -410,6 +425,7 @@ momentLocalizer()
                                     i
                                   );
                                 }}
+                                disabled={props.readOnly}
                               />
                             </FormGroup>
                           </Col>
@@ -417,7 +433,7 @@ momentLocalizer()
                       </div>
                     ))}
                   </FormGroup>
-                  <Row className="justify-content-around mb-2">
+                  {!props.readOnly && <Row className="justify-content-around mb-2">
                     <Button
                       color="primary"
                       onClick={() => {
@@ -437,7 +453,7 @@ momentLocalizer()
                     >
                       Remover Experiencia Educativa
                     </Button>
-                  </Row>
+                  </Row>}
                   <CardTitle>
                     <b> Información Vocacional </b>
                   </CardTitle>
@@ -461,6 +477,7 @@ momentLocalizer()
                                 );
                               }}
                               time={false}
+                              disabled={props.readOnly}
                             />
                           </FormGroup>
                         </Col>
@@ -479,6 +496,7 @@ momentLocalizer()
                                 );
                               }}
                               time={false}
+                              disabled={props.readOnly}
                             />
                           </FormGroup>
                         </Col>
@@ -499,6 +517,7 @@ momentLocalizer()
                                   i
                                 );
                               }}
+                              disabled={props.readOnly}
                             />
                           </FormGroup>
                         </Col>
@@ -517,6 +536,7 @@ momentLocalizer()
                                   i
                                 );
                               }}
+                              disabled={props.readOnly}
                             />
                           </FormGroup>
                         </Col>
@@ -538,13 +558,14 @@ momentLocalizer()
                                   i
                                 );
                               }}
+                              disabled={props.readOnly}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
                     </div>
                   ))}
-                  <Row className="justify-content-around mb-2">
+               {!props.readOnly && <Row className="justify-content-around mb-2">
                     <Button
                       color="primary"
                       onClick={() => {
@@ -568,7 +589,7 @@ momentLocalizer()
                     >
                       Remover Experiencia Vocacional
                     </Button>
-                  </Row>
+                  </Row>}
                   <FormGroup>
                     <Label for="skills">Habilidades</Label>
                     <Input
@@ -611,7 +632,7 @@ momentLocalizer()
                       }
                     />
                   </FormGroup>
-                  <Button onClick={() => uploadForm()}>Submit</Button>
+                  {!props.readOnly && <Button onClick={() => uploadForm()}>Submit</Button>}
                 </Form>
               </CardBody>
             </Card>
