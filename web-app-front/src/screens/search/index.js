@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner} from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Label} from 'reactstrap';
 import { FaSearch } from 'react-icons/fa';
-
+import AdvancedSearch from './advancedSearch';
 const Search = (props) => {
 
     const [searchResult, setSearchResult] = useState([]);
@@ -44,6 +44,7 @@ const Search = (props) => {
     const _handleChange = (e) => {
         setUserInput(e.target.value)
     }
+
 
     const displayResults = () => {
         if (searchResult && searchResult.length !== 0) {
@@ -103,7 +104,8 @@ const Search = (props) => {
                         </Button>
                       </InputGroupAddon>
                     </InputGroup>
-                  </Col>
+                    </Col>
+                  <AdvancedSearch/>
                 </CardTitle>
                 <CardBody>
                   {didFirstLoad &&
