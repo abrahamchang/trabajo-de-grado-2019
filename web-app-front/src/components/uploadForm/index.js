@@ -20,6 +20,7 @@ momentLocalizer()
      const [telephones, setTelephones] = useState( ['']);
      const [workExperience, setWorkExperience] = useState(['']);
      const [languages, setLanguages] = useState(['']);
+     const [age, setAge] = useState('')
     useEffect(() => {
       console.log(props)
       const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, language: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray } = props
@@ -35,6 +36,7 @@ momentLocalizer()
       setTelephones(telephonesArray ? telephonesArray : ['']);
       setWorkExperience(workArray ? workArray : ['']);
       setLanguages(languagesArray ? languagesArray : ['']);
+
     }, [props.update])
 
     function removeLanguage() {
@@ -100,11 +102,26 @@ momentLocalizer()
         skills: props.skills,
         concepts: props.concepts,
         keywords: props.keywords,
-        categories: props.categories
+        categories: props.categories,
+        age: age ? parseInt(age) : calculateAge(),
+        workExperienceYears: calculateWorkingYears()
       }
+      console.log(curriculumData)
       props.onSubmit(curriculumData)
     }
+    function calculateAge() {
+      const today = Moment();
+      const difference = today.diff(birthDate, 'years')
+      return difference;
+    }
 
+    function calculateWorkingYears() {
+      const  reducer = (acc, curr) => {
+        const endDate = Moment(curr.endDate);
+        return acc + endDate.diff(Moment(curr.startDate), 'years', true)
+      }
+      return workExperience.reduce(reducer, 0);
+    }
       return (
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">

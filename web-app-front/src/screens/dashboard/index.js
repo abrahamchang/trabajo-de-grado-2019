@@ -63,8 +63,11 @@ const Dashboard = () => {
         return <Resume key={`resumes-${index}`} uploadTask={uploadTask} file={file} />
       }))
     }
+
+
+
     const uploadDocumentData = async (curriculumData) => {
-      const url = 'https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/uploadDocumentDiscovery'
+      const url = `https://us-south.functions.cloud.ibm.com/api/v1/web/lucianopinedo%40gmail.com_dev/default/uploadDocumentDiscovery?firstName=${curriculumData.firstName}&lastName=${curriculumData.lastName}&fileName=${files[0].name}`
       const postParams = {
         method: 'POST',
         body: storedB64,
@@ -110,7 +113,9 @@ const Dashboard = () => {
           educationExperience: [],
           courses: [],
           //Work data
-          workExperience: []
+          workExperience: [],
+          age: '',
+          // workExperienceYears: 0,
         }
         const {entities, relations} = curriculum.analysisResult;
         entities.forEach(entity => {
@@ -119,6 +124,9 @@ const Dashboard = () => {
           //Personal data extraction
           if (type === 'personFirstName' && !result.firstName) {
             result.firstName = text
+          }
+          else if (type === 'age') {
+            result.age = text;
           }
           else if (type === 'personLastName' && !result.lastName) {
             result.lastName = text;
@@ -299,10 +307,10 @@ const Dashboard = () => {
               {fileComponents.length > 0 && (
                 <Card>
                   <CardBody>
-                    <CardTitle className="text-center">
+                    {/* <CardTitle className="text-center">
                       <h3>Vista Previa</h3>
                     </CardTitle>
-                    <hr />
+                    <hr /> */}
                     <Container>{fileComponents}</Container>
                   </CardBody>
                 </Card>
@@ -315,9 +323,11 @@ const Dashboard = () => {
           {loadingDiscovery ? (
             <Row className="justify-content-center">
               <Col className="d-flex flex-column" lg={8} >
-                <Card className="justify-content-center">
+                <Card >
+                  <Col className="d-flex flex-column justify-content-center align-items-center">
                   <CardTitle> <h3> Cargando Discovery </h3></CardTitle>
                   <Spinner/>
+                  </Col>
                 </Card>
               </Col>
               </Row>

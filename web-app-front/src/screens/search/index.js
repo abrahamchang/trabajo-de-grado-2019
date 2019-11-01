@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Label} from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Label, Collapse} from 'reactstrap';
 import { FaSearch } from 'react-icons/fa';
 import AdvancedSearch from './advancedSearch';
 const Search = (props) => {
@@ -9,7 +9,34 @@ const Search = (props) => {
     const [loading, setLoading] = useState(false);
     const [didFirstLoad, setDidFirstLoad] = useState(false);
     const [userInput, setUserInput] = useState('')
+    const [maxScore, setMaxScore ] = useState(0)
+    const [advancedSearchActive, setAdvancedSearchActive] = useState(false)
+    function findHighestScore(results) {
+      const reducer = (acc, curr) => (curr.result_metadata.score > acc ? curr.result_metadata.score : acc)
+      return results.reduce(reducer, 0)
 
+    }
+
+    const onAdvancedSearchSubmit = async (searchParams) => {
+      console.log(searchParams)
+      setLoading(true)
+      setDidFirstLoad(true)
+      const url = 'https://us-central1-trabajo-de-grado-2019.cloudfunctions.net/advancedSearch'
+      const postParams = {
+        method: 'POST',
+        headers: {
+        },
+        body: JSON.stringify(searchParams)
+      }
+      try {
+        const searchResponse = await fetch(url, postParams)
+        const searchResults = await searchResponse.json();
+        console.log(searchResults)
+      }
+      catch(err) {
+        console.log(err)
+      }
+    }
     const onSearchSubmit = async () => {
         setLoading(true)
         setDidFirstLoad(true)
@@ -29,6 +56,7 @@ const Search = (props) => {
         const searchResult = await fetch(url, postParams);
         const searchJson = await searchResult.json()
         console.log(searchJson);
+        setMaxScore(findHighestScore(searchJson.results))
         setSearchResult(searchJson.results)
         setLoading(false)
         }
@@ -55,15 +83,19 @@ const Search = (props) => {
                 <th> Nombre </th>
                 <th> Apellido </th>
                 <th> Nombre de archivo </th>
+                <th> Puntuación </th>
+                <th> Confianza </th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {searchResult.map((searchEntry, index) => (
                 <tr key={searchEntry.id}>
-                  <td>Data de Firebase </td>
-                  <td>Data de Firebase</td>
-                  <td>{searchEntry.extracted_metadata.filename}</td>
+                  <td>{searchEntry.metadata.firstName} </td>
+                  <td>{searchEntry.metadata.lastName}</td>
+                  <td>{searchEntry.metadata.fileName}</td>
+                  <td> {`${searchEntry.result_metadata.score.toFixed(2)} (${searchEntry.result_metadata.score * 100 / maxScore}%)`} </td>
+                  <td> {searchEntry.result_metadata.confidence.toFixed(2)} </td>
                   <td>
                     <Button color="primary" onClick={() => props.navigate(searchEntry.id, {state: searchEntry})}> Ver más </Button>
                   </td>
@@ -83,45 +115,65 @@ const Search = (props) => {
 
     return (
       <div>
-        {props.location.pathname === '/search' ?
- <Container>
-          <Row className="justify-content-center">
-            <Col lg={12} className="d-flex flex-column">
-              <Card className="my-lg-5 my-md-4 my-3">
-                <CardTitle>
-                  <Col lg={12} className="mx-auto mt-3">
-                    <InputGroup>
-                      <Input type="search" placeholder="Inserte su búsqueda" onChange={_handleChange} onKeyDown={_handleKeyDown}/>
-                      <InputGroupAddon addonType="append">
-                        <Button
-                          type="submit"
-                          color="secondary"
-                          onClick={() => {
-                            onSearchSubmit();
-                          }}
-                        >
-                          <FaSearch />
-                        </Button>
-                      </InputGroupAddon>
-                    </InputGroup>
+        {props.location.pathname === '/search' ? (
+          <Container>
+            <Row className="justify-content-center">
+              <Col lg={12} className="d-flex flex-column">
+                <Card className="my-lg-5 my-md-4 my-3">
+                  <CardTitle>
+                    <Col lg={12} className="mx-auto mt-3">
+                      { advancedSearchActive ? null :
+                        <InputGroup>
+                          <Input
+                            type="search"
+                            placeholder="Inserte su búsqueda"
+                            onChange={_handleChange}
+                            onKeyDown={_handleKeyDown}
+                          />
+                          <InputGroupAddon addonType="append">
+                            <Button
+                              type="submit"
+                              color="secondary"
+                              onClick={() => {
+                                onSearchSubmit();
+                              }}
+                            >
+                              <FaSearch />
+                            </Button>
+                          </InputGroupAddon>
+                        </InputGroup>
+                      }
+                      <Button
+                        color="primary"
+                        onClick={() =>
+                          setAdvancedSearchActive(!advancedSearchActive)
+                        }
+                        className="mt-2"
+                      >
+                        {advancedSearchActive ? 'Ocultar Búsqueda Avanzada' :'Búsqueda Avanzada'}
+                      </Button>
                     </Col>
-                  <AdvancedSearch/>
-                </CardTitle>
-                <CardBody>
-                  {didFirstLoad &&
-                    (loading ? (
-                      <div className="d-flex justify-content-center">
-                        <Spinner color="primary" />
-                      </div>
-                    ) : (
-                      displayResults()
-                    ))}
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-         : props.children}
+                    <Collapse isOpen={advancedSearchActive}>
+                      <AdvancedSearch onSubmit={onAdvancedSearchSubmit}/>
+                    </Collapse>
+                  </CardTitle>
+                  <CardBody>
+                    {didFirstLoad &&
+                      (loading ? (
+                        <div className="d-flex justify-content-center">
+                          <Spinner color="primary" />
+                        </div>
+                      ) : (
+                        displayResults()
+                      ))}
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+        ) : (
+          props.children
+        )}
       </div>
     );
 };
