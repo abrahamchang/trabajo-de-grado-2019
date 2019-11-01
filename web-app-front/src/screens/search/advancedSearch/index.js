@@ -158,19 +158,68 @@ import s from './styles.scss';
 
       return (
         <Row>
-        <Col className="d-flex flex-column">
-        <h6> Perfil del candidato:  </h6>
-        <p>
-              {workExperienceYears && workExperienceYears > 0 ? `El candidato debe tener ${workExperienceYears} años de experiencia` : ''}
-            </p>
-            <p>
-            {age  && age > 0 ? `El candidato debe tener al menos ${age} años de edad` : '' }
-            </p>
-            {hasExperience ? <p>El candidato <b> DEBE </b> tener experiencia laboral previa. </p> : null }
-            {hasTitle ? <p>El candidato <b> DEBE </b> tener un título universitario. </p> : null }
-            </Col>
-      </Row>
-      )
+          <Col className="d-flex flex-column">
+            {AdditionalDataSummary()}
+            {languages.length > 0 ? (
+              <>
+
+                <p> Idiomas dominados: </p> <SimpleList arr={languages} />
+              </>
+            ) : (
+              ''
+            )}
+            {titles.length > 0 ? (
+              <>
+
+                <p> Graduado del título: </p> <SimpleList arr={titles} />
+              </>
+            ) : (
+              ''
+            )}
+            {universities.length > 0 ? (
+              <>
+
+                <p>Graduado de la institución: </p>
+                <SimpleList arr={universities} />
+              </>
+            ) : (
+              ''
+            )}
+            {previousWorks.length > 0 ? (
+              <>
+
+                <p>Haber trabajado de: </p> <SimpleList arr={previousWorks} />
+              </>
+            ) : (
+              ''
+            )}
+            {workplaces.length > 0 ? (
+              <>
+
+                <p> Empresas de referencia: </p> <SimpleList arr={workplaces} />
+              </>
+            ) : (
+              ''
+            )}
+            {cities.length > 0 ? (
+              <>
+
+                <p> Ciudades Habitadas: </p>
+                <SimpleList arr={cities} />
+              </>
+            ) : (
+              ''
+            )}
+          </Col>
+        </Row>
+      );
+    }
+
+    function SimpleList({arr}) {
+      return (<ul>
+        {arr.map(item => (<li> {item} </li>))}
+      </ul> )
+
     }
 
 
@@ -260,10 +309,7 @@ import s from './styles.scss';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          setUniversities([
-                            ...universities,
-                            universityInput
-                          ])
+                          setUniversities([...universities, universityInput])
                         }
                       >
                         Agregar Universidad a la lista
@@ -283,10 +329,7 @@ import s from './styles.scss';
             <TabPane tabId="2">
               <Row>
                 <Col md={6}>
-                  <Label for="cargos previos">
-                    {' '}
-                    Cargos previos ejercidos:{' '}
-                  </Label>
+                  <Label for="cargos previos">Cargos previos ejercidos:</Label>
                   <Input
                     type="text"
                     value={previousWorkInput}
@@ -347,7 +390,7 @@ import s from './styles.scss';
               </Row>
             </TabPane>
             <TabPane tabId="3">
-            <Row>
+              <Row>
                 <Col md={6}>
                   <Label for="Idiomas"> Ciudades en la que habita: </Label>
                   <Input
@@ -359,9 +402,7 @@ import s from './styles.scss';
                     <Col md={12} className="mt-2">
                       <Button
                         className="mr-2"
-                        onClick={() =>
-                          setCities([...cities, cityInput])
-                        }
+                        onClick={() => setCities([...cities, cityInput])}
                       >
                         Agregar Ciudad
                       </Button>
@@ -399,27 +440,27 @@ import s from './styles.scss';
                       />
                     </Col>
                   </Row>
-                    <Row>
-                      <Col md={4}>
-                        <Label for="age"> Edad </Label>
-                        <Input
-                          type="number"
-                          value={age}
-                          onChange={e => setAge(e.target.value)}
-                        />
-                      </Col>
-                      <Col md={8} className="d-flex align-items-center">
-                        <CustomInput
-                          type="range"
-                          id="ageRange"
-                          name="ageRange"
-                          min="0"
-                          max="100"
-                          value={age}
-                          onChange={e => setAge(e.target.value)}
-                        />
-                      </Col>
-                    </Row>
+                  <Row>
+                    <Col md={4}>
+                      <Label for="age"> Edad </Label>
+                      <Input
+                        type="number"
+                        value={age}
+                        onChange={e => setAge(e.target.value)}
+                      />
+                    </Col>
+                    <Col md={8} className="d-flex align-items-center">
+                      <CustomInput
+                        type="range"
+                        id="ageRange"
+                        name="ageRange"
+                        min="0"
+                        max="100"
+                        value={age}
+                        onChange={e => setAge(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
                   <Row className="ml-4">
                     <Label check>
                       <Input
@@ -447,10 +488,13 @@ import s from './styles.scss';
           </TabContent>
           <Card className="mt-3">
             <Container>
-          <Summary />
-          </Container>
+              <Summary />
+            </Container>
           </Card>
-          <Button className="mt-2" onClick={() => submitSearch()}> Submit </Button>
+          <Button className="mt-2" onClick={() => submitSearch()}>
+
+            Submit
+          </Button>
         </Col>
       );
     }

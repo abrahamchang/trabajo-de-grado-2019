@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Label, Collapse} from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Collapse} from 'reactstrap';
 import { FaSearch } from 'react-icons/fa';
 import AdvancedSearch from './advancedSearch';
 const Search = (props) => {
