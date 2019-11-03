@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Collapse} from 'reactstrap';
 import { FaSearch } from 'react-icons/fa';
-import AdvancedSearch from './advancedSearch';
+import AdvancedSearch from '../../components/advancedSearch';
+import AdvancedResultsDisplay from './advancedResultsDisplay';
 const Search = (props) => {
 
     const [searchResult, setSearchResult] = useState([]);
@@ -11,6 +12,7 @@ const Search = (props) => {
     const [userInput, setUserInput] = useState('')
     const [maxScore, setMaxScore ] = useState(0)
     const [advancedSearchActive, setAdvancedSearchActive] = useState(false)
+    const [advancedSearchResults, setAdvancedSearchResults] = useState(false)
     function findHighestScore(results) {
       const reducer = (acc, curr) => (curr.result_metadata.score > acc ? curr.result_metadata.score : acc)
       return results.reduce(reducer, 0)
@@ -32,11 +34,14 @@ const Search = (props) => {
         const searchResponse = await fetch(url, postParams)
         const searchResults = await searchResponse.json();
         console.log(searchResults)
+        setAdvancedSearchResults(searchResults)
+        setLoading(false)
       }
       catch(err) {
         console.log(err)
       }
     }
+
     const onSearchSubmit = async () => {
         setLoading(true)
         setDidFirstLoad(true)
@@ -72,6 +77,8 @@ const Search = (props) => {
     const _handleChange = (e) => {
         setUserInput(e.target.value)
     }
+
+
 
 
     const displayResults = () => {
@@ -122,7 +129,7 @@ const Search = (props) => {
                 <Card className="my-lg-5 my-md-4 my-3">
                   <CardTitle>
                     <Col lg={12} className="mx-auto mt-3">
-                      { advancedSearchActive ? null :
+                      {advancedSearchActive ? null : (
                         <InputGroup>
                           <Input
                             type="search"
@@ -142,7 +149,7 @@ const Search = (props) => {
                             </Button>
                           </InputGroupAddon>
                         </InputGroup>
-                      }
+                      )}
                       <Button
                         color="primary"
                         onClick={() =>
@@ -150,11 +157,13 @@ const Search = (props) => {
                         }
                         className="mt-2"
                       >
-                        {advancedSearchActive ? 'Ocultar Búsqueda Avanzada' :'Búsqueda Avanzada'}
+                        {advancedSearchActive
+                          ? 'Ocultar Búsqueda Avanzada'
+                          : 'Búsqueda Avanzada'}
                       </Button>
                     </Col>
                     <Collapse isOpen={advancedSearchActive}>
-                      <AdvancedSearch onSubmit={onAdvancedSearchSubmit}/>
+                      <AdvancedSearch onSubmit={onAdvancedSearchSubmit} />
                     </Collapse>
                   </CardTitle>
                   <CardBody>
@@ -163,8 +172,13 @@ const Search = (props) => {
                         <div className="d-flex justify-content-center">
                           <Spinner color="primary" />
                         </div>
-                      ) : (
+                      ) : searchResult ? (
                         displayResults()
+                      ) : (
+                        AdvancedResultsDisplay(
+                          advancedSearchResults,
+                          props.navigator
+                        )
                       ))}
                   </CardBody>
                 </Card>

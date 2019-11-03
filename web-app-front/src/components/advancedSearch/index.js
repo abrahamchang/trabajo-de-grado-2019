@@ -82,7 +82,6 @@ import s from './styles.scss';
           searchTerm: searchTerm ? {value: searchTerm, weight: 0.2} : null,
         }
 
-        console.log(JSON.stringify(request))
         props.onSubmit(request)
 
       }
@@ -217,7 +216,7 @@ import s from './styles.scss';
 
     function SimpleList({arr}) {
       return (<ul>
-        {arr.map(item => (<li> {item} </li>))}
+        {arr.map((item, i) => (<li key ={`${item}-${i}`}> {item} </li>))}
       </ul> )
 
     }

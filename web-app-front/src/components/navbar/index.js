@@ -26,7 +26,7 @@ const MainNavbar = () => {
                                 <Nav activeKey={findActiveKey(location.pathname)}>
                                     <Nav.Link href="/dashboard" >Tablero</Nav.Link>
                                     <Nav.Link href="/search" >Búsquedas</Nav.Link>
-                                    <Nav.Link href="/admin" >Administrar</Nav.Link>
+                                    <Nav.Link href="/proyects" >Proyectos</Nav.Link>
                                 </Nav>
                             </Navbar.Collapse>
                             {Firebase.isLogged && (

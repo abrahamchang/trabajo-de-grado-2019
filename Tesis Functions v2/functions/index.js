@@ -12,8 +12,7 @@ admin.initializeApp({
 
 
 exports.advancedSearch = functions.https.onRequest(async (req, res) => {
-  const { languages, previousWorks, universities, titles, workExperienceYears, workplaces, age, hasTitle, hasExperience, cities, searchTerm} = req.body;
-
+  const { languages, previousWorks, universities, titles, workExperienceYears, workplaces, age, hasTitle, hasExperience, cities, searchTerm} = await JSON.parse(req.body);
   let compoundQuery = admin.firestore().collection('Curriculums');
   if (hasExperience) {
     compoundQuery.where('workExperienceYears', '>', 0)
@@ -22,34 +21,31 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   let baseResult = [];
 
   queryResult.forEach(doc => {
-    let resultItem = {curriculumData: doc.data()}
+
+    let resultItem = {
+      curriculumData: doc.data(),
+      id: doc.id,
+      languageFound: languages ? false : null,
+      languageWeight: languages ? languages.weight : null,
+      previousWorksFound: previousWorks ? false : null,
+      previousWorksWeight: previousWorks ? previousWorks.weight : null,
+      universitiesFound: universities ? false : null,
+      universitiesWeight: universities ? universities.weight : null,
+      titlesFound: titles ? false : null,
+      titlesWeight: titles ? titles.weight : null,
+      workExperienceYearsFound: workExperienceYears ? false : null,
+      workExperienceYearsWeight: workExperienceYears ? workExperienceYears.weight : null,
+      workplacesFound: workplaces ? false : null,
+      workplacesWeight: workplaces? workplaces.weight : null,
+      citiesFound: cities ? false : null,
+      citiesWeight: cities ? cities.weight : null,
+      searchTermFound: searchTerm ? false : null,
+      searchTermWeight: searchTerm ? searchTerm.weight : null
+    }
     resultItem.curriculumData.workExperience.forEach(work => {
       work.completeWorkPosition = work.workPosition + ' ' + (work.workSpecialization ? work.workSpecialization : '')
     })
-    resultItem.id = doc.id;
-    if (languages)
-    {
-      resultItem.languageFound = false;
-      resultItem.languageWeight = languages.weight;
-    }
-    if (previousWorks) {
-      resultItem.previousWorksFound = false
-    resultItem.previousWorksWeight = previousWorks.weight
-    }
-    if (universities) {
-      resultItem.universitiesFound = false
-      resultItem.universitiesWeight = universities.weight
-    }
-    titles ? (resultItem.titlesFound = false) : null;
-    titles ? (resultItem.titlesWeight = titles.weight) : null;
-    workExperienceYears ? (resultItem.workExperienceYearsFound = false) : null;
-    workExperienceYears ? (resultItem.workExperienceYearsWeight = workExperienceYears.weight) : null;
-    workplaces ? (resultItem.workplacesFound = false) : null;
-    workplaces ? (resultItem.workplacesWeight = workplaces.weight) : null;
-    cities ? (resultItem.citiesFound = false) : null;
-    cities ? (resultItem.citiesWeight = cities.weight) : null;
-    searchTerm ? (resultItem.searchTermFound = false) : null;
-    searchTerm ? (resultItem.searchTermWeight = searchTerm.weight) : null;
+    console.log(universities ? 'true' : 'false')
     baseResult.push(resultItem)
   })
 
@@ -158,7 +154,8 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
         })
       })
   }
-  console.log(baseResult)
+
+
   res.set('Access-Control-Allow-Origin', "*")
   res.set('Access-Control-Allow-Methods', 'GET, POST')
   res.status(200).send(baseResult)
