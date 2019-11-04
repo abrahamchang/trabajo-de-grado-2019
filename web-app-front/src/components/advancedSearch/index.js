@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Label, FormGroup, ListGroup, ListGroupItem, Badge, TabContent, Tab, TabPane, NavItem, NavLink, Nav, CustomInput} from 'reactstrap';
+import { Container, Row, Col, Card, InputGroup, InputGroupAddon, Input, Button, Label, ListGroup, ListGroupItem, TabContent, TabPane, NavItem, NavLink, Nav, CustomInput} from 'reactstrap';
 import { FaSearch } from 'react-icons/fa';
 import classnames from 'classnames';
-import s from './styles.scss';
 
     const AdvancedSearch = ( props ) => {
       const {proyects} = props;

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-import { Container, Row, Col, Card, Button } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 import UploadForm from '../../../components/uploadForm';
 import Firebase from '../../../firebase'
 export default function CandidateDetail(props) {
@@ -9,7 +9,6 @@ export default function CandidateDetail(props) {
 
   async function downloadDocument() {
     let url = await Firebase.retrieveFileURL(candidateData.storageRef);
-    console.log(url)
 
     fetch(url)
     .then(resp => resp.blob())
@@ -25,7 +24,7 @@ export default function CandidateDetail(props) {
       a.remove();
       window.URL.revokeObjectURL(url);
     })
-    .catch(() => alert('oh no!'));
+    .catch(() => alert('Error descargando el archivo'));
   }
 
   async function fetchCandidateData() {
@@ -60,7 +59,7 @@ export default function CandidateDetail(props) {
     setCandidateData({...curriculumData, update: true})
   }
 
-  console.log(props)
+
 
   loading && (props.curriculumData ? mapCurriculumData(props.curriculumData) : fetchCandidateData());
 

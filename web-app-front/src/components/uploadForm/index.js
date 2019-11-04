@@ -22,7 +22,7 @@ momentLocalizer()
      const [languages, setLanguages] = useState(['']);
      const [age, setAge] = useState('')
     useEffect(() => {
-      console.log(props)
+
       const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, language: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray } = props
 
       setFirstName(firstNameExtracted ? firstNameExtracted : '')

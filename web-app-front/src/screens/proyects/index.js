@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ProyectTable from './ProyectTable';
 import AdvancedSearch from '../../components/advancedSearch'
-import {Container, Row, Col, Card, Button, Input, Label} from 'reactstrap'
+import {Container, Row, Col, Card, Button, Input, Label, Collapse} from 'reactstrap';
 const Proyects = () => {
+    const [newProyect, setNewProyect] = useState(false)
     function AddProyect()  {
         return (
           <Row className="mb-2">
@@ -30,8 +31,12 @@ const Proyects = () => {
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
               <Card>
-              <Button> Agregar Proyecto </Button>
+              <Button onClick={() => setNewProyect(!newProyect)} color="success" > Nuevo Proyecto </Button>
+                  <Col className="ml-1 mr-1">
+              <Collapse isOpen={newProyect}>
                 <AddProyect/>
+                </Collapse>
+                </Col>
                 </Card>
               </Col>
               </Row>

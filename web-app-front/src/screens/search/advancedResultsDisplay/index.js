@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupAddon, Table, Input, Button, Spinner, Label, Collapse} from 'reactstrap';
-import { FaSearch } from 'react-icons/fa';
+import React from 'react';
+import {  Table, Button} from 'reactstrap';
+
 import { isNumber } from 'util';
 
 
@@ -64,7 +64,7 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
                 <td> {firstName} </td>
                 <td> {lastName} </td>
                 <td>  {storageRef.split('/')[2]}</td>
-                <td> {calculateScore(searchEntry)}/{calculateMaxScore(searchEntry)} ({calculateScore(searchEntry) != 0 ?(  (calculateScore(searchEntry)   * 100) / calculateMaxScore(searchEntry) ): 0}%)  </td>
+                <td> {calculateScore(searchEntry)}/{calculateMaxScore(searchEntry)} ({calculateScore(searchEntry) !== 0 ?(  (calculateScore(searchEntry)   * 100) / calculateMaxScore(searchEntry) ): 0}%)  </td>
                 <td> {parametersFound(searchEntry)} </td>
                 <td>
                   <Button color="primary" onClick={() => props.navigator(searchEntry.curriculumData.discoveryId, {state: searchEntry})}> Ver más </Button>

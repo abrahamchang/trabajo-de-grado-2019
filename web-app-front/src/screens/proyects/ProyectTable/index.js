@@ -12,11 +12,11 @@ export default function ProyectTable({proyects}) {
       </thead>
       <tbody>
         {proyects.map(proyect => (
-          <>
+          <tr>
             <td> {proyect.name} </td>
             <td> 99</td>
             <td> <button> Ver proyecto </button></td>
-          </>
+          </tr>
         )
         )}
       </tbody>

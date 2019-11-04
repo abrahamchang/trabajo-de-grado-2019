@@ -15,6 +15,7 @@ const Resume = ({ uploadTask, file }) => {
         }, () => {
             uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
                 setUrl(downloadURL);
+                console.log(url)
             });
         });
 
