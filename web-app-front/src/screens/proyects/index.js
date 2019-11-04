@@ -5,16 +5,12 @@ import {Container, Row, Col, Card, Button, Input, Label} from 'reactstrap'
 const Proyects = () => {
     function AddProyect()  {
         return (
-          <Row>
-            <Col md={6}>
+          <Row className="mb-2">
+            <Col md={12}>
                 <Label for="nombre"> Nombre del Proyecto</Label>
                 <Input> </Input>
             </Col>
-            <Col md={6}>
-            <Label for="nombre"> Algo mas?</Label>
-            <Input> </Input>
-            </Col>
-            <AdvancedSearch/>
+            <AdvancedSearch proyects/>
           </Row>
         );
     }
@@ -23,7 +19,7 @@ const Proyects = () => {
 
 
     return (
-      <Container>
+      <Container className="mb-2" >
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
             <Card className="my-lg-5 my-md-4 my-3">

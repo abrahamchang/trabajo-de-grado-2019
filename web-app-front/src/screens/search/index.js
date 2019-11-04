@@ -12,7 +12,7 @@ const Search = (props) => {
     const [userInput, setUserInput] = useState('')
     const [maxScore, setMaxScore ] = useState(0)
     const [advancedSearchActive, setAdvancedSearchActive] = useState(false)
-    const [advancedSearchResults, setAdvancedSearchResults] = useState(false)
+    const [advancedSearchResults, setAdvancedSearchResults] = useState(null)
     function findHighestScore(results) {
       const reducer = (acc, curr) => (curr.result_metadata.score > acc ? curr.result_metadata.score : acc)
       return results.reduce(reducer, 0)
@@ -36,6 +36,7 @@ const Search = (props) => {
         console.log(searchResults)
         setAdvancedSearchResults(searchResults)
         setLoading(false)
+        setAdvancedSearchActive(false)
       }
       catch(err) {
         console.log(err)
@@ -172,13 +173,10 @@ const Search = (props) => {
                         <div className="d-flex justify-content-center">
                           <Spinner color="primary" />
                         </div>
-                      ) : searchResult ? (
-                        displayResults()
+                      ) : advancedSearchResults ? (
+                        <AdvancedResultsDisplay advancedSearchResults ={ advancedSearchResults} navigator={props.navigate}/>
                       ) : (
-                        AdvancedResultsDisplay(
-                          advancedSearchResults,
-                          props.navigator
-                        )
+                        displayResults()
                       ))}
                   </CardBody>
                 </Card>

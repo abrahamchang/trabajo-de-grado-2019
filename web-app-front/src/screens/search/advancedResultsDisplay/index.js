@@ -4,42 +4,42 @@ import { FaSearch } from 'react-icons/fa';
 import { isNumber } from 'util';
 
 
-const AdvancedResultsDisplay = (searchResult, ...props) => {
+const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props}) => {
+
   function calculateMaxScore(searchEntry) {
-    delete searchEntry.curriculumData;
-    delete searchEntry.id;
-    const values = searchEntry.values();
+    const values = Object.values(searchEntry);
     const reducer = (acc, curr) => { return isNumber(curr) ? acc + curr : acc }
     return values.reduce(reducer, 0)
   }
 
-  function calculateScore(searchEntry,maxScore) {
-    //const {languageFound}
-    // delete searchEntry.curriculumData;
-    // // delete searchEntry.id;
-    // let totalScore = 0;
-    // if (languageFound) totalScore += languageWeight;
-    // if (previousWorksFound) totalScore += previousWorksWeight;
-    // if (searchTermFound) totalScore += searchTermWeight;
-    // if (titlesFound) totalScore += titlesWeight;
-    // if (unviersitiesFound) totalScore += universitiesWeight;
-    // if (workExperienceYearsFound) totalScore += workExperienceYearsWeight;
-    // if (workplacesFound) totalScore += workplacesWeight
-    // return totalScore
+  function calculateScore(searchEntry) {
+    const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+    workplacesFound} =searchEntry;
+      const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight} = searchEntry;
+    let totalScore = 0;
+    if (languageFound) totalScore += languageWeight;
+    if (previousWorksFound) totalScore += previousWorksWeight;
+    if (searchTermFound) totalScore += searchTermWeight;
+    if (titlesFound) totalScore += titlesWeight;
+    if (universitiesFound) totalScore += universitiesWeight;
+    if (workExperienceYearsFound) totalScore += workExperienceYearsWeight;
+    if (workplacesFound) totalScore += workplacesWeight
+    return totalScore
   }
-  function calculateFound(searchEntry) {
-    // delete searchEntry.curriculumData;
-    // delete searchEntry.id;
-    // let totalParams = 0;
-    // let totalFound = 0
-    // //if (languageFound !=) totalScore += languageWeight;
-    // if (previousWorksFound) totalScore += previousWorksWeight;
-    // if (searchTermFound) totalScore += searchTermWeight;
-    // if (titlesFound) totalScore += titlesWeight;
-    // if (unviersitiesFound) totalScore += universitiesWeight;
-    // if (workExperienceYearsFound) totalScore += workExperienceYearsWeight;
-    // if (workplacesFound) totalScore += workplacesWeight
-    // return totalScore
+  function parametersFound(searchEntry) {
+    const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+      workplacesFound} = searchEntry;
+      let parametersFound = '';
+    if (languageFound) parametersFound += 'Idiomas, ';
+    if (previousWorksFound) parametersFound += 'Trabajos previos, ';
+    if (searchTermFound) parametersFound += 'Términos de búsqueda, ';
+    if (titlesFound) parametersFound += 'Títulos, ';
+    if (universitiesFound) parametersFound += 'Universidades, ';
+    if (workExperienceYearsFound) parametersFound += 'Años de experiencia, ';
+    if (workplacesFound) parametersFound += 'Empresas de referencía, '
+    parametersFound = parametersFound.trim();
+
+    return parametersFound.replace(/.$/,".")
   }
 
 
@@ -58,16 +58,16 @@ const AdvancedResultsDisplay = (searchResult, ...props) => {
           </thead>
           <tbody>
             {searchResult.map((searchEntry, index) =>
-             { const {firstName, lastName} = searchEntry.curriculumData;
-            //  const {}
+             {const {firstName, lastName, storageRef} = searchEntry.curriculumData;
+
                return (<tr key={searchEntry.id}>
                 <td> {firstName} </td>
                 <td> {lastName} </td>
-                <td></td>
-                <td> hola </td>
-                <td>  </td>
+                <td>  {storageRef.split('/')[2]}</td>
+                <td> {calculateScore(searchEntry)}/{calculateMaxScore(searchEntry)} ({calculateScore(searchEntry) != 0 ?(  (calculateScore(searchEntry)   * 100) / calculateMaxScore(searchEntry) ): 0}%)  </td>
+                <td> {parametersFound(searchEntry)} </td>
                 <td>
-                  <Button color="primary" onClick={() => props.navigate(searchEntry.id, {state: searchEntry})}> Ver más </Button>
+                  <Button color="primary" onClick={() => props.navigator(searchEntry.curriculumData.discoveryId, {state: searchEntry})}> Ver más </Button>
                 </td>
               </tr>)}
             )}

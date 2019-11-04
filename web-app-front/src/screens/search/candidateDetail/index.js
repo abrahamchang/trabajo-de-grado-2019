@@ -29,6 +29,7 @@ export default function CandidateDetail(props) {
   }
 
   async function fetchCandidateData() {
+    console.log(props)
     const queryResult = await Firebase.getCurriculumByDiscoveryId(props.discoveryId);
     let queryDoc = {...queryResult.docs[0].data()};
     queryDoc.birthDate = queryDoc.birthDate.toDate();
@@ -44,7 +45,24 @@ export default function CandidateDetail(props) {
     setCandidateData({...queryDoc, update: true})
   }
 
-  loading && fetchCandidateData();
+  function mapCurriculumData(candidateData) {
+    let curriculumData = {...candidateData};
+    curriculumData.birthDate = curriculumData.birthDate.toDate();
+    curriculumData.educationExperience.forEach(education => {
+      education.startDate = education.startDate.toDate();
+      education.endDate = education.endDate.toDate();
+    })
+    curriculumData.workExperience.forEach(work => {
+      work.startDate = work.startDate.toDate();
+      work.endDate = work.endDate.toDate();
+    })
+    setLoading(false)
+    setCandidateData({...curriculumData, update: true})
+  }
+
+  console.log(props)
+
+  loading && (props.curriculumData ? mapCurriculumData(props.curriculumData) : fetchCandidateData());
 
   function displayOptions() {
     return (

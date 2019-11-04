@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import s from './styles.scss';
 
     const AdvancedSearch = ( props ) => {
+      const {proyects} = props;
       const [activeTab, setActiveTab] = useState('1')
       //Search info
       // const [firstName, setFirstName] = useState('')
@@ -69,17 +70,17 @@ import s from './styles.scss';
 
       const submitSearch = () => {
         const request = {
-          languages: languages.length > 0 ? {value: languages,weight: 0.2} : null,
-          previousWorks: previousWorks.length > 0 ? {value: previousWorks, weight: 0.2}: null,
-          universities: universities.length > 0 ? {value: universities, weight: 0.2} : null,
-          workplaces: workplaces.length > 0 ? {value: workplaces,weight:0.2} : null,
-          titles: titles.length > 0 ? {value: titles, weight: 0.2 } : null,
-          workExperienceYears: workExperienceYears > 0 ? {value: workExperienceYears, weight: 0.2} : null,
-          age: age > 18 ? {value: age, weight: 0.2} : null,
-          cities: cities.length > 0 ? {value: cities, weight: 0.2} : null,
-          hasTitle: {value: hasTitle, weight: 0.2},
+          languages: languages.length > 0 ? {value: languages,weight: 1} : null,
+          previousWorks: previousWorks.length > 0 ? {value: previousWorks, weight: 1}: null,
+          universities: universities.length > 0 ? {value: universities, weight: 1} : null,
+          workplaces: workplaces.length > 0 ? {value: workplaces,weight:1} : null,
+          titles: titles.length > 0 ? {value: titles, weight: 1 } : null,
+          workExperienceYears: workExperienceYears > 0 ? {value: workExperienceYears, weight: 1} : null,
+          age: age > 18 ? {value: age, weight: 1} : null,
+          cities: cities.length > 0 ? {value: cities, weight: 1} : null,
+          hasTitle: {value: hasTitle, weight: 1},
           hasExperience: hasExperience,
-          searchTerm: searchTerm ? {value: searchTerm, weight: 0.2} : null,
+          searchTerm: searchTerm ? {value: searchTerm, weight: 1} : null,
         }
 
         props.onSubmit(request)
@@ -224,7 +225,7 @@ import s from './styles.scss';
 
       return (
         <Col className="ml-1 mt-2">
-          <InputGroup className="mb-2">
+{          !proyects && <InputGroup className="mb-2">
             <Input
               type="search"
               placeholder="Inserte términos de búsqueda complementarios"
@@ -235,7 +236,7 @@ import s from './styles.scss';
                 <FaSearch />
               </Button>
             </InputGroupAddon>
-          </InputGroup>
+          </InputGroup>}
           <Navigation />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="1">
@@ -490,10 +491,11 @@ import s from './styles.scss';
               <Summary />
             </Container>
           </Card>
-          <Button className="mt-2" onClick={() => submitSearch()}>
-
-            Submit
+          <Row className={proyects ? "d-flex justify-content-center": null}>
+          <Button className={`mt-2`} onClick={() => submitSearch()} color="success">
+            {proyects ? 'Agregar proyecto' : 'Submit'}
           </Button>
+          </Row>
         </Col>
       );
     }
