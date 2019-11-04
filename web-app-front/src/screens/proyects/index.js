@@ -4,14 +4,21 @@ import AdvancedSearch from '../../components/advancedSearch'
 import {Container, Row, Col, Card, Button, Input, Label, Collapse} from 'reactstrap';
 const Proyects = () => {
     const [newProyect, setNewProyect] = useState(false)
+
+    function createProyect(proyectParams) {
+        console.log(proyectParams)
+    }
     function AddProyect()  {
         return (
-          <Row className="mb-2">
+          <Row className="mb-2 mt-2">
             <Col md={12}>
-                <Label for="nombre"> Nombre del Proyecto</Label>
+                <Label for="nombre"> <b>Nombre del Proyecto </b> </Label>
                 <Input> </Input>
             </Col>
-            <AdvancedSearch proyects/>
+            <Col md={12} className="mb-2 mt-2">
+            <b> Condiciones de búsqueda </b>
+            </Col>
+            <AdvancedSearch proyects onSubmit={createProyect}/>
           </Row>
         );
     }
@@ -24,7 +31,7 @@ const Proyects = () => {
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
             <Card className="my-lg-5 my-md-4 my-3">
-            <ProyectTable proyects={[{ name: 'hola' }]} />
+            <ProyectTable proyects={[{ name: 'hola', id:'123' }]} />
             </Card>
           </Col>
         </Row>

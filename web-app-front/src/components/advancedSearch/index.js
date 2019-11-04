@@ -5,7 +5,7 @@ import classnames from 'classnames';
 
     const AdvancedSearch = ( props ) => {
       const {proyects} = props;
-      const [activeTab, setActiveTab] = useState('1')
+      const [activeTab, setActiveTab] = useState(proyects ? '0' : '1')
       //Search info
       // const [firstName, setFirstName] = useState('')
       // const [lastName, setLastName] = useState('')
