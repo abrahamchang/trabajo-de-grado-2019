@@ -76,6 +76,13 @@ class Firebase {
     getCurriculumByDiscoveryId(id) {
         return this.db.collection('Curriculums').where('discoveryId', '==', id).get();
     }
+    //If necessary, move a cloud funtion
+    createProyect(proyectInfo) {
+        return this.db.collection('Proyects').add(proyectInfo)
+    }
+    subscribeProyects(callback) {
+        return this.db.collection('Proyects').onSnapshot(callback)
+    }
 }
 
 export default new Firebase();
