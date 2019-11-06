@@ -8,6 +8,7 @@ import Dashboard from '../screens/dashboard';
 import Search from '../screens/search';
 import Proyects from '../screens/proyects';
 import CandidateDetail from '../screens/search/candidateDetail';
+import ProyectDetails from '../screens/proyects/ProyectDetails';
 const Navigator = () => (
     <Router>
         <Login path='/' />
@@ -17,7 +18,9 @@ const Navigator = () => (
         <Search path='search'>
         <CandidateDetail path=":discoveryId"/>
         </Search>
-        <Proyects path='proyects' />
+        <Proyects path='proyects'>
+        <ProyectDetails path=":proyectId"/>
+        </Proyects>
         {/* </AuthWall> */}
     </Router>
 );
