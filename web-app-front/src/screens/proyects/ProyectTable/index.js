@@ -18,7 +18,7 @@ export default function ProyectTable({proyects, navigate, ...props} ) {
             <td> {proyect.name} </td>
             <td> {proyect.totalCandidates}</td>
             <td> {Moment(proyect.startDate.toDate()).format('DD/MM/YYYY')}</td>
-            <td> <Button onClick={() => navigate(proyect.id)}> Ver proyecto </Button></td>
+            <td> <Button onClick={() => navigate(proyect.id, {state: proyect})}> Ver proyecto </Button></td>
           </tr>
         )
         )}
