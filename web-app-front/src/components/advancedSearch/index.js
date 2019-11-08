@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, InputGroup, InputGroupAddon, Input, Button, Label, ListGroup, ListGroupItem, TabContent, TabPane, NavItem, NavLink, Nav, CustomInput} from 'reactstrap';
 import { FaSearch } from 'react-icons/fa';
 import classnames from 'classnames';
+import { isNumber } from 'util';
 
+//Recieves an onSubmit prop, which determines what to do with the generated choices.
     const AdvancedSearch = ( props ) => {
-      const {proyects} = props;
+      //Recieves proyects if contained in proyect page. Recieves searchParams in proyect details.
+      const {proyects, searchParams} = props;
       const [activeTab, setActiveTab] = useState(proyects ? '0' : '1')
       //Search info
       // const [firstName, setFirstName] = useState('')
@@ -30,6 +33,22 @@ import classnames from 'classnames';
       const [hasTitle, setHasTitle] = useState(false);
       const [hasExperience, setHasExperience] = useState(false);
       const [searchTerm, setSearchTerm] = useState('');
+
+      useEffect(() => {
+        if (searchParams) {
+          console.log(searchParams)
+          if (searchParams.languages) setLanguages(searchParams.languages.value);
+          if (searchParams.previousWorks) setPreviousWorks(searchParams.previousWorks.value);
+          if (searchParams.universities) setUniversities(searchParams.universities.value);
+          if (searchParams.titles) setTitles(searchParams.titles.value);
+          if (searchParams.workplaces) setWorkplaces(searchParams.workplaces.value);
+          if (searchParams.cities) setCities(searchParams.cities.value);
+          if (searchParams.workExperienceYears) setWorkExperienceYears(searchParams.workExperienceYears.value);
+          if (searchParams.hasExperience) setHasExperience(searchParams.hasExperience);
+          if (searchParams.hasTitle) setHasTitle(searchParams.hasTitle)
+        }
+      }, [])
+
 
       function removeLanguage() {
         let newLanguages = [...languages]
@@ -74,14 +93,14 @@ import classnames from 'classnames';
           universities: universities.length > 0 ? {value: universities, weight: 1} : null,
           workplaces: workplaces.length > 0 ? {value: workplaces,weight:1} : null,
           titles: titles.length > 0 ? {value: titles, weight: 1 } : null,
-          workExperienceYears: workExperienceYears > 0 ? {value: workExperienceYears, weight: 1} : null,
+          workExperienceYears: workExperienceYears > 0 ? {value: !isNumber(workExperienceYears) ? parseInt(workExperienceYears) : workExperienceYears, weight: 1} : null,
           age: age > 18 ? {value: age, weight: 1} : null,
           cities: cities.length > 0 ? {value: cities, weight: 1} : null,
-          hasTitle: {value: hasTitle, weight: 1},
+          hasTitle: hasTitle,
           hasExperience: hasExperience,
           searchTerm: searchTerm ? {value: searchTerm, weight: 1} : null,
         }
-
+        console.log(request )
         props.onSubmit(request)
 
       }
@@ -224,7 +243,7 @@ import classnames from 'classnames';
 
       return (
         <Col className="ml-1 mt-2">
-{          !proyects && <InputGroup className="mb-2">
+{          (!proyects && !searchParams) && <InputGroup className="mb-2">
             <Input
               type="search"
               placeholder="Inserte términos de búsqueda complementarios"
@@ -236,6 +255,7 @@ import classnames from 'classnames';
               </Button>
             </InputGroupAddon>
           </InputGroup>}
+          {searchParams && <Summary />}
           <Navigation />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="1">
@@ -485,16 +505,18 @@ import classnames from 'classnames';
               </Row>
             </TabPane>
           </TabContent>
-          <Card className="mt-3">
+{    !searchParams &&       <Card className="mt-3 order-120">
             <Container>
-              <Summary />
+<Summary />
             </Container>
-          </Card>
+          </Card>}
+          {searchParams ?           <Button block color="success" className="mb-2 mt-2" onClick={() => submitSearch()}> Modificar y guardar </Button> :
           <Row className={proyects ? "d-flex justify-content-center": null}>
           <Button className={`mt-2`} onClick={() => submitSearch()} color="success">
             {proyects ? 'Agregar proyecto' : 'Submit'}
           </Button>
-          </Row>
+          </Row>}
+
         </Col>
       );
     }
