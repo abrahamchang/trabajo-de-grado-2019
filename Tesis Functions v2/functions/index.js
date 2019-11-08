@@ -12,6 +12,7 @@ admin.initializeApp({
 
 
 exports.advancedSearch = functions.https.onRequest(async (req, res) => {
+  try {
   const { languages, previousWorks, universities, titles, workExperienceYears, workplaces, age, hasTitle, hasExperience, cities, searchTerm} = await JSON.parse(req.body);
   let compoundQuery = admin.firestore().collection('Curriculums');
   if (hasExperience) {
@@ -158,7 +159,12 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', "*")
   res.set('Access-Control-Allow-Methods', 'GET, POST')
   res.status(200).send(baseResult)
-
+  }
+  catch(err) {
+    res.set('Access-Control-Allow-Origin', "*")
+    res.set('Access-Control-Allow-Methods', 'GET, POST')
+    res.status(500).send(err)
+  }
 
 
 
