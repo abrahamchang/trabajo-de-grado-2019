@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from 'react';
 
-import Firebase from '../../firebase';
-
+import firebase from 'firebase/app';
 import { Redirect } from '@reach/router';
 
+import LoadingScreen from '../../screens/loading';
+
+
 const AuthWall = ({ children }) => {
-    const [isLogged, setIsLogged] = useState(Firebase.isLogged);
-    const [hasTimedOut, setHasTimedOut] = useState(false);
-    const [timeout, _setTimeout] = useState();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const timeout = setTimeout(() => setHasTimedOut(true), 5000);
-        if (timeout === undefined) {
-            _setTimeout(timeout);
+        const unsubscribe = firebase
+            .auth()
+            .onAuthStateChanged(user => {
+                user
+                    ? setUser(user)
+                    : setUser(null);
+                setLoading(false);
+            });
+        return () => unsubscribe();
+    });
+
+    if (!loading) {
+        if (user) {
+            return children;
+        } else {
+            return <Redirect to="/login" noThrow />;
         }
-        const unsubscribe = Firebase.subscribeToAuthChange(setIsLogged);
-
-        return () => {
-            clearTimeout(timeout);
-            unsubscribe();
-        }
-    }, []);
-
-    if (isLogged === true) {
-        clearTimeout(timeout);
-        return children;
-
-    } else if (isLogged === undefined && !hasTimedOut) {
-        return null;
+    } else {
+        return <LoadingScreen />
     }
-    return <Redirect to="/" noThrow />
-};
+
+}
 
 export default AuthWall;

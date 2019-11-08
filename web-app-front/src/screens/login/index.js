@@ -10,10 +10,10 @@ const Login = ({ ...props }) => {
 
     const [isSignUp, setSignUp] = useState(false);
 
-    const [firstName, setFirstName] = useState();
-    const [lastName, setLastName] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const [loading, setLoading] = useState(false);
 
@@ -22,7 +22,7 @@ const Login = ({ ...props }) => {
         e.preventDefault();
         try {
             isSignUp ? await Firebase.register(email, password, firstName, lastName) : await Firebase.signIn(email, password);
-            props.navigate('dashboard');
+            props.navigate('../dashboard');
         } catch (e) {
             console.log(e);
             setFirstName('');
@@ -35,6 +35,7 @@ const Login = ({ ...props }) => {
 
     return (
         <section className={s.root}>
+            
             <aside className="col-sm-12 col-md-8 col-lg-6 mx-auto">
                 <Card>
                     <CardBody>

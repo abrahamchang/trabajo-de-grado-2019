@@ -29,14 +29,12 @@ const MainNavbar = () => {
                                     <Nav.Link href="/proyects" >Proyectos</Nav.Link>
                                 </Nav>
                             </Navbar.Collapse>
-                            {Firebase.isLogged && (
-                                <Nav>
-                                    <NavDropdown title={Firebase.user.displayName} id="basic-nav-dropdown">
-                                        <NavDropdown.Item>Perfil</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={() => Firebase.logout()}>Cerrar sesión</NavDropdown.Item>
-                                    </NavDropdown>
-                                </Nav>
-                            )}</>}
+                            <Nav>
+                                <NavDropdown title={Firebase.user.displayName} id="basic-nav-dropdown">
+                                    <NavDropdown.Item onClick={() => Firebase.logout()}>Cerrar sesión</NavDropdown.Item>
+                                </NavDropdown>
+                            </Nav>
+                        </>}
                     </Container>
                 </Navbar>
             )}
