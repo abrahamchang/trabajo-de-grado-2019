@@ -1,7 +1,8 @@
 import React from 'react';
+
 import { Router } from '@reach/router';
 
-//import AuthWall from '../components/auth-wall';
+import AuthWall from '../components/auth-wall';
 
 import Login from '../screens/login';
 import Dashboard from '../screens/dashboard';
@@ -11,18 +12,18 @@ import CandidateDetail from '../screens/search/candidateDetail';
 import ProjectDetails from '../screens/projects/ProjectDetails/';
 const Navigator = () => (
     <Router>
-        <Login path='/' />
+        <Login path="/login" />
 
-        {/* <AuthWall path='/'> */}
-        <Dashboard path='dashboard' />
-        <Search path='search'>
-        <CandidateDetail path=":discoveryId"/>
-        </Search>
-        <Projects path='projects'>
-        <ProjectDetails path=":projectId"/>
-        </Projects>
-        {/* </AuthWall> */}
+        <AuthWall path="/" >
+            <Dashboard path="dashboard" default />
+
+            <Search path="search" />
+            <CandidateDetail path="search/:discoveryId" />
+
+            <Projects path="projects" />
+            <ProjectDetails path="projects/:proyectId" />
+        </AuthWall>
     </Router>
 );
 
-export default Navigator;
+export default AppStack;

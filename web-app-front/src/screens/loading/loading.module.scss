@@ -1,0 +1,10 @@
+.root {
+    height: 100vh;
+    background: lightgray url("../../images/main-background-image.jpg") no-repeat center;
+    background-size: cover;
+  
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
+  

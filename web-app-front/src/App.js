@@ -1,13 +1,6 @@
 import React from 'react';
-import Router from './navigation';
+import AppStack from './navigation';
 
-import Navbar from './components/navbar';
-
-const App = () => (
-  <div>
-    <Navbar />
-    <Router />
-  </div>
-);
+const App = () => <AppStack />;
 
 export default App;
