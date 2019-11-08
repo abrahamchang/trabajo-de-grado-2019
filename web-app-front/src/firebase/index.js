@@ -80,7 +80,7 @@ class Firebase {
     createProject(projectInfo) {
         return this.db.collection('Projects').add(projectInfo)
     }
-    subscribeProject(callback) {
+    subscribeProjects(callback) {
         return this.db.collection('Projects').onSnapshot(callback)
     }
 }

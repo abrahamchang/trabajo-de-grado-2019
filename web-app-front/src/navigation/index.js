@@ -6,9 +6,9 @@ import { Router } from '@reach/router';
 import Login from '../screens/login';
 import Dashboard from '../screens/dashboard';
 import Search from '../screens/search';
-import Projects from '../screens/projects';
+import Projects from '../screens/Projects';
 import CandidateDetail from '../screens/search/candidateDetail';
-import ProjectDetails from '../screens/projects/ProjectDetails/';
+import ProjectDetails from '../screens/Projects/ProjectDetails/';
 const Navigator = () => (
     <Router>
         <Login path='/' />

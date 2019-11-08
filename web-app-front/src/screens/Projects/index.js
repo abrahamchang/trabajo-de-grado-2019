@@ -10,7 +10,7 @@ const Proyects = (props) => {
     const [projects, setProyects] = useState([])
 
     useEffect(() => {
-      let subscription = Firebase.subscribeProyects((projects) => {
+      let subscription = Firebase.subscribeProjects((projects) => {
 
         let projectArray = []
         projects.forEach(project => projectArray.push({id: project.id, ...project.data()})
@@ -22,7 +22,7 @@ const Proyects = (props) => {
       return () => { subscription() }
     }, [])
 
-    function createProyect(projectCriteria) {
+    function createProject(projectCriteria) {
         const project = {
           projectCriteria: projectCriteria,
           totalCandidates: 0,
@@ -31,7 +31,7 @@ const Proyects = (props) => {
           status: 'Abierto'
         }
         console.log(project)
-        Firebase.createProyect(project)
+        Firebase.createProject(project)
     }
 
 
@@ -71,7 +71,7 @@ const Proyects = (props) => {
                     <Col md={12} className="mb-2 mt-2">
                       <b> Condiciones de búsqueda </b>
                     </Col>
-                    <AdvancedSearch projects onSubmit={createProyect} />
+                    <AdvancedSearch projects onSubmit={createProject} />
                   </Row>
                 </Collapse>
               </Col>
