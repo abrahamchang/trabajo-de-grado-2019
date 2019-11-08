@@ -8,7 +8,7 @@ const Proyects = (props) => {
     const [newProyect, setNewProyect] = useState(false)
     const [projectName, setProyectName] = useState('')
     const [projects, setProyects] = useState([])
-
+    console.log('hola mmg')
     useEffect(() => {
       let subscription = Firebase.subscribeProjects((projects) => {
 
