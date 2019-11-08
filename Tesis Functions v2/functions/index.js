@@ -21,7 +21,6 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   let baseResult = [];
 
   queryResult.forEach(doc => {
-
     let resultItem = {
       curriculumData: doc.data(),
       id: doc.id,
@@ -85,8 +84,8 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
 
   if (workExperienceYears) {
     baseResult.forEach(arrayItem => {
-      arrayItem.curriculumData.workExperienceYears >= workExperienceYears
-      arrayItem.workExperienceYearsFound = true
+      arrayItem.curriculumData.workExperienceYears >= workExperienceYears.value ?
+      arrayItem.workExperienceYearsFound = true :  arrayItem.workExperienceYearsFound = false
     })
   }
 
