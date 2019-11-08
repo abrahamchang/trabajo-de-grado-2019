@@ -1,21 +1,45 @@
 import React, {useState, useEffect} from 'react'
-import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button} from 'reactstrap'
+import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button, Collapse} from 'reactstrap'
 import AdvancedSearch from '../../../components/advancedSearch';
 import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa';
 import {isNumber} from 'util';
+import Firebase from '../../../firebase'
 export default function ProjectDetails(props) {
-  const [candidatePool, setCandidatePool] = useState([])
-  const [potentialCandidates, setPotentialCandidates] = useState([])
-  const [rejectedCandidates, setRejectedCandidates] = useState([])
-  const [finalCandidates, setFinalCandidates] = useState([])
+  const [candidatePool, setCandidatePool] = useState([]);
+  const [potentialCandidates, setPotentialCandidates] = useState([]);
+  const [rejectedCandidates, setRejectedCandidates] = useState([]);
+  const [finalCandidates, setFinalCandidates] = useState([]);
+  const [projectModified, setProjectModified] = useState(false);
+  const [managementCollapse, setManagementCollapse] = useState(true);
+  const [addCollapse, setAddCollapse] = useState(false);
+  const [modifyCollapse, setModifyCollapse] = useState(false);
   const {name, startDateString, projectCriteria} = props.location.state
 
 
-  const test = [{id: 'a'},{id: 'b'}, {id: 'c'} ]
+  function uploadChanges() {
+    const changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
+    console.log(changes)
+    return Firebase.modifyProject(changes)
+  }
 
+  function checkAlreadyInProject(recievedArray) {
+    let candidatePoolCopy = recievedArray;
+    console.log(candidatePoolCopy)
+    potentialCandidates.forEach(potentialCandidate => {
+      candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
+    })
+    console.log(candidatePoolCopy)
+    rejectedCandidates.forEach(rejectedCandidate => {
+      candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== rejectedCandidate.id)
+    })
+    finalCandidates.forEach(potentialCandidate => {
+      candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
+    })
+    setCandidatePool(candidatePoolCopy)
+  }
   useEffect( () => {
+    //Initial data load
     async function getCandidatePool() {
-    console.log(projectCriteria)
     const url = 'https://us-central1-trabajo-de-grado-2019.cloudfunctions.net/advancedSearch'
     const postParams = {
       method: 'POST',
@@ -26,20 +50,22 @@ export default function ProjectDetails(props) {
     try {
       const searchResponse = await fetch(url, postParams)
       const searchResults = await searchResponse.json();
-      console.log(searchResults)
-      setCandidatePool(searchResults)
+      checkAlreadyInProject(searchResults)
     }
     catch(err) {
       console.log(err)
     }
   }
   getCandidatePool();
+  //End of initial data load
+  return () => uploadChanges();
   }, [])
   function moveCandidate(removalIndex, removalArray, removalArraySetter, additionArray, additionArraySetter) {
     const newRemovalArray = removalArray.filter((item, i) => i !== removalIndex);
     const newAdditionArray = [...additionArray, removalArray[removalIndex]];
     removalArraySetter(newRemovalArray);
     additionArraySetter(newAdditionArray);
+    setProjectModified(true)
   }
   function calculateMaxScore(searchEntry) {
     const values = Object.values(searchEntry);
@@ -97,7 +123,7 @@ export default function ProjectDetails(props) {
             <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> <Button color="info"> <FaInfo/> </Button></td>
-            <td> <Button color="primary" onClick={() => {moveCandidate()}}> <FaArrowRight/> </Button></td>
+            <td> <Button color="primary" onClick={() => {moveCandidate(i, candidatePool, setCandidatePool, potentialCandidates, setPotentialCandidates)}}> <FaArrowRight/> </Button></td>
           </tr>
         ))}
         </tbody>
@@ -114,10 +140,10 @@ export default function ProjectDetails(props) {
               </tr>
               </thead>
               <tbody>
-              {test.map(candidate => (
+              {potentialCandidates.map(candidate => (
           <tr key={candidate.id}>
-            <td> Hola cocacola</td>
-            <td> 10/10</td>
+ <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
+            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> <Button color="info"> <FaInfo/> </Button></td>
           </tr>
         ))}
@@ -141,14 +167,14 @@ export default function ProjectDetails(props) {
         </tr>
         </thead>
         <tbody>
-        {test.map(candidate => (
+        {potentialCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
-            <td> Hola cocacola</td>
-            <td> 10/10</td>
-            <td> Todos </td>
+ <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
+            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+            <td> {parametersFound(candidate)} </td>
             <td> <Button color="info"> Ver detalles </Button></td>
-            <td> <Button color="primary"> <FaArrowUp/> </Button></td>
-            <td> <Button> <FaArrowDown/></Button></td>
+            <td> <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> </Button></td>
+            <td> <Button> <FaArrowDown onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, rejectedCandidates, setRejectedCandidates)}/></Button></td>
           </tr>
         ))}
         </tbody>
@@ -163,16 +189,18 @@ export default function ProjectDetails(props) {
         <th> Puntuación</th>
         <th> Parámetros cumplidos</th>
         <th> Ver detalles </th>
+        <th> </th>
         <th>  </th>
         <th>  </th>
         </tr>
         </thead>
-        {test.map(candidate => (
+        {rejectedCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
-            <td> Hola cocacola</td>
-            <td> 10/10</td>
-            <td> Todos </td>
+ <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
+            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+            <td> {parametersFound(candidate)} </td>
             <td> <Button color="info"> Ver detalles </Button></td>
+            <td> <Button color="primary" onClick={() => moveCandidate(i, rejectedCandidates, setRejectedCandidates, potentialCandidates, setPotentialCandidates)}> <FaArrowUp/> </Button></td>
             <td> <Button color="danger"> Remover candidato </Button></td>
             <td></td>
           </tr>
@@ -192,13 +220,13 @@ export default function ProjectDetails(props) {
         <th>  </th>
         </tr>
         </thead>
-        {test.map(candidate => (
+        {finalCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
-            <td> Hola cocacola</td>
-            <td> 10/10</td>
-            <td> Todos </td>
+ <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
+            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+            <td> {parametersFound(candidate)} </td>
             <td> <Button color="info"> Ver detalles </Button></td>
-            <td> <Button><FaArrowDown/></Button> </td>
+            <td> <Button onClick={() => moveCandidate(i, finalCandidates, setFinalCandidates, potentialCandidates, setPotentialCandidates)}><FaArrowDown/></Button> </td>
           </tr>
         ))}
       </Table>)
@@ -223,13 +251,32 @@ export default function ProjectDetails(props) {
         <Card>
           <CardTitle className="align-self-center"> <h3> {name} </h3>  </CardTitle>
           <CardSubtitle className="align-self-center"> <h6 className="text-muted"> Fecha de apertura: {startDateString} </h6></CardSubtitle>
-          <AdvancedSearch searchParams={projectCriteria}/>
         </Card>
         </Col>
         </Row>
         <Row>
           <Col lg={12} >
+
+          <Card className="mb-2 mt-2">
+            <Button block color="info" onClick={() => setManagementCollapse(!managementCollapse)}>Administrar Proyecto </Button>
+            <Collapse isOpen={managementCollapse}>
+            <ProjectManagement/>
+            </Collapse>
+          </Card>
+
+          <Card className="mb-2 mt-2">
+            <Button block color="secondary" onClick={() => setAddCollapse(!addCollapse)}>Agregar Candidatos </Button>
+            <Collapse isOpen={addCollapse}>
             <AddToProject/>
+            </Collapse>
+          </Card>
+          <Card className="mb-2 mt-2">
+            <Button block color="secondary" onClick={() => {setModifyCollapse(!modifyCollapse)}}> Cambiar criterios del proyecto </Button>
+            <Collapse isOpen={modifyCollapse}>
+            <AdvancedSearch searchParams={projectCriteria}/>
+            </Collapse>
+          </Card>
+          <Button block onClick= {() => uploadChanges()}> Guardar Cambios</Button>
           </Col>
         </Row>
         </Container>

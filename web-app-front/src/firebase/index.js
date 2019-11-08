@@ -83,6 +83,11 @@ class Firebase {
     subscribeProjects(callback) {
         return this.db.collection('Projects').onSnapshot(callback)
     }
+    modifyProject(projectInfo) {
+        const projectInfoCopy = {...projectInfo}
+        if (projectInfoCopy.id) delete projectInfoCopy.id
+        return this.db.collection('Projects').doc(projectInfo.id).update(projectInfoCopy)
+    }
 }
 
 export default new Firebase();
