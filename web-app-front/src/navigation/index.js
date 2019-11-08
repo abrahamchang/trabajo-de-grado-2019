@@ -6,9 +6,9 @@ import { Router } from '@reach/router';
 import Login from '../screens/login';
 import Dashboard from '../screens/dashboard';
 import Search from '../screens/search';
-import Proyects from '../screens/proyects';
+import Projects from '../screens/projects';
 import CandidateDetail from '../screens/search/candidateDetail';
-import ProyectDetails from '../screens/proyects/ProyectDetails';
+import ProjectDetails from '../screens/projects/ProjectDetails/';
 const Navigator = () => (
     <Router>
         <Login path='/' />
@@ -18,9 +18,9 @@ const Navigator = () => (
         <Search path='search'>
         <CandidateDetail path=":discoveryId"/>
         </Search>
-        <Proyects path='proyects'>
-        <ProyectDetails path=":proyectId"/>
-        </Proyects>
+        <Projects path='projects'>
+        <ProjectDetails path=":projectId"/>
+        </Projects>
         {/* </AuthWall> */}
     </Router>
 );

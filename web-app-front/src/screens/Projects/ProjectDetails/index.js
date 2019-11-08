@@ -2,10 +2,10 @@ import React from 'react'
 import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button} from 'reactstrap'
 import AdvancedSearch from '../../../components/advancedSearch';
 import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa'
-export default function ProyectDetails(props) {
-  const {name, startDateString, proyectCriteria} = props.location.state
+export default function ProjectDetails(props) {
+  const {name, startDateString, ProjectCriteria} = props.location.state
   const test = [{id: 'a'},{id: 'b'}, {id: 'c'} ]
-  function AddToProyect() {
+  function AddToProject() {
     return (<Card>
       <Row className="d-flex justify-content-between">
         <Col md={6}>
@@ -106,7 +106,7 @@ export default function ProyectDetails(props) {
       </Table>)
   }
 
-  function ProyectManagement() {
+  function ProjectManagement() {
     return (<Card className="mt-2">
       <Container>
       <CardTitle> <h4> Candidatos Seleccionados </h4> </CardTitle>
@@ -125,13 +125,13 @@ export default function ProyectDetails(props) {
         <Card>
           <CardTitle className="align-self-center"> <h3> {name} </h3>  </CardTitle>
           <CardSubtitle className="align-self-center"> <h6 className="text-muted"> Fecha de apertura: {startDateString} </h6></CardSubtitle>
-          <AdvancedSearch searchParams={proyectCriteria}/>
+          <AdvancedSearch searchParams={ProjectCriteria}/>
         </Card>
         </Col>
         </Row>
         <Row>
           <Col lg={12} >
-            <AddToProyect/>
+            <AddToProject/>
           </Col>
         </Row>
         </Container>

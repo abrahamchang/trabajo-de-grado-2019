@@ -1,49 +1,49 @@
 import React, {useState, useEffect} from 'react';
-import ProyectTable from './ProyectTable';
+import ProjectTable from './ProjectTable';
 import AdvancedSearch from '../../components/advancedSearch'
 import {Container, Row, Col, Card, Button, Input, Label, Collapse} from 'reactstrap';
 import Firebase from '../../firebase';
 
 const Proyects = (props) => {
     const [newProyect, setNewProyect] = useState(false)
-    const [proyectName, setProyectName] = useState('')
-    const [proyects, setProyects] = useState([])
+    const [projectName, setProyectName] = useState('')
+    const [projects, setProyects] = useState([])
 
     useEffect(() => {
-      let subscription = Firebase.subscribeProyects((proyects) => {
+      let subscription = Firebase.subscribeProyects((projects) => {
 
-        let proyectArray = []
-        proyects.forEach(proyect => proyectArray.push({id: proyect.id, ...proyect.data()})
+        let projectArray = []
+        projects.forEach(project => projectArray.push({id: project.id, ...project.data()})
           )
-          console.log(proyectArray)
-        setProyects(proyectArray)
+          console.log(projectArray)
+        setProyects(projectArray)
       })
 
       return () => { subscription() }
     }, [])
 
-    function createProyect(proyectCriteria) {
-        const proyect = {
-          proyectCriteria: proyectCriteria,
+    function createProyect(projectCriteria) {
+        const project = {
+          projectCriteria: projectCriteria,
           totalCandidates: 0,
-          name: proyectName,
+          name: projectName,
           startDate: new Date(),
           status: 'Abierto'
         }
-        console.log(proyect)
-        Firebase.createProyect(proyect)
+        console.log(project)
+        Firebase.createProyect(project)
     }
 
 
 
 
 
-    return props.location.pathname === '/proyects' ?  (
+    return props.location.pathname === '/projects' ?  (
       <Container className="mb-2">
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
-            { proyects.length > 0 ?            <Card className="my-lg-5 my-md-4 my-3">
-              <ProyectTable proyects={proyects} navigate={props.navigate} />
+            { projects.length > 0 ?            <Card className="my-lg-5 my-md-4 my-3">
+              <ProjectTable projects={projects} navigate={props.navigate} />
             </Card> : <Card className=" mt-2 mb-2 d-flex align-items-center"> <h3 className="text-center mb-4"> No existen proyectos</h3>  <h4 className="text-muted text-center"> Presione el botón "Nuevo proyecto" para agregar uno</h4>  </Card>}
           </Col>
         </Row>
@@ -64,14 +64,14 @@ const Proyects = (props) => {
                         <b>Nombre del Proyecto </b>
                       </Label>
                       <Input
-                        value={proyectName}
+                        value={projectName}
                         onChange={e => setProyectName(e.target.value)}
                       ></Input>
                     </Col>
                     <Col md={12} className="mb-2 mt-2">
                       <b> Condiciones de búsqueda </b>
                     </Col>
-                    <AdvancedSearch proyects onSubmit={createProyect} />
+                    <AdvancedSearch projects onSubmit={createProyect} />
                   </Row>
                 </Collapse>
               </Col>

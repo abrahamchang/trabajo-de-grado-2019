@@ -77,11 +77,11 @@ class Firebase {
         return this.db.collection('Curriculums').where('discoveryId', '==', id).get();
     }
     //If necessary, move a cloud funtion
-    createProyect(proyectInfo) {
-        return this.db.collection('Proyects').add(proyectInfo)
+    createProject(projectInfo) {
+        return this.db.collection('Projects').add(projectInfo)
     }
-    subscribeProyects(callback) {
-        return this.db.collection('Proyects').onSnapshot(callback)
+    subscribeProject(callback) {
+        return this.db.collection('Projects').onSnapshot(callback)
     }
 }
 

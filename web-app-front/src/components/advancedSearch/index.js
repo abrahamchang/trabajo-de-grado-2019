@@ -6,9 +6,9 @@ import { isNumber } from 'util';
 
 //Recieves an onSubmit prop, which determines what to do with the generated choices.
     const AdvancedSearch = ( props ) => {
-      //Recieves proyects if contained in proyect page. Recieves searchParams in proyect details.
-      const {proyects, searchParams} = props;
-      const [activeTab, setActiveTab] = useState(proyects ? '0' : '1')
+      //Recieves projects if contained in projects page. Recieves searchParams in projects details.
+      const {projects, searchParams} = props;
+      const [activeTab, setActiveTab] = useState(projects ? '0' : '1')
       //Search info
       // const [firstName, setFirstName] = useState('')
       // const [lastName, setLastName] = useState('')
@@ -243,7 +243,7 @@ import { isNumber } from 'util';
 
       return (
         <Col className="ml-1 mt-2">
-{          (!proyects && !searchParams) && <InputGroup className="mb-2">
+{          (!projects && !searchParams) && <InputGroup className="mb-2">
             <Input
               type="search"
               placeholder="Inserte términos de búsqueda complementarios"
@@ -511,9 +511,9 @@ import { isNumber } from 'util';
             </Container>
           </Card>}
           {searchParams ?           <Button block color="success" className="mb-2 mt-2" onClick={() => submitSearch()}> Modificar y guardar </Button> :
-          <Row className={proyects ? "d-flex justify-content-center": null}>
+          <Row className={projects ? "d-flex justify-content-center": null}>
           <Button className={`mt-2`} onClick={() => submitSearch()} color="success">
-            {proyects ? 'Agregar proyecto' : 'Submit'}
+            {projects ? 'Agregar proyecto' : 'Submit'}
           </Button>
           </Row>}
 
