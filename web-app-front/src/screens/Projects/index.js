@@ -1,21 +1,22 @@
 import React, {useState, useEffect} from 'react';
 import ProjectTable from './ProjectTable';
 import AdvancedSearch from '../../components/advancedSearch'
-import {Container, Row, Col, Card, Button, Input, Label, Collapse} from 'reactstrap';
+import {Container, Row, Col, Card, Button, Input, Label, Collapse, Spinner} from 'reactstrap';
 import Firebase from '../../firebase';
 
 const Proyects = (props) => {
     const [newProyect, setNewProyect] = useState(false)
     const [projectName, setProyectName] = useState('')
-    const [projects, setProyects] = useState([])
+    const [projects, setProyects] = useState([]);
+    const [loading, setLoading] = useState(true)
     console.log('hola mmg')
     useEffect(() => {
       let subscription = Firebase.subscribeProjects((projects) => {
-
         let projectArray = []
         projects.forEach(project => projectArray.push({id: project.id, ...project.data()})
           )
           console.log(projectArray)
+          setLoading(false)
         setProyects(projectArray)
       })
 
@@ -42,7 +43,7 @@ const Proyects = (props) => {
       <Container className="mb-2">
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
-            { projects.length > 0 ?            <Card className="my-lg-5 my-md-4 my-3">
+            { loading ? <Card className="d-flex justify-content-center align-items-center mb-2 mt-2"> <b className="mb-2"> Cargando proyectos </b><Spinner className="mb-2"/></Card>  : projects.length > 0 ?            <Card className="my-lg-5 my-md-4 my-3">
               <ProjectTable projects={projects} navigate={props.navigate} />
             </Card> : <Card className=" mt-2 mb-2 d-flex align-items-center"> <h3 className="text-center mb-4"> No existen proyectos</h3>  <h4 className="text-muted text-center"> Presione el botón "Nuevo proyecto" para agregar uno</h4>  </Card>}
           </Col>

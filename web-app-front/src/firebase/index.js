@@ -83,6 +83,9 @@ class Firebase {
     subscribeProjects(callback) {
         return this.db.collection('Projects').onSnapshot(callback)
     }
+    getProjectDocument(id) {
+        return this.db.doc(`Projects/${id}`).get();
+    }
     modifyProject(projectInfo) {
         const projectInfoCopy = {...projectInfo}
         if (projectInfoCopy.id) delete projectInfoCopy.id

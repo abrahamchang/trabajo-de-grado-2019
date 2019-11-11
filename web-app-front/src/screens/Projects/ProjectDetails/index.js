@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button, Collapse} from 'reactstrap'
+import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button, Collapse, Spinner} from 'reactstrap'
 import AdvancedSearch from '../../../components/advancedSearch';
 import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa';
 import {isNumber} from 'util';
@@ -13,28 +13,33 @@ export default function ProjectDetails(props) {
   const [managementCollapse, setManagementCollapse] = useState(true);
   const [addCollapse, setAddCollapse] = useState(false);
   const [modifyCollapse, setModifyCollapse] = useState(false);
-  const {name, startDateString, projectCriteria} = props.location.state
+  const {name, startDateString, projectCriteria, id} = props.location.state
+  const [loading, setLoading] = useState(true)
 
 
   function uploadChanges() {
-    const changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
+    let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
+    delete changes.startDate;
+    delete changes.startDateString;
     console.log(changes)
     return Firebase.modifyProject(changes)
   }
 
-  function checkAlreadyInProject(recievedArray) {
+  function checkAlreadyInProject(recievedArray, fc, pc, rc) {
     let candidatePoolCopy = recievedArray;
-    console.log(candidatePoolCopy)
-    potentialCandidates.forEach(potentialCandidate => {
+    pc.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
     })
     console.log(candidatePoolCopy)
-    rejectedCandidates.forEach(rejectedCandidate => {
+    fc.forEach(rejectedCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== rejectedCandidate.id)
     })
-    finalCandidates.forEach(potentialCandidate => {
+    rc.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
     })
+    setPotentialCandidates(pc)
+    setFinalCandidates(fc)
+    setRejectedCandidates(rc)
     setCandidatePool(candidatePoolCopy)
   }
   useEffect( () => {
@@ -50,7 +55,11 @@ export default function ProjectDetails(props) {
     try {
       const searchResponse = await fetch(url, postParams)
       const searchResults = await searchResponse.json();
-      checkAlreadyInProject(searchResults)
+      const projectDoc = await Firebase.getProjectDocument(id)
+      setPotentialCandidates(projectDoc.data().potentialCandidates)
+      const {finalCandidates, potentialCandidates, rejectedCandidates} = projectDoc.data();
+      checkAlreadyInProject(searchResults, finalCandidates, potentialCandidates, rejectedCandidates)
+      setLoading(false)
     }
     catch(err) {
       console.log(err)
@@ -58,7 +67,7 @@ export default function ProjectDetails(props) {
   }
   getCandidatePool();
   //End of initial data load
-  return () => uploadChanges();
+  return () => {}
   }, [])
   function moveCandidate(removalIndex, removalArray, removalArraySetter, additionArray, additionArraySetter) {
     const newRemovalArray = removalArray.filter((item, i) => i !== removalIndex);
@@ -245,7 +254,7 @@ export default function ProjectDetails(props) {
     </Card>)
   }
   return (
-    <Container className="mb-2 mt-2">
+    loading ?  <Card className="d-flex justify-content-center align-items-center mb-2 mt-2"> <b className="mb-2"> Cargando proyecto </b><Spinner className="mb-2"/></Card> :  <Container className="mb-2 mt-2">
     <Row className="justify-content-center">
       <Col lg={12} className="d-flex flex-column">
         <Card>
@@ -276,7 +285,7 @@ export default function ProjectDetails(props) {
             <AdvancedSearch searchParams={projectCriteria}/>
             </Collapse>
           </Card>
-          <Button block onClick= {() => uploadChanges()}> Guardar Cambios</Button>
+          <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>
           </Col>
         </Row>
         </Container>
