@@ -3,7 +3,7 @@ import ProjectTable from './ProjectTable';
 import AdvancedSearch from '../../components/advancedSearch'
 import {Container, Row, Col, Card, Button, Input, Label, Collapse, Spinner} from 'reactstrap';
 import Firebase from '../../firebase';
-
+import Navbar from '../../components/navbar';
 const Proyects = (props) => {
     const [newProyect, setNewProyect] = useState(false)
     const [projectName, setProyectName] = useState('')
@@ -40,6 +40,8 @@ const Proyects = (props) => {
 
 
     return props.location.pathname === '/projects' ?  (
+      <>
+      <Navbar/>
       <Container className="mb-2">
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
@@ -80,6 +82,7 @@ const Proyects = (props) => {
           </Col>
         </Row>
       </Container>
+      </>
     ) : props.children;
 };
 

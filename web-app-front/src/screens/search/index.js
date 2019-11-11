@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, CardBody, CardTitle, InputGroup, InputGroupA
 import { FaSearch } from 'react-icons/fa';
 import AdvancedSearch from '../../components/advancedSearch';
 import AdvancedResultsDisplay from './advancedResultsDisplay';
+import Navbar from '../../components/navbar';
 const Search = (props) => {
 
     const [searchResult, setSearchResult] = useState([]);
@@ -123,6 +124,7 @@ const Search = (props) => {
 
     return (
       <div>
+        <Navbar/>
         {props.location.pathname === '/search' ? (
           <Container>
             <Row className="justify-content-center">

@@ -4,6 +4,7 @@ import AdvancedSearch from '../../../components/advancedSearch';
 import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa';
 import {isNumber} from 'util';
 import Firebase from '../../../firebase'
+import Navbar from '../../../components/navbar';
 export default function ProjectDetails(props) {
   const [candidatePool, setCandidatePool] = useState([]);
   const [potentialCandidates, setPotentialCandidates] = useState([]);
@@ -254,7 +255,8 @@ export default function ProjectDetails(props) {
     </Card>)
   }
   return (
-    loading ?  <Card className="d-flex justify-content-center align-items-center mb-2 mt-2"> <b className="mb-2"> Cargando proyecto </b><Spinner className="mb-2"/></Card> :  <Container className="mb-2 mt-2">
+     <> <Navbar/>
+     {loading ?  <Container> <Card md={8} className="d-flex justify-content-center align-items-center mb-2 mt-2"> <b className="mb-2"> Cargando proyecto </b><Spinner className="mb-2"/></Card> </Container> :  <Container className="mb-2 mt-2">
     <Row className="justify-content-center">
       <Col lg={12} className="d-flex flex-column">
         <Card>
@@ -288,6 +290,7 @@ export default function ProjectDetails(props) {
           <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>
           </Col>
         </Row>
-        </Container>
+        </Container>}
+        </>
   )
 }
