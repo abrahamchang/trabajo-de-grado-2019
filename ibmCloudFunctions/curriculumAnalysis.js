@@ -104,10 +104,13 @@ async function analyzeText(text) {
           limit: 5
         },
         entities: {
-          model: '6e7b496f-a4f5-4ccc-b4f3-a7ba9dd66f39'
+          model: '6e7b496f-a4f5-4ccc-b4f3-a7ba9dd66f39',
+          mentions: true,
+          limit: 100
         },
         relations: {
-          model: '6e7b496f-a4f5-4ccc-b4f3-a7ba9dd66f39'
+          model: '6e7b496f-a4f5-4ccc-b4f3-a7ba9dd66f39',
+          limit: 100
         }
       }
     }

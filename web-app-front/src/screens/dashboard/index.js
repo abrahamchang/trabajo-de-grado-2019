@@ -137,7 +137,7 @@ const Dashboard = () => {
             result.email = text;
           }
           else if (type === 'telephone') {
-            result.telephones.push(text);
+            result.telephones.push(text.replace(/[^\d]/g, ''));
           }
           else if (type === 'municipality' && !result.municipality) {
             result.municipality = text;
@@ -148,15 +148,16 @@ const Dashboard = () => {
           else if (type === 'state' && !result.state) {
             result.state = text;
           }
-          //TODO: Add a check so date isn't so soon.
-          else if (type === 'date' && !result.bithDate) {
+          else if (type === 'date') {
             let momentDate = Moment(text, 'DD/MM/YYYY')
             if (momentDate.isValid()) {
-              result.birthDate = momentDate.toDate();
+              result.birthDate = !result.birthDate ? momentDate.toDate() : momentDate.isBefore(result.birthDate) ? momentDate.toDate() : result.birthDate;
             }
             else {
               momentDate = Moment(text, 'DD/MM/YY');
-              result.birthDate = momentDate.isValid() ? momentDate : new Date(text)
+              if (momentDate.isValid()){
+              result.birthDate = !result.birthDate ? momentDate.toDate() : momentDate.isBefore(result.birthDate) ? momentDate.toDate() : result.birthDate;
+              }
             }
           }
           //Skills data
