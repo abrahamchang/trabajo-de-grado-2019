@@ -100,6 +100,7 @@ const Dashboard = () => {
         lastName: '',
         email: '',
         birthDate: '',
+        telephones: [],
         //Residence data
         municipality: '',
         city: '',
@@ -135,6 +136,9 @@ const Dashboard = () => {
           else if (type === 'email' && !result.email) {
             result.email = text;
           }
+          else if (type === 'telephone') {
+            result.telephones.push(text);
+          }
           else if (type === 'municipality' && !result.municipality) {
             result.municipality = text;
           }
@@ -157,6 +161,7 @@ const Dashboard = () => {
           }
           //Skills data
           else if (type === 'languague') {
+            console.log('Found a languague')
             result.languages.push(text)
           }
           else if (type === 'skill') {
@@ -214,7 +219,6 @@ const Dashboard = () => {
               const foundWorkPosition = relationArguments[1];
               const workplaceTextLocation = relationArguments[0].location;
               if (workplaceTextLocation[0] === workplaceTextStart) {
-                console.log('Entered here')
                 workPosition = foundWorkPosition.text;
                 const workPositionTextStart = foundWorkPosition.location[0];
                 //const workPositionTextEnd = foundWorkPosition.location[1];
@@ -246,6 +250,10 @@ const Dashboard = () => {
       result.keywords = keywords.map(keyword => keyword.text);
       result.concepts = concepts.map(concept => concept.text);
       result.categories = categories.map(category => category.label);
+      //Duplicate removal
+      result.languages = [...new Set(result.languages)]
+      result.skills = [...new Set(result.skills)]
+      //End of duplicate removal
       extractedData.push(result)
     })
     console.log(extractedData)
@@ -259,7 +267,6 @@ const Dashboard = () => {
   return (
     <div className={s.root}>
       <Navbar />
-      {console.log(firebase.auth().currentUser)}
       <Container>
         <Row className="justify-content-center">
           <Col lg={8} className="d-flex flex-column">

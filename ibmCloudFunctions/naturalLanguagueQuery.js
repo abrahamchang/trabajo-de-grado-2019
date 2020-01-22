@@ -3,7 +3,7 @@ const DiscoveryV1 = require('ibm-watson/discovery/v1');
 
 const discovery = new DiscoveryV1({
   version: '2019-04-30',
-  iam_apikey: "wxtMkAhLgP7Jhq1TIWcHT6unOWfFYxwxOvY-udGfdLk8",
+  iam_apikey: "xkDn4vGf9MhUApOdHGnrzxRWIgWRyOKWh2T8vumzcXdo",
   url: 'https://gateway.watsonplatform.net/discovery/api',
 });
 

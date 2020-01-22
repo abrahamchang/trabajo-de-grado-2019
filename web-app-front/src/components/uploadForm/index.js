@@ -23,8 +23,9 @@ momentLocalizer()
      const [age, setAge] = useState('')
     useEffect(() => {
 
-      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, language: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray } = props
+      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languages: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray } = props;
 
+      console.log(props)
       setFirstName(firstNameExtracted ? firstNameExtracted : '')
       setLastName(lastNameExtracted ? lastNameExtracted : '')
       setEmail(emailExtracted ? emailExtracted : '')
@@ -36,7 +37,6 @@ momentLocalizer()
       setTelephones(telephonesArray ? telephonesArray : ['']);
       setWorkExperience(workArray ? workArray : ['']);
       setLanguages(languagesArray ? languagesArray : ['']);
-
     }, [props.update])
 
     function removeLanguage() {
