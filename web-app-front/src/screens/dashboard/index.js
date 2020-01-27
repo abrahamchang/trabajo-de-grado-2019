@@ -162,8 +162,11 @@ const Dashboard = () => {
             result.email = text;
           }
           else if (type === 'telephone') {
-            const formattedTelephone = text.replace(/[^\d]/g, '');
-            if (formattedTelephone.length >= 11) result.telephones.push(formattedTelephone);
+            const telephones = text.split('/');
+            telephones.forEach(telephone => {
+              const formattedTelephone = telephone.replace(/[^\d]/g, '');
+              if (formattedTelephone.length >= 11) result.telephones.push(formattedTelephone);
+            })
           }
           else if (type === 'municipality' && !result.municipality) {
             result.municipality = text;

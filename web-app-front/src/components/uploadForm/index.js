@@ -38,7 +38,7 @@ momentLocalizer()
       setTelephones(telephonesArray ? telephonesArray : ['']);
       setWorkExperience(workArray ? workArray : ['']);
       setLanguages(languagesArray ? languagesArray : ['']);
-      setAge(ageExtracted ? ageExtracted : null);
+      setAge(ageExtracted ? ageExtracted : birthDateExtracted ? calculateAge(birthDateExtracted) : null);
       setAgeFlag(ageFlagExtracted ? ageFlagExtracted : false);
     }, [props.update])
 
@@ -115,6 +115,7 @@ momentLocalizer()
       props.onSubmit(curriculumData)
     }
     function calculateAge(newBirthDate) {
+      console.log(newBirthDate)
       const today = Moment();
       const difference = today.diff(newBirthDate, 'years')
       setAgeFlag(false)
@@ -414,7 +415,7 @@ momentLocalizer()
                           <Col md={6}>
                             <FormGroup>
                               <Label for="university title">
-                                Título Universitario
+                                Título
                               </Label>
                               <Input
                                 type="text"
