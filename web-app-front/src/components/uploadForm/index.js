@@ -21,9 +21,10 @@ momentLocalizer()
      const [workExperience, setWorkExperience] = useState(['']);
      const [languages, setLanguages] = useState(['']);
      const [age, setAge] = useState('')
+     const [ageFlag, setAgeFlag] = useState(false)
     useEffect(() => {
 
-      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languages: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray } = props;
+      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languages: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray,  age: ageExtracted, ageFlag : ageFlagExtracted } = props;
 
       console.log(props)
       setFirstName(firstNameExtracted ? firstNameExtracted : '')
@@ -37,6 +38,8 @@ momentLocalizer()
       setTelephones(telephonesArray ? telephonesArray : ['']);
       setWorkExperience(workArray ? workArray : ['']);
       setLanguages(languagesArray ? languagesArray : ['']);
+      setAge(ageExtracted ? ageExtracted : null);
+      setAgeFlag(ageFlagExtracted ? ageFlagExtracted : false);
     }, [props.update])
 
     function removeLanguage() {
@@ -87,6 +90,8 @@ momentLocalizer()
       setEducationExperience(educationExperienceCopy)
     }
 
+
+
     function uploadForm() {
       const curriculumData = {
         firstName: firstName,
@@ -103,15 +108,16 @@ momentLocalizer()
         concepts: props.concepts,
         keywords: props.keywords,
         categories: props.categories,
-        age: age ? parseInt(age) : calculateAge(),
+        age: age ? parseInt(age) : calculateAge(birthDate),
         workExperienceYears: calculateWorkingYears()
       }
       console.log(curriculumData)
       props.onSubmit(curriculumData)
     }
-    function calculateAge() {
+    function calculateAge(newBirthDate) {
       const today = Moment();
-      const difference = today.diff(birthDate, 'years')
+      const difference = today.diff(newBirthDate, 'years')
+      setAgeFlag(false)
       return difference;
     }
 
@@ -185,11 +191,12 @@ momentLocalizer()
                           value={birthDate ? birthDate : null}
                           onChange={value => {
                             setBirthDate(value);
+                            setAge(calculateAge(value));
                           }}
                           time={false}
                           disabled={props.readOnly}
                         />
-                        <sub> hola </sub>
+                        {props.ageFlag ? <sub> *Extraído mediante edad. Utilizando primer día de ese año. </sub> : null}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -235,6 +242,11 @@ momentLocalizer()
                           disabled={props.readOnly}
                         />
                       </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md ={12}>
+                    <p> Edad: <b> {age} años</b> {ageFlag ? '(Extraído del documento)' : ''} </p>
                     </Col>
                   </Row>
                   <CardTitle>
@@ -375,7 +387,7 @@ momentLocalizer()
                           </Col>
                         </Row>
                         <Row form>
-                          <Col md={4}>
+                          <Col md={6}>
                             <FormGroup>
                               <Label for="institution">
                                 Institución Educativa
@@ -399,7 +411,7 @@ momentLocalizer()
                               />
                             </FormGroup>
                           </Col>
-                          <Col md={4}>
+                          <Col md={6}>
                             <FormGroup>
                               <Label for="university title">
                                 Título Universitario
@@ -423,7 +435,7 @@ momentLocalizer()
                               />
                             </FormGroup>
                           </Col>
-                          <Col md={4}>
+                          {/* <Col md={4}>
                             <FormGroup>
                               <Label for="educationGrade">
                                 Grado de educación (Opcional)
@@ -446,7 +458,7 @@ momentLocalizer()
                                 disabled={props.readOnly}
                               />
                             </FormGroup>
-                          </Col>
+                          </Col> */}
                         </Row>
                       </div>
                     ))}

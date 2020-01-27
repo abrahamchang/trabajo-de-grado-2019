@@ -148,6 +148,8 @@ const Dashboard = () => {
             let ageDate = Moment(currentDate.getFullYear() - age, 'YYYY')
             if (ageDate.isBefore(result.birthDate)) {
               if (!ageDate.isSame(result.birthDate, 'year')) {
+                console.log('Extracted birthDate through age')
+                result.ageFlag = true;
                 result.birthDate = ageDate.toDate();
               }
             }
@@ -272,8 +274,8 @@ const Dashboard = () => {
         }
       })
       const { keywords, concepts, categories } = curriculum.analysisResult;
-      result.keywords = keywords.map(keyword => keyword.text);
-      result.concepts = concepts.map(concept => concept.text);
+      result.keywords = keywords ? keywords.map(keyword => keyword.text) : null;
+      result.concepts = concepts ? concepts.map(concept => concept.text) : null;
       result.categories = categories ? categories.map(category => category.label) : null;
       //Duplicate removal
       result.languages = [...new Set(result.languages)]
