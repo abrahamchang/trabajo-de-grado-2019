@@ -196,7 +196,7 @@ momentLocalizer()
                           time={false}
                           disabled={props.readOnly}
                         />
-                        {props.ageFlag ? <sub> *Extraído mediante edad. Utilizando primer día de ese año. </sub> : null}
+                        {ageFlag ? <sub> *Extraído mediante edad. Utilizando primer día de ese año. </sub> : null}
                       </FormGroup>
                     </Col>
                   </Row>
