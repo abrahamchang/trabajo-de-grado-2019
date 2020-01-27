@@ -127,8 +127,31 @@ const Dashboard = () => {
           if (type === 'personFirstName' && !result.firstName) {
             result.firstName = text
           }
+          else if (type === 'fullName' && !result.firstName && !result.lastName) {
+            const wordArray = text.split(" ")
+            if (wordArray.size === 4) {
+              result.firstName = wordArray[0] + wordArray[1]
+              result.lastName = wordArray[2] + wordArray[3]
+            }
+            else if (wordArray.size == 3) {
+              result.firstName = wordArray[0] + wordArray[1]
+              result.lastName = wordArray[2]
+            }
+            else {
+              result.firstName = wordArray[0]
+              result.lastName = wordArray[1]
+            }
+          }
           else if (type === 'age') {
-            result.age = text;
+            const age =  parseInt(text.replace( /^\D+/g, ''), 10);
+            const currentDate = new Date();
+            let ageDate = Moment(currentDate.getFullYear() - age, 'YYYY')
+            if (ageDate.isBefore(result.birthDate)) {
+              if (!ageDate.isSame(result.birthDate, 'year')) {
+                result.birthDate = ageDate.toDate();
+              }
+            }
+            result.age = age;
           }
           else if (type === 'personLastName' && !result.lastName) {
             result.lastName = text;
@@ -137,7 +160,8 @@ const Dashboard = () => {
             result.email = text;
           }
           else if (type === 'telephone') {
-            result.telephones.push(text.replace(/[^\d]/g, ''));
+            const formattedTelephone = text.replace(/[^\d]/g, '');
+            if (formattedTelephone.length >= 11) result.telephones.push(formattedTelephone);
           }
           else if (type === 'municipality' && !result.municipality) {
             result.municipality = text;
@@ -162,7 +186,7 @@ const Dashboard = () => {
           }
           //Skills data
           else if (type === 'languague') {
-            console.log('Found a languague')
+            console.log('Found a language')
             result.languages.push(text)
           }
           else if (type === 'skill') {
@@ -250,7 +274,7 @@ const Dashboard = () => {
       const { keywords, concepts, categories } = curriculum.analysisResult;
       result.keywords = keywords.map(keyword => keyword.text);
       result.concepts = concepts.map(concept => concept.text);
-      result.categories = categories.map(category => category.label);
+      result.categories = categories ? categories.map(category => category.label) : null;
       //Duplicate removal
       result.languages = [...new Set(result.languages)]
       result.skills = [...new Set(result.skills)]

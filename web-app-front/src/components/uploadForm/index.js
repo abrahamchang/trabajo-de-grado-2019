@@ -189,6 +189,7 @@ momentLocalizer()
                           time={false}
                           disabled={props.readOnly}
                         />
+                        <sub> hola </sub>
                       </FormGroup>
                     </Col>
                   </Row>
