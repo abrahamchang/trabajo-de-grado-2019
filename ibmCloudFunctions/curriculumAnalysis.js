@@ -161,7 +161,7 @@ async function main(params) {
           })
         }
         finalString = finalString.replace(/\s+/g,' ').trim();
-
+        finalString = finalString.replace(/undefined/g, '');
         //Text analysis.
         const analysisResult = await analyzeText(finalString);
         //Upload to Watson Discovery
