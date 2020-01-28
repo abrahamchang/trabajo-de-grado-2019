@@ -488,6 +488,7 @@ momentLocalizer()
                   <CardTitle>
                     <b> Información Vocacional </b>
                   </CardTitle>
+                  {console.log(workExperience)}
                   {workExperience.map((work, i) => (
                     <div key={`${work.workplace}-i`}>
                       <Row form>

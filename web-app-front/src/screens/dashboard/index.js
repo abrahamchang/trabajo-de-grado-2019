@@ -75,14 +75,15 @@ const Dashboard = () => {
     }
     try {
       setLoadingDiscovery(true);
-      const uploadResponse = await fetch(url, postParams);
-      const uploadJson = await uploadResponse.json();
-      console.log(uploadJson);
+      //const uploadResponse = await fetch(url, postParams);
+      //const uploadJson = await uploadResponse.json();
+      //console.log(uploadJson);
       setLoadingDiscovery(false);
       setLoadingUpload(true);
-      const curriculumDocument = { ...curriculumData, discoveryId: uploadJson.document_id, storageRef: `/resumes/${files[0].name}` }
+      const curriculumDocument = { ...curriculumData, discoveryId: 'uploadJson.document_id', storageRef: `/resumes/${files[0].name}` }
+      console.log(curriculumDocument)
       await Firebase.uploadCurriculum(curriculumDocument);
-      uploadDocumentStorage();
+      //uploadDocumentStorage();
       setLoadingUpload(false);
 
     }
@@ -227,14 +228,20 @@ const Dashboard = () => {
                 studyDates = relation.dates;
               }
             }
+            else if (type === 'studied_until') {
+              if (location[0] === institutionTextStart) {
+                studyRange = relationArguments[1].text;
+                studyDates = ['', Moment(studyRange, 'YYYY')]
+              }
+            }
           })
           //Create object and push
           const educationExperience = {
             educationInstitution: educationInstitution,
             educationTitle: educationTitle,
             studyRange: studyRange,
-            startDate: studyDates ? new Date(studyDates[0]) : null,
-            endDate: studyDates ? new Date(studyDates[1]) : null
+            startDate: studyDates[0] ? new Date(studyDates[0]) : null,
+            endDate: studyDates[1] ? new Date(studyDates[1]) : null
           }
           result.educationExperience.push(educationExperience)
         }
@@ -245,7 +252,7 @@ const Dashboard = () => {
           //const workplaceTextEnd = relationArguments[1].location[1];
           const workDates = relation.dates;
           let workPosition = null;
-          let workSpecialization = null;
+          let workSpecialization = '';
           //Try to find work position
           relations.forEach(relation => {
             const { type, arguments: relationArguments } = relation
@@ -274,9 +281,11 @@ const Dashboard = () => {
             workRange: workRange,
             workPosition: workPosition,
             workSpecialization: workSpecialization,
-            startDate: workDates ? new Date(workDates[0]) : null,
-            endDate: workDates ? new Date(workDates[1]) : null
+            startDate: workDates[0] ? new Date(workDates[0]) : null,
+            endDate: workDates[1] ? new Date(workDates[1]) : null
           }
+          console.log(workDates)
+          console.log(workExperience)
           result.workExperience.push(workExperience)
         }
       })
