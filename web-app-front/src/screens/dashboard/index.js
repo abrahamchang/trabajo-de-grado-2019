@@ -133,7 +133,7 @@ const Dashboard = () => {
               result.firstName = wordArray[0] + wordArray[1]
               result.lastName = wordArray[2] + wordArray[3]
             }
-            else if (wordArray.size == 3) {
+            else if (wordArray.size === 3) {
               result.firstName = wordArray[0] + wordArray[1]
               result.lastName = wordArray[2]
             }
@@ -146,7 +146,11 @@ const Dashboard = () => {
             const age =  parseInt(text.replace( /^\D+/g, ''), 10);
             const currentDate = new Date();
             let ageDate = Moment(currentDate.getFullYear() - age, 'YYYY')
-            if (ageDate.isBefore(result.birthDate)) {
+            console.log(age)
+            console.log(ageDate)
+            console.log(result.birthDate)
+            console.log(ageDate.isSame(result.birthDate, 'year'))
+            if (ageDate.isBefore(result.birthDate) || !result.birthDate) {
               if (!ageDate.isSame(result.birthDate, 'year')) {
                 console.log('Extracted birthDate through age')
                 result.ageFlag = true;
