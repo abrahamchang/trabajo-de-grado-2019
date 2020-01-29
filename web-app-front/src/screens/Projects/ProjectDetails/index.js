@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button, Collapse, Spinner} from 'reactstrap'
 import AdvancedSearch from '../../../components/advancedSearch';
 import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa';
+import {TiDocumentText} from 'react-icons/ti'
 import {isNumber} from 'util';
 import Firebase from '../../../firebase'
 import Navbar from '../../../components/navbar';
@@ -132,7 +133,7 @@ export default function ProjectDetails(props) {
           <tr key={candidate.id}>
             <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
-            <td> <Button color="info"> <FaInfo/> </Button></td>
+            <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> <FaInfo/> </Button></td>
             <td> <Button color="primary" onClick={() => {moveCandidate(i, candidatePool, setCandidatePool, potentialCandidates, setPotentialCandidates)}}> <FaArrowRight/> </Button></td>
           </tr>
         ))}
@@ -171,7 +172,7 @@ export default function ProjectDetails(props) {
         <th> Nombre Completo </th>
         <th> Puntuación</th>
         <th> Parámetros cumplidos</th>
-        <th> Ver detalles </th>
+        <th> Detalles </th>
         <th>  </th>
         <th>  </th>
         </tr>
@@ -182,9 +183,9 @@ export default function ProjectDetails(props) {
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
-            <td> <Button color="info"> Ver detalles </Button></td>
-            <td> <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> </Button></td>
-            <td> <Button> <FaArrowDown onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, rejectedCandidates, setRejectedCandidates)}/></Button></td>
+            <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> <TiDocumentText size={24}/> </Button></td>
+            <td> <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> Seleccionar </Button></td>
+            <td> <Button onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, rejectedCandidates, setRejectedCandidates)}> <FaArrowDown /> Rechazar </Button></td>
           </tr>
         ))}
         </tbody>
@@ -209,7 +210,7 @@ export default function ProjectDetails(props) {
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
-            <td> <Button color="info"> Ver detalles </Button></td>
+            <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
             <td> <Button color="primary" onClick={() => moveCandidate(i, rejectedCandidates, setRejectedCandidates, potentialCandidates, setPotentialCandidates)}> <FaArrowUp/> </Button></td>
             <td> <Button color="danger"> Remover candidato </Button></td>
             <td></td>
@@ -235,7 +236,7 @@ export default function ProjectDetails(props) {
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
-            <td> <Button color="info"> Ver detalles </Button></td>
+            <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
             <td> <Button onClick={() => moveCandidate(i, finalCandidates, setFinalCandidates, potentialCandidates, setPotentialCandidates)}><FaArrowDown/></Button> </td>
           </tr>
         ))}
@@ -288,6 +289,7 @@ export default function ProjectDetails(props) {
             </Collapse>
           </Card>
           <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>
+          <Button block onClick= {() => {}} color="danger"> Cerrar Proyecto </Button>
           </Col>
         </Row>
         </Container>}

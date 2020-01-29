@@ -22,6 +22,7 @@ const AppStack = () => (
 
             <Projects path="projects" />
             <ProjectDetails path="projects/:proyectId" />
+            <CandidateDetail path="projects/:proyectId/:candidateId"/>
         </AuthWall>
     </Router>
 );

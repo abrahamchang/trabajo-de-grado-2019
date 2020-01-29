@@ -29,7 +29,8 @@ export default function CandidateDetail(props) {
 
   async function fetchCandidateData() {
     console.log(props)
-    const queryResult = await Firebase.getCurriculumByDiscoveryId(props.discoveryId);
+    const queryId = props.discoveryId ? props.discoveryId : props.candidateId;
+    const queryResult = await Firebase.getCurriculumByDiscoveryId(queryId);
     let queryDoc = {...queryResult.docs[0].data()};
     queryDoc.birthDate = queryDoc.birthDate.toDate();
     queryDoc.educationExperience.forEach(education => {
@@ -69,7 +70,7 @@ export default function CandidateDetail(props) {
         <Col className="d-flex flex-column" lg={8}>
             <Row className="justify-content-around">
             <Button className="mb-1 mt-1" color="success" onClick={downloadDocument}> Descargar Curriculum </Button>
-            <Button className="mb-1 mt-1" color="info" disabled> Agregar a Proyecto (En progreso) </Button>
+            {/* <Button className="mb-1 mt-1" color="info" disabled> Agregar a Proyecto (En progreso) </Button> */}
             </Row>
         </Col>
       </Row>
