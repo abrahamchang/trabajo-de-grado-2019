@@ -33,12 +33,12 @@ export default function CandidateDetail(props) {
     let queryDoc = {...queryResult.docs[0].data()};
     queryDoc.birthDate = queryDoc.birthDate.toDate();
     queryDoc.educationExperience.forEach(education => {
-      education.startDate = education.startDate.toDate();
-      education.endDate = education.endDate.toDate();
+      education.startDate =  education.startDate ? education.startDate.toDate() : '';
+      education.endDate = education.endDate ? education.endDate.toDate() : '';
     })
     queryDoc.workExperience.forEach(work => {
-      work.startDate = work.startDate.toDate();
-      work.endDate = work.endDate.toDate();
+      work.startDate = work.startDate ? work.startDate.toDate() : '';
+      work.endDate = work.endDate ?work.endDate.toDate() : '';
     })
     setLoading(false)
     setCandidateData({...queryDoc, update: true})
