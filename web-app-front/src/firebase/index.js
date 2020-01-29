@@ -80,8 +80,11 @@ class Firebase {
     createProject(projectInfo) {
         return this.db.collection('Projects').add(projectInfo)
     }
-    subscribeProjects(callback) {
-        return this.db.collection('Projects').onSnapshot(callback)
+    subscribeActiveProjects(callback) {
+        return this.db.collection('Projects').where('status', '==', 'Abierto').onSnapshot(callback)
+    }
+    getClosedProjects() {
+        return this.db.collection('Projects').where('status', '==', 'Clausurado').get();
     }
     getProjectDocument(id) {
         return this.db.doc(`Projects/${id}`).get();
