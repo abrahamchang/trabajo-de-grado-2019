@@ -9,7 +9,6 @@ const Proyects = (props) => {
     const [projectName, setProyectName] = useState('')
     const [projects, setProyects] = useState([]);
     const [loading, setLoading] = useState(true)
-    console.log('hola mmg')
     useEffect(() => {
       let subscription = Firebase.subscribeProjects((projects) => {
         let projectArray = []

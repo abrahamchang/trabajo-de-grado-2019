@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react'
 import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button, Collapse, Spinner} from 'reactstrap'
+import {Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import AdvancedSearch from '../../../components/advancedSearch';
 import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa';
 import {TiDocumentText} from 'react-icons/ti'
 import {isNumber} from 'util';
 import Firebase from '../../../firebase'
 import Navbar from '../../../components/navbar';
+
+
 export default function ProjectDetails(props) {
+
   const [candidatePool, setCandidatePool] = useState([]);
   const [potentialCandidates, setPotentialCandidates] = useState([]);
   const [rejectedCandidates, setRejectedCandidates] = useState([]);
@@ -18,6 +22,8 @@ export default function ProjectDetails(props) {
   const {name, startDateString, projectCriteria, id} = props.location.state
   const [loading, setLoading] = useState(true)
 
+  const [modal, setModal] = useState(false);
+  const [loadingClosure, setLoadingClosure] = useState(false)
 
   function uploadChanges() {
     let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
@@ -71,6 +77,21 @@ export default function ProjectDetails(props) {
   //End of initial data load
   return () => {}
   }, [])
+  async function closeProject(status) {
+    let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
+    delete changes.startDate;
+    delete changes.startDateString;
+    setLoadingClosure(true)
+    try {
+    await Firebase.closeProject(changes, status);
+    props.navigate('../')
+    }
+    catch(err) {
+      console.log(err)
+    }
+
+  }
+
   function moveCandidate(removalIndex, removalArray, removalArraySetter, additionArray, additionArraySetter) {
     const newRemovalArray = removalArray.filter((item, i) => i !== removalIndex);
     const newAdditionArray = [...additionArray, removalArray[removalIndex]];
@@ -113,6 +134,31 @@ export default function ProjectDetails(props) {
 
     return parametersFound.replace(/.$/,".")
   }
+
+  function CloseProjectModal() {
+    const toggle = () => setModal(!modal);
+
+    return (
+      <div>
+        <Modal isOpen={modal} toggle={toggle} >
+          <ModalHeader toggle={toggle}>Culminar Proyecto</ModalHeader>
+          {console.log(finalCandidates)}
+          <ModalBody>
+            {!loadingClosure && (finalCandidates.length > 0 ? `¿Desea culminar este proceso de selección? Los candidatos seleccionados: ${finalCandidates.map(candidate => ` ${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`)} seran almacenados como escogidos para el cargo.` : `¿Está seguro que desea culminar el proyecto sin escoger ningún candidato? El proyecto sera almacenado como "Clausurado".`) }
+            {loadingClosure && <Container className="d-flex flex-column justify-content-center align-items-center mb-2 mt-2"> <Spinner/> Cerrando Proyecto </Container>}
+          </ModalBody>
+          <ModalFooter>
+      {     !loadingClosure && <>
+            <Button color="primary" onClick={() => closeProject(finalCandidates.length > 0 ? 'Culminado' : 'Clausurado')}>Culminar proyecto</Button>
+            <Button color="secondary" onClick={toggle}>Cancelar</Button>
+            </>
+            }
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
+
 
   function AddToProject() {
     return (<Card>
@@ -289,10 +335,11 @@ export default function ProjectDetails(props) {
             </Collapse>
           </Card>
           <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>
-          <Button block onClick= {() => {}} color="danger"> Cerrar Proyecto </Button>
+          <Button block onClick= {() => setModal(!modal)} color="danger"> Cerrar Proyecto </Button>
           </Col>
         </Row>
         </Container>}
+        <CloseProjectModal/>
         </>
   )
 }

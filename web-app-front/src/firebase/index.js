@@ -91,6 +91,12 @@ class Firebase {
         if (projectInfoCopy.id) delete projectInfoCopy.id
         return this.db.collection('Projects').doc(projectInfo.id).update(projectInfoCopy)
     }
+    closeProject(projectInfo, status) {
+        console.log(status)
+        const projectInfoCopy = {...projectInfo, endDate: new Date(), status: status}
+        if (projectInfoCopy.id) delete projectInfoCopy.id
+        return this.db.collection('Projects').doc(projectInfo.id).update(projectInfoCopy)
+    }
 }
 
 export default new Firebase();
