@@ -7,7 +7,6 @@ import Navbar from '../../components/navbar';
 import FileUploadIcon from './icons/FileUpload.svg';
 
 import Firebase from '../../firebase';
-import firebase from 'firebase/app';
 
 import Resume from './resume';
 
@@ -75,15 +74,15 @@ const Dashboard = () => {
     }
     try {
       setLoadingDiscovery(true);
-      //const uploadResponse = await fetch(url, postParams);
-      //const uploadJson = await uploadResponse.json();
-      //console.log(uploadJson);
+      const uploadResponse = await fetch(url, postParams);
+      const uploadJson = await uploadResponse.json();
+      console.log(uploadJson);
       setLoadingDiscovery(false);
       setLoadingUpload(true);
-      const curriculumDocument = { ...curriculumData, discoveryId: 'uploadJson.document_id', storageRef: `/resumes/${files[0].name}` }
+      const curriculumDocument = { ...curriculumData, discoveryId: uploadJson.document_id, storageRef: `/resumes/${files[0].name}` }
       console.log(curriculumDocument)
       await Firebase.uploadCurriculum(curriculumDocument);
-      //uploadDocumentStorage();
+      uploadDocumentStorage();
       setLoadingUpload(false);
 
     }
@@ -147,10 +146,6 @@ const Dashboard = () => {
             const age =  parseInt(text.replace( /^\D+/g, ''), 10);
             const currentDate = new Date();
             let ageDate = Moment(currentDate.getFullYear() - age, 'YYYY')
-            console.log(age)
-            console.log(ageDate)
-            console.log(result.birthDate)
-            console.log(ageDate.isSame(result.birthDate, 'year'))
             if (ageDate.isBefore(result.birthDate) || !result.birthDate) {
               if (!ageDate.isSame(result.birthDate, 'year')) {
                 console.log('Extracted birthDate through age')
@@ -185,7 +180,14 @@ const Dashboard = () => {
           else if (type === 'date') {
             let momentDate = Moment(text, 'DD/MM/YYYY')
             if (momentDate.isValid()) {
-              result.birthDate = !result.birthDate ? momentDate.toDate() : momentDate.isBefore(result.birthDate) ? momentDate.toDate() : result.birthDate;
+              if (!result.birthDate) {
+                result.birthDate = momentDate.toDate();
+              }
+              else if (momentDate.isBefore(result.birthDate)) {
+                result.birthDate = momentDate.toDate();
+                result.ageFlag = false;
+              }
+
             }
             else {
               momentDate = Moment(text, 'DD/MM/YY');
@@ -236,12 +238,13 @@ const Dashboard = () => {
             }
           })
           //Create object and push
+
           const educationExperience = {
             educationInstitution: educationInstitution,
             educationTitle: educationTitle,
             studyRange: studyRange,
-            startDate: studyDates[0] ? new Date(studyDates[0]) : null,
-            endDate: studyDates[1] ? new Date(studyDates[1]) : null
+            startDate: studyDates && studyDates[0] ? new Date(studyDates[0]) : null,
+            endDate: studyDates && studyDates[1] ? new Date(studyDates[1]) : null
           }
           result.educationExperience.push(educationExperience)
         }
@@ -251,7 +254,7 @@ const Dashboard = () => {
           const workplaceTextStart = relationArguments[0].location[0];
           //const workplaceTextEnd = relationArguments[1].location[1];
           const workDates = relation.dates;
-          let workPosition = null;
+          let workPosition = '';
           let workSpecialization = '';
           //Try to find work position
           relations.forEach(relation => {
@@ -284,8 +287,6 @@ const Dashboard = () => {
             startDate: workDates[0] ? new Date(workDates[0]) : null,
             endDate: workDates[1] ? new Date(workDates[1]) : null
           }
-          console.log(workDates)
-          console.log(workExperience)
           result.workExperience.push(workExperience)
         }
       })

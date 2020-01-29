@@ -136,7 +136,7 @@ momentLocalizer()
               <CardBody>
                 <Form>
                   <CardTitle>
-                    {' '}
+
                     <b> Información Personal </b>
                   </CardTitle>
                   <Row form>
@@ -488,9 +488,8 @@ momentLocalizer()
                   <CardTitle>
                     <b> Información Vocacional </b>
                   </CardTitle>
-                  {console.log(workExperience)}
                   {workExperience.map((work, i) => (
-                    <div key={`${work.workplace}-i`}>
+                    <div key={`work-${i}`}>
                       <Row form>
                         <Col md={6}>
                           <FormGroup>
