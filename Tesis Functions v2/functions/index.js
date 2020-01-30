@@ -45,39 +45,50 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
     resultItem.curriculumData.workExperience.forEach(work => {
       work.completeWorkPosition = work.workPosition + ' ' + (work.workSpecialization ? work.workSpecialization : '')
     })
-    console.log(universities ? 'true' : 'false')
     baseResult.push(resultItem)
   })
 
   if (titles) {
     let titlesOptions = {
       id: 'id',
-      keys: ['curriculumData.educationExperience.educationTitle']
+      keys: ['curriculumData.educationExperience.educationTitle'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.6,
     }
     const fuse = new Fuse(baseResult, titlesOptions);
+
     titles.value.forEach(title => {
       const foundIds = fuse.search(title);
       baseResult.forEach(arrayItem => {
         foundIds.forEach(foundId => {
-          if (arrayItem.id = foundId) {
-            arrayItem.titlesFound = true
+          if (arrayItem.id == foundId.item && foundId.score != 0) {
+            arrayItem.titlesFound = true;
+            arrayItem.titleScore = foundId.score;
           }
         })
       })
     })
+    return res.status(200).send(baseResult)
   }
 
   if (searchTerm) {
     const options = {
       id: 'id',
-      keys: ['curriculumData.keywords', 'curriculumData.concepts', 'curriculumData.categories', 'curriculumData.skills']
+      keys: ['curriculumData.keywords', 'curriculumData.concepts', 'curriculumData.categories'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.6,
     }
     const fuse = new Fuse(baseResult, options)
     const foundIds = fuse.search(searchTerm.value)
     baseResult.forEach(arrayItem => {
       foundIds.forEach(foundId => {
-        if (arrayItem.id == foundId) {
+        if (arrayItem.id == foundId.item && foundId.score != 0) {
           arrayItem.searchTermFound = true
+          arrayItem.searchTermScore = foundId.score
         }
       })
     })
@@ -93,7 +104,11 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (previousWorks) {
     let previousWorksOptions = {
       id: 'id',
-      keys: ['curriculumData.workExperience.completeWorkPosition']
+      keys: ['curriculumData.workExperience.completeWorkPosition'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.6,
     }
     const fuse = new Fuse(baseResult, previousWorksOptions)
 
@@ -101,7 +116,10 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
         const foundIds = fuse.search(previousWork);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
-           foundId == arrayItem.id ? arrayItem.previousWorksFound = true : null
+            if (arrayItem.id == foundId.item && foundId.score != 0) {
+              arrayItem.previousWorksFound = true
+              arrayItem.previousWorksScore = foundId.score
+            }
           })
         })
       })
@@ -111,14 +129,21 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (workplaces) {
     let workplacesOptions = {
       id: 'id',
-      keys: ['curriculumData.workExperience.workplace']
+      keys: ['curriculumData.workExperience.workplace'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.6,
     }
     const fuse = new Fuse(baseResult, workplacesOptions)
       workplaces.value.forEach(workplace => {
         const foundIds = fuse.search(workplace);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
-           foundId == arrayItem.id ? arrayItem.workplacesFound = true : null
+            if (arrayItem.id == foundId.item && foundId.score != 0) {
+              arrayItem.workplacesFound = true;
+              arrayItem.workplacesScore = foundId.score
+            }
           })
         })
       })
@@ -127,14 +152,21 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (languages) {
     let languagesOptions = {
       id: 'id',
-      keys: ['curriculumData.languages']
+      keys: ['curriculumData.languages'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.6,
     }
     const fuse = new Fuse(baseResult, languagesOptions)
       languages.value.forEach(language => {
         const foundIds = fuse.search(language);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
-           foundId == arrayItem.id ? arrayItem.languagesFound = true : null
+           if (arrayItem.id == foundId.item && foundId.score != 0) {
+            arrayItem.languagesFound = true
+            arrayItem.languagesScore = foundId.score
+          }
           })
         })
       })
@@ -142,14 +174,22 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (universities) {
     let universitiesOptions = {
       id: 'id',
-      keys: ['curriculumData.educationExperience.educationInstitution']
+      keys: ['curriculumData.educationExperience.educationInstitution'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.6,
     }
     const fuse = new Fuse(baseResult, universitiesOptions)
       universities.value.forEach(university => {
         const foundIds = fuse.search(university);
         baseResult.forEach(arrayItem => {
+
           foundIds.forEach(foundId => {
-           foundId == arrayItem.id ? arrayItem.universitiesFound = true : null
+           if (arrayItem.id == foundId.item && foundId.score != 0) {
+            arrayItem.universitiesFound = true
+            arrayItem.universitiesScore = foundId.score
+          }
           })
         })
       })
@@ -158,7 +198,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
 
   res.set('Access-Control-Allow-Origin', "*")
   res.set('Access-Control-Allow-Methods', 'GET, POST')
-  res.status(200).send(baseResult)
+  return res.status(200).send(baseResult)
   }
   catch(err) {
     res.set('Access-Control-Allow-Origin', "*")
