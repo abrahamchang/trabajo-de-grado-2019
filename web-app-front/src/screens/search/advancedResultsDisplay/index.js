@@ -14,8 +14,8 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
 
   function calculateScore(searchEntry) {
     const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
-    workplacesFound} =searchEntry;
-      const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight} = searchEntry;
+    workplacesFound, skillsFound} =searchEntry;
+      const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight,skillsWeight} = searchEntry;
     let totalScore = 0;
     if (languageFound) totalScore += languageWeight;
     if (previousWorksFound) totalScore += previousWorksWeight;
@@ -23,12 +23,13 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
     if (titlesFound) totalScore += titlesWeight;
     if (universitiesFound) totalScore += universitiesWeight;
     if (workExperienceYearsFound) totalScore += workExperienceYearsWeight;
-    if (workplacesFound) totalScore += workplacesWeight
+    if (workplacesFound) totalScore += workplacesWeight;
+      if (skillsFound) totalScore += skillsWeight;
     return totalScore
   }
   function parametersFound(searchEntry) {
     const {languagesFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
-      workplacesFound} = searchEntry;
+      workplacesFound, skillsFound} = searchEntry;
       let parametersFound = '';
     if (languagesFound) parametersFound += 'Idiomas, ';
     if (previousWorksFound) parametersFound += 'Trabajos previos, ';
@@ -36,7 +37,8 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
     if (titlesFound) parametersFound += 'Títulos, ';
     if (universitiesFound) parametersFound += 'Universidades, ';
     if (workExperienceYearsFound) parametersFound += 'Años de experiencia, ';
-    if (workplacesFound) parametersFound += 'Empresas de referencía, '
+    if (workplacesFound) parametersFound += 'Empresas de referencía, ';
+    if (skillsFound) parametersFound += 'Habilidades, '
     parametersFound = parametersFound.trim();
 
     return parametersFound.replace(/.$/,".")

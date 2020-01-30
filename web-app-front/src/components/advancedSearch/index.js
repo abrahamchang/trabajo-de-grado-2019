@@ -90,7 +90,7 @@ import { isNumber } from 'util';
 
       function removeSkills() {
         let newSkills = [...skills];
-        skills.pop();
+        newSkills.pop();
         setSkills(newSkills)
       }
 
@@ -233,6 +233,15 @@ import { isNumber } from 'util';
 
                 <p> Ciudades Habitadas: </p>
                 <SimpleList arr={cities} />
+              </>
+            ) : (
+              ''
+            )}
+                        {skills.length > 0 ? (
+              <>
+
+                <p> Habilidades: </p>
+                <SimpleList arr={skills} />
               </>
             ) : (
               ''
@@ -413,7 +422,7 @@ import { isNumber } from 'util';
                 </Col>
                 <Col md={6}>
                   <b> Empresas en búsqueda </b>
-                  <ArrayList arr={skills} />
+                  <ArrayList arr={workplaces} />
                 </Col>
               </Row>
               <Row>

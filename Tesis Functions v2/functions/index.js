@@ -198,7 +198,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (skills) {
     let skillsOptions = {
       id: 'id',
-      keys: ['curriculumData.skills, curriculumData.courses'],
+      keys: ['curriculumData.skills'],
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
@@ -215,7 +215,9 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
           }
           })
         })
+
       })
+
   }
 
 
