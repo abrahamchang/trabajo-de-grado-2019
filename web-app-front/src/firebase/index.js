@@ -84,7 +84,7 @@ class Firebase {
         return this.db.collection('Projects').where('status', '==', 'Abierto').onSnapshot(callback)
     }
     getClosedProjects() {
-        return this.db.collection('Projects').where('status', '==', 'Clausurado').get();
+        return this.db.collection('Projects').where('status', 'in', ['Clausurado', 'Culminado']).get();
     }
     getProjectDocument(id) {
         return this.db.doc(`Projects/${id}`).get();

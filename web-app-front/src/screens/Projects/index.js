@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import ProjectTable from './ProjectTable';
 import ClosedProjectTable from './ClosedProjectTable';
 import AdvancedSearch from '../../components/advancedSearch';
-import {Container, Row, Col, Card, Button, Input, Label, Collapse, Spinner} from 'reactstrap';
+import {Container, Row, Col, Card, Button, Input, Label, Collapse, Spinner, CardTitle} from 'reactstrap';
 import Firebase from '../../firebase';
 import Navbar from '../../components/navbar';
 const Proyects = (props) => {
@@ -55,8 +55,10 @@ const Proyects = (props) => {
       <Container className="mb-2">
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">
-            { loading ? <Card className="d-flex justify-content-center align-items-center mb-2 mt-2"> <b className="mb-2"> Cargando proyectos </b><Spinner className="mb-2"/></Card>  : projects.length > 0 ?            <Card className="my-lg-5 my-md-4 my-3">
+            { loading ? <Card className="d-flex justify-content-center align-items-center mb-2 mt-2"> <b className="mb-2"> Cargando proyectos </b><Spinner className="mb-2"/></Card>  : (projects.length > 0 || closedProjects.length > 0) ?            <Card className="my-lg-5 my-md-4 my-3">
+             <CardTitle className="d-flex justify-content-center align-items-center"> <h2> Proyectos abiertos</h2> </CardTitle>
               <ProjectTable projects={projects} navigate={props.navigate} />
+              <CardTitle className="d-flex justify-content-center align-items-center"> <h2> Historial de proyectos</h2> </CardTitle>
               <ClosedProjectTable projects={closedProjects} navigate={props.navigate} />
             </Card> : <Card className=" mt-2 mb-2 d-flex align-items-center"> <h3 className="text-center mb-4"> No existen proyectos</h3>  <h4 className="text-muted text-center"> Presione el botón "Nuevo proyecto" para agregar uno</h4>  </Card>}
           </Col>

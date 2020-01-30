@@ -10,7 +10,7 @@ import Navbar from '../../../components/navbar';
 
 
 export default function ProjectDetails(props) {
-
+  const readOnly = !!props.location.state.readOnly
   const [candidatePool, setCandidatePool] = useState([]);
   const [potentialCandidates, setPotentialCandidates] = useState([]);
   const [rejectedCandidates, setRejectedCandidates] = useState([]);
@@ -218,9 +218,9 @@ export default function ProjectDetails(props) {
         <th> Nombre Completo </th>
         <th> Puntuación</th>
         <th> Parámetros cumplidos</th>
-        <th> Detalles </th>
-        <th>  </th>
-        <th>  </th>
+        <th> Ver detalles </th>
+        {!readOnly && <><th>  </th>
+        <th>  </th></>}
         </tr>
         </thead>
         <tbody>
@@ -230,8 +230,8 @@ export default function ProjectDetails(props) {
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> <TiDocumentText size={24}/> </Button></td>
-            <td> <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> Seleccionar </Button></td>
-            <td> <Button onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, rejectedCandidates, setRejectedCandidates)}> <FaArrowDown /> Rechazar </Button></td>
+        {!readOnly && <td>  <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> Seleccionar </Button>}</td> }
+            {!readOnly && <td> <Button onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, rejectedCandidates, setRejectedCandidates)}> <FaArrowDown /> Rechazar </Button></td>}
           </tr>
         ))}
         </tbody>
@@ -242,26 +242,32 @@ export default function ProjectDetails(props) {
     return <Table>
       <thead>
         <tr>
-              <th> Nombre Completo </th>
+        <th> Nombre Completo </th>
         <th> Puntuación</th>
         <th> Parámetros cumplidos</th>
         <th> Ver detalles </th>
+        {!readOnly &&
+        <>
         <th> </th>
         <th>  </th>
         <th>  </th>
+        </>
+        }
         </tr>
         </thead>
+        <tbody>
         {rejectedCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
-            <td> <Button color="primary" onClick={() => moveCandidate(i, rejectedCandidates, setRejectedCandidates, potentialCandidates, setPotentialCandidates)}> <FaArrowUp/> </Button></td>
-            <td> <Button color="danger"> Remover candidato </Button></td>
+        {!readOnly && <td>  <Button color="primary" onClick={() => moveCandidate(i, rejectedCandidates, setRejectedCandidates, potentialCandidates, setPotentialCandidates)}> <FaArrowUp/> </Button></td> }
+            {!readOnly && <td>  <Button color="danger"> Remover candidato </Button> </td> }
             <td></td>
           </tr>
         ))}
+        </tbody>
     </Table>
   }
 
@@ -273,19 +279,21 @@ export default function ProjectDetails(props) {
         <th> Puntuación</th>
         <th> Parámetros cumplidos</th>
         <th> Ver detalles </th>
-        <th>  </th>
-        <th>  </th>
+        {!readOnly && <th>  </th>}
+        {!readOnly && <th>  </th>}
         </tr>
         </thead>
+        <tbody>
         {finalCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
-            <td> <Button onClick={() => moveCandidate(i, finalCandidates, setFinalCandidates, potentialCandidates, setPotentialCandidates)}><FaArrowDown/></Button> </td>
+        {!readOnly && <td> <Button onClick={() => moveCandidate(i, finalCandidates, setFinalCandidates, potentialCandidates, setPotentialCandidates)}><FaArrowDown/></Button> </td> }
           </tr>
         ))}
+        </tbody>
       </Table>)
   }
 
@@ -322,20 +330,21 @@ export default function ProjectDetails(props) {
             </Collapse>
           </Card>
 
-          <Card className="mb-2 mt-2">
+          {!readOnly && <Card className="mb-2 mt-2">
             <Button block color="secondary" onClick={() => setAddCollapse(!addCollapse)}>Agregar Candidatos </Button>
             <Collapse isOpen={addCollapse}>
             <AddToProject/>
             </Collapse>
-          </Card>
-          <Card className="mb-2 mt-2">
+          </Card>}
+          {!readOnly && <Card className="mb-2 mt-2">
             <Button block color="secondary" onClick={() => {setModifyCollapse(!modifyCollapse)}}> Cambiar criterios del proyecto </Button>
             <Collapse isOpen={modifyCollapse}>
             <AdvancedSearch searchParams={projectCriteria}/>
             </Collapse>
-          </Card>
-          <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>
-          <Button block onClick= {() => setModal(!modal)} color="danger"> Cerrar Proyecto </Button>
+          </Card>}
+          {!readOnly && <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>}
+          {!readOnly && <Button block onClick= {() => setModal(!modal)} color="danger"> Cerrar Proyecto </Button>}
+          {readOnly && <Button block onClick={() => props.navigate('../')}> Volver </Button>}
           </Col>
         </Row>
         </Container>}
