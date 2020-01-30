@@ -55,7 +55,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
-      threshold: 0.6,
+      threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, titlesOptions);
 
@@ -63,7 +63,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       const foundIds = fuse.search(title);
       baseResult.forEach(arrayItem => {
         foundIds.forEach(foundId => {
-          if (arrayItem.id == foundId.item && foundId.score != 0) {
+          if (arrayItem.id == foundId.item && foundId.score != 1) {
             arrayItem.titlesFound = true;
             arrayItem.titleScore = foundId.score;
           }
@@ -80,13 +80,13 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
-      threshold: 0.6,
+      threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, options)
     const foundIds = fuse.search(searchTerm.value)
     baseResult.forEach(arrayItem => {
       foundIds.forEach(foundId => {
-        if (arrayItem.id == foundId.item && foundId.score != 0) {
+        if (arrayItem.id == foundId.item && foundId.score != 1) {
           arrayItem.searchTermFound = true
           arrayItem.searchTermScore = foundId.score
         }
@@ -108,7 +108,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
-      threshold: 0.6,
+      threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, previousWorksOptions)
 
@@ -116,11 +116,12 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
         const foundIds = fuse.search(previousWork);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
-            if (arrayItem.id == foundId.item && foundId.score != 0) {
+            if (arrayItem.id == foundId.item && foundId.score != 1) {
               arrayItem.previousWorksFound = true
               arrayItem.previousWorksScore = foundId.score
             }
           })
+
         })
       })
 
@@ -133,14 +134,14 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
-      threshold: 0.6,
+      threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, workplacesOptions)
       workplaces.value.forEach(workplace => {
         const foundIds = fuse.search(workplace);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
-            if (arrayItem.id == foundId.item && foundId.score != 0) {
+            if (arrayItem.id == foundId.item && foundId.score != 1) {
               arrayItem.workplacesFound = true;
               arrayItem.workplacesScore = foundId.score
             }
@@ -156,14 +157,14 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
-      threshold: 0.6,
+      threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, languagesOptions)
       languages.value.forEach(language => {
         const foundIds = fuse.search(language);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
-           if (arrayItem.id == foundId.item && foundId.score != 0) {
+           if (arrayItem.id == foundId.item && foundId.score != 1) {
             arrayItem.languagesFound = true
             arrayItem.languagesScore = foundId.score
           }
@@ -178,7 +179,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
-      threshold: 0.6,
+      threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, universitiesOptions)
       universities.value.forEach(university => {
@@ -186,7 +187,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
         baseResult.forEach(arrayItem => {
 
           foundIds.forEach(foundId => {
-           if (arrayItem.id == foundId.item && foundId.score != 0) {
+           if (arrayItem.id == foundId.item && foundId.score != 1) {
             arrayItem.universitiesFound = true
             arrayItem.universitiesScore = foundId.score
           }
@@ -199,7 +200,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', "*")
   res.set('Access-Control-Allow-Methods', 'GET, POST')
   return res.status(200).send(baseResult)
-  }
+ }
   catch(err) {
     res.set('Access-Control-Allow-Origin', "*")
     res.set('Access-Control-Allow-Methods', 'GET, POST')
