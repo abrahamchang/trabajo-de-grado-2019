@@ -58,7 +58,6 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, titlesOptions);
-
     titles.value.forEach(title => {
       const foundIds = fuse.search(title);
       baseResult.forEach(arrayItem => {
@@ -70,7 +69,6 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
         })
       })
     })
-    return res.status(200).send(baseResult)
   }
 
   if (searchTerm) {
