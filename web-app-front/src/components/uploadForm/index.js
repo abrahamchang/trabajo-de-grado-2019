@@ -247,7 +247,7 @@ momentLocalizer()
                   </Row>
                   <Row>
                     <Col md ={12}>
-                    <p> Edad: <b> {age} años</b> {ageFlag ? '(Extraído del documento)' : ''} </p>
+                    {birthDate && <p> Edad: <b> {age} años</b> {ageFlag ? '(Extraído del documento)' : ''} </p>}
                     </Col>
                   </Row>
                   <CardTitle>
