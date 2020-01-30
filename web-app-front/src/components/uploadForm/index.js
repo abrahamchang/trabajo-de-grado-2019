@@ -104,6 +104,7 @@ momentLocalizer()
         languages: languages,
         workExperience: workExperience,
         educationExperience: educationExperience,
+        courses: props.courses,
         skills: props.skills,
         concepts: props.concepts,
         keywords: props.keywords,
@@ -629,6 +630,18 @@ momentLocalizer()
                       name="skills"
                       id="skills"
                       value={props.skills ? props.skills.toString() : ''}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="courses">Cursos</Label>
+                    <Input
+                      type="textarea"
+                      readOnly
+                      name="courses"
+                      id="courses"
+                      value={
+                        props.courses ? props.courses.toString() : ''
+                      }
                     />
                   </FormGroup>
                   <FormGroup>

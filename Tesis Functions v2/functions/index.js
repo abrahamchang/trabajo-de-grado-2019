@@ -13,7 +13,7 @@ admin.initializeApp({
 
 exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   try {
-  const { languages, previousWorks, universities, titles, workExperienceYears, workplaces, age, hasTitle, hasExperience, cities, searchTerm} = await JSON.parse(req.body);
+  const { languages, previousWorks, universities, titles, workExperienceYears, workplaces, age, hasTitle, hasExperience, cities, searchTerm, skills} = await JSON.parse(req.body);
   let compoundQuery = admin.firestore().collection('Curriculums');
   if (hasExperience) {
     compoundQuery.where('workExperienceYears', '>', 0)
@@ -40,7 +40,9 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       citiesFound: cities ? false : null,
       citiesWeight: cities ? cities.weight : null,
       searchTermFound: searchTerm ? false : null,
-      searchTermWeight: searchTerm ? searchTerm.weight : null
+      searchTermWeight: searchTerm ? searchTerm.weight : null,
+      skillsFound: skills ? false : null,
+      skillsWeight: skills ? skills.weight : null,
     }
     resultItem.curriculumData.workExperience.forEach(work => {
       work.completeWorkPosition = work.workPosition + ' ' + (work.workSpecialization ? work.workSpecialization : '')
@@ -183,11 +185,33 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       universities.value.forEach(university => {
         const foundIds = fuse.search(university);
         baseResult.forEach(arrayItem => {
-
           foundIds.forEach(foundId => {
            if (arrayItem.id == foundId.item && foundId.score != 1) {
             arrayItem.universitiesFound = true
             arrayItem.universitiesScore = foundId.score
+          }
+          })
+        })
+      })
+  }
+  //TODO: Skills and courses
+  if (skills) {
+    let skillsOptions = {
+      id: 'id',
+      keys: ['curriculumData.skills, curriculumData.courses'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.3,
+    }
+    const fuse = new Fuse(baseResult, skillsOptions)
+      skills.value.forEach(skill => {
+        const foundIds = fuse.search(skill);
+        baseResult.forEach(arrayItem => {
+          foundIds.forEach(foundId => {
+           if (arrayItem.id == foundId.item && foundId.score != 1) {
+            arrayItem.skillsFound = true
+            arrayItem.skillsScore = foundId.score
           }
           })
         })

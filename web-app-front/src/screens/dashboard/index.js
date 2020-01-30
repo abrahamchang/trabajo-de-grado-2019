@@ -198,11 +198,13 @@ const Dashboard = () => {
           }
           //Skills data
           else if (type === 'languague') {
-            console.log('Found a language')
             result.languages.push(text)
           }
           else if (type === 'skill') {
             result.skills.push(text)
+          }
+          else if (type === 'course') {
+            result.courses.push(text)
           }
         }
       })
