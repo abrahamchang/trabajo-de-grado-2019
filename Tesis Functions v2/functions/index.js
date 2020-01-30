@@ -194,7 +194,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
         })
       })
   }
-  //TODO: Skills and courses
+  //TODO: Test skills and courses
   if (skills) {
     let skillsOptions = {
       id: 'id',

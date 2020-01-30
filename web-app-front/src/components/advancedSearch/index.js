@@ -33,7 +33,8 @@ import { isNumber } from 'util';
       const [hasTitle, setHasTitle] = useState(false);
       const [hasExperience, setHasExperience] = useState(false);
       const [searchTerm, setSearchTerm] = useState('');
-
+      const [skills, setSkills] = useState([]);
+      const [skillInput, setSkillInput] = useState('')
       useEffect(() => {
         if (searchParams) {
           console.log(searchParams)
@@ -46,6 +47,7 @@ import { isNumber } from 'util';
           if (searchParams.workExperienceYears) setWorkExperienceYears(searchParams.workExperienceYears.value);
           if (searchParams.hasExperience) setHasExperience(searchParams.hasExperience);
           if (searchParams.hasTitle) setHasTitle(searchParams.hasTitle)
+          if (searchParams.skills) setSkills(searchParams.skills)
         }
       }, [])
 
@@ -86,6 +88,12 @@ import { isNumber } from 'util';
         setCities(newCities)
       }
 
+      function removeSkills() {
+        let newSkills = [...skills];
+        skills.pop();
+        setSkills(newSkills)
+      }
+
       const submitSearch = () => {
         const request = {
           languages: languages.length > 0 ? {value: languages,weight: 1} : null,
@@ -99,6 +107,7 @@ import { isNumber } from 'util';
           hasTitle: hasTitle,
           hasExperience: hasExperience,
           searchTerm: searchTerm ? {value: searchTerm, weight: 1} : null,
+          skills: skills ? {value: skills, weight: 1} : null
         }
         console.log(request )
         props.onSubmit(request)
@@ -394,17 +403,46 @@ import { isNumber } from 'util';
                           setWorkplaces([...workplaces, workplaceInput])
                         }
                       >
-                        Agregar Universidad a la lista
+                        Agregar Empresa a la lista
                       </Button>
                       <Button onClick={() => removeWorkplace()}>
-                        Remover Universidad de la Lista
+                        Remover Empresa de la Lista
                       </Button>
                     </Col>
                   </Row>
                 </Col>
                 <Col md={6}>
                   <b> Empresas en búsqueda </b>
-                  <ArrayList arr={workplaces} />
+                  <ArrayList arr={skills} />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Label for="Idiomas"> Habilidades de interés: </Label>
+                  <Input
+                    type="text"
+                    value={skillInput}
+                    onChange={e => setSkillInput(e.target.value)}
+                  ></Input>
+                  <Row>
+                    <Col md={12} className="mt-2">
+                      <Button
+                        className="mr-2"
+                        onClick={() =>
+                          setSkills([...skills, skillInput])
+                        }
+                      >
+                        Agregar Habilidad a la lista
+                      </Button>
+                      <Button onClick={() => removeSkills()}>
+                        Remover Habilidad de la Lista
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col md={6}>
+                  <b> Habilidades en búsqueda </b>
+                  <ArrayList arr={skills} />
                 </Col>
               </Row>
             </TabPane>
