@@ -8,7 +8,7 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
 
   function calculateMaxScore(searchEntry) {
     const values = Object.values(searchEntry);
-    const reducer = (acc, curr) => { return isNumber(curr) ? acc + curr : acc }
+    const reducer = (acc, curr) => { return isNumber(curr) && curr >= 1 ? acc + curr : acc }
     return values.reduce(reducer, 0)
   }
 
@@ -27,10 +27,10 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
     return totalScore
   }
   function parametersFound(searchEntry) {
-    const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+    const {languagesFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
       workplacesFound} = searchEntry;
       let parametersFound = '';
-    if (languageFound) parametersFound += 'Idiomas, ';
+    if (languagesFound) parametersFound += 'Idiomas, ';
     if (previousWorksFound) parametersFound += 'Trabajos previos, ';
     if (searchTermFound) parametersFound += 'Términos de búsqueda, ';
     if (titlesFound) parametersFound += 'Títulos, ';
@@ -50,7 +50,6 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
             <tr>
               <th> Nombre </th>
               <th> Apellido </th>
-              <th> Nombre de archivo </th>
               <th> Puntuación </th>
               <th> Parámetros cumplidos </th>
               <th></th>
@@ -63,7 +62,6 @@ const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props})
                return (<tr key={searchEntry.id}>
                 <td> {firstName} </td>
                 <td> {lastName} </td>
-                <td>  {storageRef.split('/')[2]}</td>
                 <td> {calculateScore(searchEntry)}/{calculateMaxScore(searchEntry)} ({calculateScore(searchEntry) !== 0 ?(  (calculateScore(searchEntry)   * 100) / calculateMaxScore(searchEntry) ): 0}%)  </td>
                 <td> {parametersFound(searchEntry)} </td>
                 <td>

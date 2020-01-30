@@ -25,8 +25,8 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
     let resultItem = {
       curriculumData: doc.data(),
       id: doc.id,
-      languageFound: languages ? false : null,
-      languageWeight: languages ? languages.weight : null,
+      languagesFound: languages ? false : null,
+      languagesWeight: languages ? languages.weight : null,
       previousWorksFound: previousWorks ? false : null,
       previousWorksWeight: previousWorks ? previousWorks.weight : null,
       universitiesFound: universities ? false : null,
