@@ -80,7 +80,7 @@ const AdvancedResultsDisplay = ({advancedSearchResults,maxScore,...props}) => {
                return (<tr key={searchEntry.id}>
                 <td> {firstName} </td>
                 <td> {lastName} </td>
-                <td> {calculateScore(searchEntry)}/{maxScore} ({calculateScore(searchEntry) !== 0 ?(  (calculateScore(searchEntry)   * 100) / maxScore ): 0}%)  </td>
+                <td> {calculateScore(searchEntry)}/{maxScore} ({(calculateScore(searchEntry) !== 0 ?(  (calculateScore(searchEntry)   * 100) / maxScore ): 0).toFixed(2)}%)  </td>
                 <td> {parametersFound(searchEntry)} </td>
                 <td>
                   <Button color="primary" onClick={() => props.navigator(searchEntry.curriculumData.discoveryId, {state: searchEntry})}> Ver más </Button>
