@@ -1,16 +1,27 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {  Table, Button} from 'reactstrap';
 
 import { isNumber } from 'util';
 
 
-const AdvancedResultsDisplay = ({advancedSearchResults: searchResult, ...props}) => {
+const AdvancedResultsDisplay = ({advancedSearchResults, ...props}) => {
+
+  const [searchResult, setSearchResult] = useState(advancedSearchResults);
 
   function calculateMaxScore(searchEntry) {
     const values = Object.values(searchEntry);
     const reducer = (acc, curr) => { return isNumber(curr) && curr >= 1 ? acc + curr : acc }
     return values.reduce(reducer, 0)
   }
+
+
+  useEffect(() => {
+    let srcopy = [...searchResult]
+    srcopy.sort((result1, result2) => {
+      return calculateScore(result2) - calculateScore(result1);
+    })
+    setSearchResult(srcopy)
+  }, [])
 
   function calculateScore(searchEntry) {
     const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
