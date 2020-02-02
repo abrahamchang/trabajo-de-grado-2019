@@ -215,15 +215,38 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
           }
           })
         })
-
       })
-
   }
+  let cleanedResult = baseResult.map(result => {
+    const {languagesFound, previousWorksFound, universitiesFound , titlesFound , workExperienceYearsFound ,workplacesFound , citiesFound , searchTermFound , skillsFound} = result;
+    if (languagesFound || previousWorksFound || universitiesFound || titlesFound || workExperienceYearsFound || workplacesFound || citiesFound || searchTermFound || skillsFound) {
+      const {firstName, lastName, discoveryId} = result.curriculumData;
+      let newResult = {...result};
+      newResult.curriculumData = {firstName: firstName, lastName: lastName, discoveryId: discoveryId }
+      return newResult;
+    }
+  })
+  cleanedResult = cleanedResult.filter(result => result)
+  cleanedResult.forEach(test => {
+    for (let propName in test) {
+      if (test[propName] === null || test[propName] === undefined) {
+              delete test[propName];
+            }
+    }
+  })
+
+  // cleanedResult = cleanedResult.forEach(result => {
+  //   for (var propName in result) {
+  //     if (result[propName] === null || result[propName] === undefined) {
+  //       delete result[propName];
+  //     }
+  //   }
+  // })
 
 
   res.set('Access-Control-Allow-Origin', "*")
   res.set('Access-Control-Allow-Methods', 'GET, POST')
-  return res.status(200).send(baseResult)
+  return res.status(200).send(cleanedResult)
  }
   catch(err) {
     res.set('Access-Control-Allow-Origin', "*")

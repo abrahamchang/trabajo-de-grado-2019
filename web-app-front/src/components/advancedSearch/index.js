@@ -47,7 +47,7 @@ import { isNumber } from 'util';
           if (searchParams.workExperienceYears) setWorkExperienceYears(searchParams.workExperienceYears.value);
           if (searchParams.hasExperience) setHasExperience(searchParams.hasExperience);
           if (searchParams.hasTitle) setHasTitle(searchParams.hasTitle)
-          if (searchParams.skills) setSkills(searchParams.skills)
+          if (searchParams.skills) setSkills(searchParams.skills.value)
         }
       }, [])
 
@@ -107,7 +107,7 @@ import { isNumber } from 'util';
           hasTitle: hasTitle,
           hasExperience: hasExperience,
           searchTerm: searchTerm ? {value: searchTerm, weight: 1} : null,
-          skills: skills ? {value: skills, weight: 1} : null
+          skills: skills.length > 0 ? {value: skills, weight: 1} : null
         }
         console.log(request )
         props.onSubmit(request)
