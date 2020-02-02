@@ -66,7 +66,8 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
         foundIds.forEach(foundId => {
           if (arrayItem.id == foundId.item && foundId.score != 1) {
             arrayItem.titlesFound = true;
-            arrayItem.titleScore = foundId.score;
+            //arrayItem.titlesScore = foundId.score;
+            arrayItem.totalTitles = !arrayItem.totalTitles ? 1 : arrayItem.totalTitles+1;
           }
         })
       })
@@ -87,8 +88,10 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
     baseResult.forEach(arrayItem => {
       foundIds.forEach(foundId => {
         if (arrayItem.id == foundId.item && foundId.score != 1) {
+
           arrayItem.searchTermFound = true
-          arrayItem.searchTermScore = foundId.score
+          //arrayItem.searchTermScore = foundId.score
+          arrayItem.totalSearchTerm = !arrayItem.totalSearchTerm ? 1 : arrayItem.totalSearchTerm+1;
         }
       })
     })
@@ -118,7 +121,8 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
           foundIds.forEach(foundId => {
             if (arrayItem.id == foundId.item && foundId.score != 1) {
               arrayItem.previousWorksFound = true
-              arrayItem.previousWorksScore = foundId.score
+              //arrayItem.previousWorksScore = foundId.score
+              arrayItem.totalPreviousWorks = !arrayItem.totalPreviousWorks ? 1 : arrayItem.totalPreviousWorks+1;
             }
           })
 
@@ -143,7 +147,8 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
           foundIds.forEach(foundId => {
             if (arrayItem.id == foundId.item && foundId.score != 1) {
               arrayItem.workplacesFound = true;
-              arrayItem.workplacesScore = foundId.score
+              //arrayItem.workplacesScore = foundId.score
+              arrayItem.totalWorkplaces = !arrayItem.totalWorkplaces ? 1 : arrayItem.totalWorkplaces+1;
             }
           })
         })
@@ -160,13 +165,16 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, languagesOptions)
+
       languages.value.forEach(language => {
         const foundIds = fuse.search(language);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
            if (arrayItem.id == foundId.item && foundId.score != 1) {
+
             arrayItem.languagesFound = true
-            arrayItem.languagesScore = foundId.score
+            //arrayItem.languagesScore = foundId.score
+            arrayItem.totalLanguages = !arrayItem.totalLanguages ? 1 : arrayItem.totalLanguages+1;
           }
           })
         })
@@ -182,19 +190,21 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       threshold: 0.3,
     }
     const fuse = new Fuse(baseResult, universitiesOptions)
+
       universities.value.forEach(university => {
         const foundIds = fuse.search(university);
         baseResult.forEach(arrayItem => {
           foundIds.forEach(foundId => {
            if (arrayItem.id == foundId.item && foundId.score != 1) {
             arrayItem.universitiesFound = true
-            arrayItem.universitiesScore = foundId.score
+            //arrayItem.universitiesScore = foundId.score
+            arrayItem.totalUniversities = !arrayItem.totalUniversities ? 1 : arrayItem.totalUniversities+1;
           }
           })
         })
       })
   }
-  //TODO: Test skills and courses
+
   if (skills) {
     let skillsOptions = {
       id: 'id',
@@ -211,11 +221,39 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
           foundIds.forEach(foundId => {
            if (arrayItem.id == foundId.item && foundId.score != 1) {
             arrayItem.skillsFound = true
-            arrayItem.skillsScore = foundId.score
+            //arrayItem.skillsScore = foundId.score
+            arrayItem.totalSkills = !arrayItem.totalSkills ? 1 : arrayItem.totalSkills+1;
           }
           })
         })
       })
+  }
+  if (cities) {
+    let citiesOptions = {
+      id: 'id',
+      keys: ['curriculumData.city'],
+      shouldSort: true,
+      findAllMatches: true,
+      includeScore: true,
+      threshold: 0.3,
+    }
+    const fuse = new Fuse(baseResult, citiesOptions)
+
+      cities.value.forEach(city => {
+        const foundIds = fuse.search(city);
+        baseResult.forEach(arrayItem => {
+          foundIds.forEach(foundId => {
+            if (arrayItem.id == foundId.item && foundId.score != 1) {
+              arrayItem.citiesFound = true
+              //arrayItem.citiesScore = foundId.score
+              //Behaves like this because no one lives in two cities.
+              arrayItem.totalCities = 1;
+            }
+          })
+
+        })
+      })
+
   }
   let cleanedResult = baseResult.map(result => {
     const {languagesFound, previousWorksFound, universitiesFound , titlesFound , workExperienceYearsFound ,workplacesFound , citiesFound , searchTermFound , skillsFound} = result;

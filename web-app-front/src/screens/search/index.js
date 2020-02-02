@@ -36,6 +36,7 @@ const Search = (props) => {
         const searchResponse = await fetch(url, postParams)
         const searchResults = await searchResponse.json();
         console.log(searchResults)
+        setMaxScore(searchParams.totalParams)
         setAdvancedSearchResults(searchResults)
         setLoading(false)
         setAdvancedSearchActive(false)
@@ -177,7 +178,7 @@ const Search = (props) => {
                           <Spinner color="primary" />
                         </div>
                       ) : advancedSearchResults ? (
-                        <AdvancedResultsDisplay advancedSearchResults ={ advancedSearchResults} navigator={props.navigate}/>
+                        <AdvancedResultsDisplay advancedSearchResults ={ advancedSearchResults} navigator={props.navigate} maxScore = {maxScore} />
                       ) : (
                         displayResults()
                       ))}

@@ -95,7 +95,7 @@ import { isNumber } from 'util';
       }
 
       const submitSearch = () => {
-        const request = {
+        let request = {
           languages: languages.length > 0 ? {value: languages,weight: 1} : null,
           previousWorks: previousWorks.length > 0 ? {value: previousWorks, weight: 1}: null,
           universities: universities.length > 0 ? {value: universities, weight: 1} : null,
@@ -109,6 +109,16 @@ import { isNumber } from 'util';
           searchTerm: searchTerm ? {value: searchTerm, weight: 1} : null,
           skills: skills.length > 0 ? {value: skills, weight: 1} : null
         }
+        let totalParams = 0;
+        for (let property in request) {
+          if (property == 'cities') {
+            totalParams++;
+          }
+          else {
+          totalParams += request[property] && request[property].value ? request[property].value.length : 0
+          }
+        }
+        request.totalParams = totalParams;
         console.log(request )
         props.onSubmit(request)
 
