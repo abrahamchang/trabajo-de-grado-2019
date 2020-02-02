@@ -21,7 +21,8 @@ const AdvancedResultsDisplay = ({advancedSearchResults, ...props}) => {
       return calculateScore(result2) - calculateScore(result1);
     })
     setSearchResult(srcopy)
-  }, [])
+    console.log('test')
+  }, [searchResult])
 
   function calculateScore(searchEntry) {
     const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
@@ -69,8 +70,8 @@ const AdvancedResultsDisplay = ({advancedSearchResults, ...props}) => {
             </tr>
           </thead>
           <tbody>
-            {searchResult.map((searchEntry, index) =>
-             {const {firstName, lastName, storageRef} = searchEntry.curriculumData;
+            {searchResult.map((searchEntry) =>
+             {const {firstName, lastName} = searchEntry.curriculumData;
 
                return (<tr key={searchEntry.id}>
                 <td> {firstName} </td>

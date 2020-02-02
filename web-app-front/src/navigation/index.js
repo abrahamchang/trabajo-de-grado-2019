@@ -10,7 +10,7 @@ import Search from '../screens/search';
 import Projects from '../screens/projects';
 import CandidateDetail from '../screens/search/candidateDetail';
 import ProjectDetails from '../screens/projects/ProjectDetails/';
-import Navbar from '../components/navbar'
+//import Navbar from '../components/navbar'
 const AppStack = () => (
     <Router>
         <Login path="/login" />

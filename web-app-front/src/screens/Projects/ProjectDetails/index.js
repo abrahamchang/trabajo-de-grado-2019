@@ -98,6 +98,7 @@ export default function ProjectDetails(props) {
     removalArraySetter(newRemovalArray);
     additionArraySetter(newAdditionArray);
     setProjectModified(true)
+    console.log(projectModified)
   }
   function calculateMaxScore(searchEntry) {
     const values = Object.values(searchEntry);
