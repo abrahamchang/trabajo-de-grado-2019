@@ -111,7 +111,7 @@ import { isNumber } from 'util';
         }
         let totalParams = 0;
         for (let property in request) {
-          if (property == 'cities' && request['cities']) {
+          if (property === 'cities' && request['cities']) {
             totalParams++;
           }
           else {

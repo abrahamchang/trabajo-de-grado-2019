@@ -18,6 +18,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (hasExperience) {
     compoundQuery.where('workExperienceYears', '>', 0)
   }
+
   const queryResult = await compoundQuery.get();
   let baseResult = [];
 
@@ -49,7 +50,9 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
     })
     baseResult.push(resultItem)
   })
-
+  if (hasTitle) {
+    baseResult = baseResult.filter(result => result.curriculumData.educationExperience.length > 0)
+  }
   if (titles) {
     let titlesOptions = {
       id: 'id',

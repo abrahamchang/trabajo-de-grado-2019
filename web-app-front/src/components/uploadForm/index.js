@@ -3,7 +3,7 @@ import 'react-widgets/dist/css/react-widgets.css';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker'
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment';
-import { Row, Col, Card, CardBody, CardTitle, CardSubtitle, Form, FormGroup, Input, Label, Button } from 'reactstrap';
+import { Row, Col, Card, CardBody, CardTitle, CardSubtitle, Form, FormGroup, Input, Label, Button, FormFeedback } from 'reactstrap';
 
 Moment.locale('en')
 momentLocalizer()
@@ -22,6 +22,7 @@ momentLocalizer()
      const [languages, setLanguages] = useState(['']);
      const [age, setAge] = useState('')
      const [ageFlag, setAgeFlag] = useState(false)
+     const [submitFlag, setSubmitFlag] = useState(false)
     useEffect(() => {
 
       const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languages: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray,  age: ageExtracted, ageFlag : ageFlagExtracted } = props;
@@ -30,7 +31,6 @@ momentLocalizer()
       setFirstName(firstNameExtracted ? firstNameExtracted : '')
       setLastName(lastNameExtracted ? lastNameExtracted : '')
       setEmail(emailExtracted ? emailExtracted : '')
-      setBirthDate(birthDateExtracted ? birthDateExtracted : '')
       setMunicipality(municipalityExtracted ? municipalityExtracted : '');
       setCurriculumState(stateExtracted ? stateExtracted : '');
       setCity(cityExtracted ? cityExtracted: '')
@@ -38,8 +38,13 @@ momentLocalizer()
       setTelephones(telephonesArray ? telephonesArray : ['']);
       setWorkExperience(workArray ? workArray : ['']);
       setLanguages(languagesArray ? languagesArray : ['']);
+      if (birthDateExtracted || ageExtracted) {
+      if (calculateAge(birthDateExtracted) >= 18 || ageExtracted >= 18 ) {
+      setBirthDate(birthDateExtracted ? birthDateExtracted : '')
       setAge(ageExtracted ? ageExtracted : birthDateExtracted ? calculateAge(birthDateExtracted) : null);
       setAgeFlag(ageFlagExtracted ? ageFlagExtracted : false);
+      }
+      }
     }, [props.update])
 
     function removeLanguage() {
@@ -113,7 +118,10 @@ momentLocalizer()
         workExperienceYears: calculateWorkingYears()
       }
       console.log(curriculumData)
+      setSubmitFlag(true);
+      if (firstName && lastName) {
       props.onSubmit(curriculumData)
+      }
     }
     function calculateAge(newBirthDate) {
       console.log(newBirthDate)
@@ -124,11 +132,35 @@ momentLocalizer()
     }
 
     function calculateWorkingYears() {
-      const  reducer = (acc, curr) => {
-        const endDate = Moment(curr.endDate);
-        return acc + endDate.diff(Moment(curr.startDate), 'years', true)
+
+      const findEarliestDate = (acc, curr) => {
+        return acc.isAfter(Moment(curr.startDate)) ? Moment(curr.startDate) : acc;
       }
-      return workExperience.reduce(reducer, 0);
+
+      const findLatestDate = (acc, curr) => {
+        const compareDate = Moment(curr.endDate).isValid() ? Moment(curr.endDate) : Moment(curr.startDate).isValid() ? Moment(curr.startDate) : false;
+        if (compareDate) {
+        return acc.isBefore(compareDate) ? compareDate : acc;
+        }
+        else return acc;
+      }
+
+      // const  reducer = (acc, curr) => {
+      //   const endDate = Moment(curr.endDate);
+      //   endDate.is
+      //   return acc + endDate.diff(Moment(curr.startDate), 'years', true)
+      // }
+      // return workExperience.reduce(reducer, 0);
+
+      if (workExperience.length > 0 ) {
+     const earliestDate = workExperience.reduce(findEarliestDate, Moment())
+     const latestDate = workExperience.reduce(findLatestDate, Moment(workExperience[0].endDate))
+     console.log(earliestDate)
+     console.log(latestDate)
+     const diff = latestDate.diff(earliestDate, 'years', true)
+     return diff;
+      }
+      else return 0;
     }
       return (
         <Row className="justify-content-center">
@@ -145,28 +177,41 @@ momentLocalizer()
                       <FormGroup>
                         <Label for="Nombres">Nombres</Label>
                         <Input
+                        invalid={submitFlag && !firstName}
                           type="text"
                           name="Nombres"
                           value={firstName ? firstName : ''}
-                          onChange={e => setFirstName(e.target.value)}
+                          onChange={e => {
+                            if (submitFlag) setSubmitFlag(false);
+                            setFirstName(e.target.value)
+                          }}
                           id="nombres"
                           placeholder="Luciano"
                           disabled={props.readOnly}
                         />
+                                <FormFeedback>Por favor, inserte un nombre</FormFeedback>
                       </FormGroup>
                     </Col>
                     <Col lg={6}>
                       <FormGroup>
                         <Label for="Apellidos">Apellidos</Label>
                         <Input
+                        invalid={submitFlag && !lastName}
                           type="text"
                           name="Apellidos"
                           id="apellidos"
                           placeholder="Pinedo"
                           value={lastName ? lastName : ''}
-                          onChange={e => setLastName(e.target.value)}
+                          onChange={e =>
+                            {
+                              if (submitFlag) setSubmitFlag(false);
+                              setLastName(e.target.value)
+                            }
+
+                          }
                           disabled={props.readOnly}
                         />
+                                                        <FormFeedback>Por favor, inserte un apellido</FormFeedback>
                       </FormGroup>
                     </Col>
                   </Row>
@@ -542,7 +587,7 @@ momentLocalizer()
                               name="workExperience"
                               placeholder="Empresa/Institución"
                               className="mb-3"
-                              value={work.workplace}
+                              value={work ? work.workplace : ''}
                               onChange={e => {
                                 modifyWorkExperience(
                                   { ...work, workplace: e.target.value },
@@ -561,7 +606,7 @@ momentLocalizer()
                               name="workExperience"
                               placeholder="Posición laboral"
                               className="mb-3"
-                              value={work.workPosition}
+                              value={work ? work.workPosition : ''}
                               onChange={e => {
                                 modifyWorkExperience(
                                   { ...work, workPosition: e.target.value },
@@ -580,7 +625,7 @@ momentLocalizer()
                               name="workExperience"
                               placeholder="Especialización"
                               className="mb-3"
-                              value={work.workSpecialization}
+                              value={work ? work.workSpecialization : ''}
                               onChange={e => {
                                 modifyWorkExperience(
                                   {

@@ -25,12 +25,12 @@ const AdvancedResultsDisplay = ({advancedSearchResults,maxScore,...props}) => {
   }, [])
 
   function calculateScore(searchEntry) {
-    const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+    const {languagesFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
     workplacesFound, skillsFound, citiesFound} =searchEntry;
       const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight,skillsWeight} = searchEntry;
       const {totalLanguages, totalPreviousWorks, totalSearchTerm, totalTitles, totalUniversities, totalWorkplaces, totalSkills, totalCities} = searchEntry;
     let totalScore = 0;
-    if (languageFound) totalScore += totalLanguages;
+    if (languagesFound) totalScore += totalLanguages;
     if (previousWorksFound) totalScore += totalPreviousWorks;
     if (searchTermFound) totalScore += totalSearchTerm;
     if (titlesFound) totalScore += totalTitles;

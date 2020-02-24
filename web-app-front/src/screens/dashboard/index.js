@@ -116,6 +116,8 @@ const Dashboard = () => {
         courses: [],
         //Work data
         workExperience: [],
+        workplaces: [],
+        workPositions: [],
         age: '',
         // workExperienceYears: 0,
       }
