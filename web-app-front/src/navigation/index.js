@@ -39,8 +39,8 @@ const AppStack = () => {
     <Router>
         <Login path="/login" />
         {/* <Navbar path="/"/> */}
-        <AuthWall path="/" >
-            <Dashboard path="dashboard" default />
+        <AuthWall path="/"  >
+            <Dashboard path="dashboard" />
 
             <Search path="search" />
             <CandidateDetail path="search/:discoveryId" />
