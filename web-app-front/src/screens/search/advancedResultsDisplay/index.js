@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {  Table, Button} from 'reactstrap';
 
-import { isNumber } from 'util';
+//import { isNumber } from 'util';
 
 
 const AdvancedResultsDisplay = ({advancedSearchResults,maxScore,...props}) => {
@@ -21,13 +21,14 @@ const AdvancedResultsDisplay = ({advancedSearchResults,maxScore,...props}) => {
       return calculateScore(result2) - calculateScore(result1);
     })
     setSearchResult(srcopy)
-    console.log('test')
+
   }, [])
 
   function calculateScore(searchEntry) {
     const {languagesFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
     workplacesFound, skillsFound, citiesFound} =searchEntry;
-      const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight,skillsWeight} = searchEntry;
+      // const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight,skillsWeight} = searchEntry;
+      const {workExperienceYearsWeight} = searchEntry;
       const {totalLanguages, totalPreviousWorks, totalSearchTerm, totalTitles, totalUniversities, totalWorkplaces, totalSkills, totalCities} = searchEntry;
     let totalScore = 0;
     if (languagesFound) totalScore += totalLanguages;

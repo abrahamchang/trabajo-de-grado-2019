@@ -300,7 +300,8 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          setLanguages([...languages, languageInput])
+                          {setLanguages([...languages, languageInput]);
+                          setLanguageInput('');}
                         }
                       >
                         Agregar Idioma
@@ -328,7 +329,8 @@ import { isNumber } from 'util';
                     <Col md={12} className="mt-2">
                       <Button
                         className="mr-2"
-                        onClick={() => setTitles([...titles, titleInput])}
+                        onClick={() => {setTitles([...titles, titleInput]);
+                        setTitleInput('')}}
                       >
                         Agregar Título a la lista
                       </Button>
@@ -356,7 +358,8 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          setUniversities([...universities, universityInput])
+                          {setUniversities([...universities, universityInput])
+                          setUniversityInput('')}
                         }
                       >
                         Agregar Universidad a la lista
@@ -387,10 +390,11 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          setPreviousWorks([
+                          {setPreviousWorks([
                             ...previousWorks,
                             previousWorkInput
                           ])
+                        setPreviousWorkInput('')}
                         }
                       >
                         Agregar Cargo a la lista
@@ -419,7 +423,8 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          setWorkplaces([...workplaces, workplaceInput])
+                          {setWorkplaces([...workplaces, workplaceInput])
+                          setWorkplaceInput('')}
                         }
                       >
                         Agregar Empresa a la lista
@@ -448,7 +453,8 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          setSkills([...skills, skillInput])
+                          {setSkills([...skills, skillInput]);
+                          setSkillInput('')}
                         }
                       >
                         Agregar Habilidad a la lista
@@ -468,7 +474,7 @@ import { isNumber } from 'util';
             <TabPane tabId="3">
               <Row>
                 <Col md={6}>
-                  <Label for="Idiomas"> Ciudades en la que habita: </Label>
+                  <Label for="Idiomas"> Ciudades deseadas: </Label>
                   <Input
                     type="text"
                     value={cityInput}
@@ -478,7 +484,8 @@ import { isNumber } from 'util';
                     <Col md={12} className="mt-2">
                       <Button
                         className="mr-2"
-                        onClick={() => setCities([...cities, cityInput])}
+                        onClick={() => {setCities([...cities, cityInput]);
+                        setCityInput('')}}
                       >
                         Agregar Ciudad
                       </Button>
