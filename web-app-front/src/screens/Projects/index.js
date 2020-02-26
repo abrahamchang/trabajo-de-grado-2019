@@ -4,7 +4,7 @@ import ClosedProjectTable from './ClosedProjectTable';
 import AdvancedSearch from '../../components/advancedSearch';
 import {Container, Row, Col, Card, Button, Input, Label, Collapse, Spinner, CardTitle} from 'reactstrap';
 import Firebase from '../../firebase';
-import Navbar from '../../components/navbar';
+// import Navbar from '../../components/navbar';
 const Proyects = (props) => {
     const [newProject, setnewProject] = useState(false)
     const [projectName, setProjectName] = useState('')
@@ -51,7 +51,7 @@ const Proyects = (props) => {
 
     return props.location.pathname === '/projects' ?  (
       <>
-      <Navbar/>
+      {/* <Navbar/> */}
       <Container className="mb-2">
         <Row className="justify-content-center">
           <Col lg={12} className="d-flex flex-column">

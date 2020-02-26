@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { Location } from '@reach/router';
 
@@ -7,13 +7,17 @@ import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
 import Firebase from '../../firebase';
 
 
-const MainNavbar = () => {
-
+const MainNavbar = (props) => {
+    const [user, setUser] = useState('Usuario')
     //Temporary solution
     function findActiveKey(string) {
         const root = string.split('/')
         return '/' + root[1];
     }
+    useEffect(() => {
+        console.log(Firebase.getDisplayName())
+        if (Firebase.getDisplayName() && Firebase.getDisplayName !== user) setUser(Firebase.getDisplayName())
+    }, [Firebase.getDisplayName()])
     return (
         <Location>
             {({ location }) => (
@@ -30,7 +34,7 @@ const MainNavbar = () => {
                                 </Nav>
                             </Navbar.Collapse>
                             <Nav>
-                                <NavDropdown title={Firebase.user.displayName} id="basic-nav-dropdown">
+                                <NavDropdown title={user} id="basic-nav-dropdown">
                                     <NavDropdown.Item onClick={() => Firebase.logout()}>Cerrar sesión</NavDropdown.Item>
                                 </NavDropdown>
                             </Nav>

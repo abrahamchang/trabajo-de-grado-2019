@@ -314,7 +314,7 @@ const Dashboard = () => {
 
   return (
     <div className={s.root}>
-      <Navbar />
+      {/* <Navbar /> */}
       <Container>
         <Row className="justify-content-center">
           <Col lg={8} className="d-flex flex-column">

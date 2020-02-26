@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
 import { Router } from '@reach/router';
 
@@ -10,10 +10,35 @@ import Search from '../screens/search';
 import Projects from '../screens/projects';
 import CandidateDetail from '../screens/search/candidateDetail';
 import ProjectDetails from '../screens/projects/ProjectDetails/';
-//import Navbar from '../components/navbar'
-const AppStack = () => (
+import firebase from 'firebase/app';
+import Navbar from '../components/navbar'
+const AppStack = () => {
+    // const [uid, setUid] = useState(null);
+
+
+    // useEffect(() => {
+    //     const unsubscribe = firebase
+    //         .auth()
+    //         .onAuthStateChanged(newUser => {
+    //             if (newUser) {
+    //                 if (newUser.uid !== uid) {
+    //                     setUid(newUser.uid)
+    //                 }
+    //             }
+    //             else {
+    //                 setUid(null)
+    //             }
+    //         });
+    //     return () => unsubscribe();
+    // });
+
+
+    return (
+        <>
+        {/* {uid &&<Navbar/> } */}
     <Router>
         <Login path="/login" />
+        {/* <Navbar path="/"/> */}
         <AuthWall path="/" >
             <Dashboard path="dashboard" default />
 
@@ -25,6 +50,8 @@ const AppStack = () => (
             <CandidateDetail path="projects/:proyectId/:candidateId"/>
         </AuthWall>
     </Router>
-);
+    </>
+    )
+};
 
 export default AppStack;

@@ -6,7 +6,7 @@ import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa';
 import {TiDocumentText} from 'react-icons/ti'
 import {isNumber} from 'util';
 import Firebase from '../../../firebase'
-import Navbar from '../../../components/navbar';
+// import Navbar from '../../../components/navbar';
 
 
 export default function ProjectDetails(props) {
@@ -311,7 +311,8 @@ export default function ProjectDetails(props) {
     </Card>)
   }
   return (
-     <> <Navbar/>
+     <>
+     {/* <Navbar/> */}
      {loading ?  <Container> <Card md={8} className="d-flex justify-content-center align-items-center mb-2 mt-2"> <b className="mb-2"> Cargando proyecto </b><Spinner className="mb-2"/></Card> </Container> :  <Container className="mb-2 mt-2">
     <Row className="justify-content-center">
       <Col lg={12} className="d-flex flex-column">
