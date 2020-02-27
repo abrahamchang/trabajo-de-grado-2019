@@ -134,7 +134,6 @@ const Dashboard = () => {
               return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
             })
             let finalName = words.join(' ')
-            console.log(finalName)
             result.firstName = finalName.trim();
           }
           else if (type === 'fullName' && !result.firstName && !result.lastName) {
@@ -143,7 +142,6 @@ const Dashboard = () => {
               let trimmedWord = word.trim();
               return trimmedWord.charAt(0).toUpperCase() + trimmedWord.substring(1).toLowerCase();
             })
-            console.log(wordArray)
             if (wordArray.size === 4) {
               result.firstName = wordArray[0] + '' + wordArray[1]
               result.lastName = wordArray[2] + '' + wordArray[3]

@@ -6,7 +6,7 @@ import { Redirect } from '@reach/router';
 import LoadingScreen from '../../screens/loading';
 import Navbar from '../navbar';
 
-const AuthWall = ({ children, path}) => {
+const AuthWall = ({ children, location}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -28,9 +28,10 @@ const AuthWall = ({ children, path}) => {
     // {(!loading && user) ? children : <Redirect to="/login" noThrow />}
     // </>
     // )
+
     return (
         <>
-        {path === '/' && <Redirect to="/dashboard" noThrow /> }
+        {location.pathname === '/' && <Redirect to="/dashboard" noThrow /> }
         <Navbar/>
         {!loading && user && children }
         {!loading && !user && <Redirect to="/login" noThrow />}
