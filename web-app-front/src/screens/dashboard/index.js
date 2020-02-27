@@ -129,16 +129,27 @@ const Dashboard = () => {
         if (confidence > 0.5) {
           //Personal data extraction
           if (type === 'personFirstName' && !result.firstName) {
-            result.firstName = text
+            let words = text.split(" ")
+            words = words.map(word => {
+              return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
+            })
+            let finalName = words.join(' ')
+            console.log(finalName)
+            result.firstName = finalName.trim();
           }
           else if (type === 'fullName' && !result.firstName && !result.lastName) {
-            const wordArray = text.split(" ")
+            let wordArray = text.split(" ")
+            wordArray = wordArray.map(word => {
+              let trimmedWord = word.trim();
+              return trimmedWord.charAt(0).toUpperCase() + trimmedWord.substring(1).toLowerCase();
+            })
+            console.log(wordArray)
             if (wordArray.size === 4) {
-              result.firstName = wordArray[0] + wordArray[1]
-              result.lastName = wordArray[2] + wordArray[3]
+              result.firstName = wordArray[0] + '' + wordArray[1]
+              result.lastName = wordArray[2] + '' + wordArray[3]
             }
             else if (wordArray.size === 3) {
-              result.firstName = wordArray[0] + wordArray[1]
+              result.firstName = wordArray[0] + '' +  wordArray[1]
               result.lastName = wordArray[2]
             }
             else {
@@ -160,7 +171,12 @@ const Dashboard = () => {
             result.age = age;
           }
           else if (type === 'personLastName' && !result.lastName) {
-            result.lastName = text;
+            let words = text.split(" ")
+            words = words.map(word => {
+              return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
+            })
+            let finalName = words.join(' ')
+            result.lastName = finalName.trim();
           }
           else if (type === 'email' && !result.email) {
             result.email = text;
