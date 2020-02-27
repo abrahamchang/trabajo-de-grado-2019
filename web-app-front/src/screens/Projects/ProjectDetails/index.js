@@ -34,11 +34,12 @@ export default function ProjectDetails(props) {
   }
 
   function checkAlreadyInProject(recievedArray, fc, pc, rc) {
+    console.log(arguments)
     let candidatePoolCopy = recievedArray;
     pc.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
     })
-    console.log(candidatePoolCopy)
+
     fc.forEach(rejectedCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== rejectedCandidate.id)
     })

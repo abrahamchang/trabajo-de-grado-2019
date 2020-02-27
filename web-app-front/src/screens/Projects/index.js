@@ -39,7 +39,10 @@ const Proyects = (props) => {
           totalCandidates: 0,
           name: projectName,
           startDate: new Date(),
-          status: 'Abierto'
+          status: 'Abierto',
+          finalCandidates: [],
+          potentialCandidates: [],
+          rejectedCandidates: []
         }
         console.log(project)
         Firebase.createProject(project)
