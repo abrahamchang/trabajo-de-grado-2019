@@ -114,6 +114,8 @@ const Dashboard = () => {
         //Education data
         educationExperience: [],
         courses: [],
+        educationTitles: [],
+        educationInstitutions: [],
         //Work data
         workExperience: [],
         workplaces: [],
@@ -167,7 +169,7 @@ const Dashboard = () => {
             const telephones = text.split('/');
             telephones.forEach(telephone => {
               const formattedTelephone = telephone.replace(/[^\d]/g, '');
-              if (formattedTelephone.length >= 11) result.telephones.push(formattedTelephone);
+              if (formattedTelephone.length >= 11 && result.telephones.size < 3) result.telephones.push(formattedTelephone);
             })
           }
           else if (type === 'municipality' && !result.municipality) {
@@ -208,8 +210,24 @@ const Dashboard = () => {
           else if (type === 'course') {
             result.courses.push(text)
           }
+          else if (type === 'workplace') {
+            result.workplaces.push(text)
+          }
+          else if (type === 'workPosition') {
+            result.workPositions.push(text)
+          }
+          else if (type === 'educationTitle') {
+            result.educationTitles.push(text)
+          }
+          else if (type === "educationInstitution") {
+            result.educationInstitutions.push(text)
+          }
         }
       })
+      result.educationInstitutions = [...new Set(result.educationInstitutions)]
+      result.educationTitles = [...new Set(result.educationTitles)]
+      result.workPositions = [...new Set(result.workPositions)]
+      result.workplaces = [...new Set(result.workplaces)]
       relations.forEach(relation => {
         const { type, arguments: relationArguments } = relation
         //Work experience extraction (Must know date)
