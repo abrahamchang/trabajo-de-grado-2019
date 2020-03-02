@@ -24,8 +24,8 @@ const Search = (props) => {
       console.log(searchParams)
       setLoading(true)
       setDidFirstLoad(true)
-      //const url = 'https://us-central1-trabajo-de-grado-2019.cloudfunctions.net/advancedSearch'
-      const url = 'http://localhost:5001/trabajo-de-grado-2019/us-central1/advancedSearch'
+      const url = 'https://us-central1-trabajo-de-grado-2019.cloudfunctions.net/advancedSearch'
+      // const url = 'http://localhost:5001/trabajo-de-grado-2019/us-central1/advancedSearch'
       const postParams = {
         method: 'POST',
         headers: {

@@ -19,9 +19,9 @@ export default function ProjectDetails(props) {
   const [managementCollapse, setManagementCollapse] = useState(true);
   const [addCollapse, setAddCollapse] = useState(false);
   const [modifyCollapse, setModifyCollapse] = useState(false);
-  const {name, startDateString, projectCriteria, id} = props.location.state
+  const {name, startDateString, id} = props.location.state
   const [loading, setLoading] = useState(true)
-
+  const [projectCriteria, setProjectCriteria] = useState({})
   const [modal, setModal] = useState(false);
   const [loadingClosure, setLoadingClosure] = useState(false)
 
@@ -32,9 +32,16 @@ export default function ProjectDetails(props) {
     console.log(changes)
     return Firebase.modifyProject(changes)
   }
+  function modifySearchParams(searchParams) {
+    let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates, projectCriteria: searchParams}
+    delete changes.startDate;
+    delete changes.startDateString;
+    console.log(changes)
+    return Firebase.modifyProject(changes)
+  }
 
   function checkAlreadyInProject(recievedArray, fc, pc, rc) {
-    console.log(arguments)
+
     let candidatePoolCopy = recievedArray;
     pc.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
@@ -52,22 +59,25 @@ export default function ProjectDetails(props) {
     setCandidatePool(candidatePoolCopy)
   }
   useEffect( () => {
+
     //Initial data load
     async function getCandidatePool() {
     const url = 'https://us-central1-trabajo-de-grado-2019.cloudfunctions.net/advancedSearch'
-    const postParams = {
-      method: 'POST',
-      headers: {
-      },
-      body: JSON.stringify(projectCriteria)
-    }
     try {
+      const projectDoc = await Firebase.getProjectDocument(id)
+      const postParams = {
+        method: 'POST',
+        headers: {
+        },
+        body: JSON.stringify(projectDoc.data().projectCriteria)
+      }
       const searchResponse = await fetch(url, postParams)
       const searchResults = await searchResponse.json();
-      const projectDoc = await Firebase.getProjectDocument(id)
+
       setPotentialCandidates(projectDoc.data().potentialCandidates)
       const {finalCandidates, potentialCandidates, rejectedCandidates} = projectDoc.data();
       checkAlreadyInProject(searchResults, finalCandidates, potentialCandidates, rejectedCandidates)
+      setProjectCriteria(projectDoc.data().projectCriteria)
       setLoading(false)
     }
     catch(err) {
@@ -311,6 +321,7 @@ export default function ProjectDetails(props) {
       </Container>
     </Card>)
   }
+  console.log(projectCriteria)
   return (
      <>
      {/* <Navbar/> */}
@@ -342,7 +353,7 @@ export default function ProjectDetails(props) {
           {!readOnly && <Card className="mb-2 mt-2">
             <Button block color="secondary" onClick={() => {setModifyCollapse(!modifyCollapse)}}> Cambiar criterios del proyecto </Button>
             <Collapse isOpen={modifyCollapse}>
-            <AdvancedSearch searchParams={projectCriteria}/>
+            {!loading && <AdvancedSearch searchParams={projectCriteria} onSubmit={modifySearchParams}/>}
             </Collapse>
           </Card>}
           {!readOnly && <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>}
