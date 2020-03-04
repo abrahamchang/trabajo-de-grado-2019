@@ -326,6 +326,12 @@ const Dashboard = () => {
           result.workExperience.push(workExperience)
         }
       })
+      result.educationExperience = result.educationExperience.filter((edExp, i) => {
+        console.log('TITLE' + edExp.educationTitle)
+
+
+        return !result.educationExperience.some((item, index) => ((item.educationTitle === edExp.educationTitle) && i < index) )
+      })
       const { keywords, concepts, categories } = curriculum.analysisResult;
       result.keywords = keywords ? keywords.map(keyword => keyword.text) : null;
       result.concepts = concepts ? concepts.map(concept => concept.text) : null;
