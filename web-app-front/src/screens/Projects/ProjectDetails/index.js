@@ -37,7 +37,8 @@ export default function ProjectDetails(props) {
     delete changes.startDate;
     delete changes.startDateString;
     console.log(changes)
-    return Firebase.modifyProject(changes)
+    Firebase.modifyProject(changes)
+    return Location.reload();
   }
 
   function checkAlreadyInProject(recievedArray, fc, pc, rc) {

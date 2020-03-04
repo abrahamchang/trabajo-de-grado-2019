@@ -3,7 +3,7 @@ import 'react-widgets/dist/css/react-widgets.css';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker'
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment';
-import { Row, Col, Card, CardBody, CardTitle, CardSubtitle, Form, FormGroup, Input, Label, Button, FormFeedback } from 'reactstrap';
+import { Row, Col, Card, CardBody, CardTitle, CardSubtitle, Form, FormGroup, Input, Label, Button, FormFeedback, ListGroup, ListGroupItem } from 'reactstrap';
 
 Moment.locale('en')
 momentLocalizer()
@@ -380,6 +380,26 @@ momentLocalizer()
                     <CardTitle>
                       <b>Información Educativa</b>
                     </CardTitle>
+
+                    <CardSubtitle> Títulos educativos extraídos: </CardSubtitle>
+  <FormGroup>
+                    <ListGroup>
+{props.educationTitles && props.educationTitles.map(title => (
+  <ListGroupItem> {title} </ListGroupItem>
+))}
+    </ListGroup>
+    </FormGroup>
+
+    <CardSubtitle> Instituciones educativas extraídas: </CardSubtitle>
+<FormGroup>
+                    <ListGroup>
+  {props.educationInstitutions && props.educationInstitutions.map(institution => (
+    <ListGroupItem> {institution} </ListGroupItem>
+  ))}
+    </ListGroup>
+    </FormGroup>
+
+
                     {/* Need to think of custom IDs which do not depend on mutable elements from the data. */}
                     {educationExperience.map((education, i) => (
                       <div key={`education${i}`}>
@@ -466,7 +486,7 @@ momentLocalizer()
                               <Input
                                 type="text"
                                 name="university title"
-                                placeholder="Título Universitario"
+                                placeholder="Título"
                                 className="mb-3"
                                 value={education.educationTitle}
                                 onChange={e => {
@@ -534,6 +554,23 @@ momentLocalizer()
                   <CardTitle>
                     <b> Información Vocacional </b>
                   </CardTitle>
+                  <FormGroup>
+                    <ListGroup>
+                    <CardSubtitle> Lugares de trabajo extraídos: </CardSubtitle>
+{props.workplaces && props.workplaces.map(title => (
+  <ListGroupItem> {title} </ListGroupItem>
+))}
+    </ListGroup>
+    </FormGroup>
+
+    <CardSubtitle> Posiciones laborales extraídas: </CardSubtitle>
+<FormGroup>
+                    <ListGroup>
+  {props.workPositions && props.workPositions.map(institution => (
+    <ListGroupItem> {institution} </ListGroupItem>
+  ))}
+    </ListGroup>
+    </FormGroup>
                   {workExperience.map((work, i) => (
                     <div key={`work-${i}`}>
                       <Row form>
