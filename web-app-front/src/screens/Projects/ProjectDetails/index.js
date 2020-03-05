@@ -24,7 +24,7 @@ export default function ProjectDetails(props) {
   const [projectCriteria, setProjectCriteria] = useState({})
   const [modal, setModal] = useState(false);
   const [loadingClosure, setLoadingClosure] = useState(false)
-
+  const [maxScore, setMaxScore] = useState(0)
   function uploadChanges() {
     let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
     delete changes.startDate;
@@ -38,9 +38,16 @@ export default function ProjectDetails(props) {
     delete changes.startDateString;
     console.log(changes)
     Firebase.modifyProject(changes)
-    return Location.reload();
+    return window.location.reload();
   }
-
+  function removeRejectedCandidate(index) {
+  let candidatePoolCopy = [...candidatePool]
+  //lazy
+  candidatePoolCopy.push(  rejectedCandidates[index])
+  candidatePoolCopy.sort((a,b) => (calculateScore(b) - calculateScore(a)))
+setRejectedCandidates(rejectedCandidates.filter((item, i) => i !== index ))
+setCandidatePool(candidatePoolCopy)
+  }
   function checkAlreadyInProject(recievedArray, fc, pc, rc) {
 
     let candidatePoolCopy = recievedArray;
@@ -74,11 +81,13 @@ export default function ProjectDetails(props) {
       }
       const searchResponse = await fetch(url, postParams)
       const searchResults = await searchResponse.json();
+      console.log(searchResults)
+      searchResults.sort((a,b) => (calculateScore(b) - calculateScore(a)))
 
-      setPotentialCandidates(projectDoc.data().potentialCandidates)
       const {finalCandidates, potentialCandidates, rejectedCandidates} = projectDoc.data();
       checkAlreadyInProject(searchResults, finalCandidates, potentialCandidates, rejectedCandidates)
       setProjectCriteria(projectDoc.data().projectCriteria)
+      setMaxScore(projectDoc.data().projectCriteria.totalParams)
       setLoading(false)
     }
     catch(err) {
@@ -112,42 +121,77 @@ export default function ProjectDetails(props) {
     setProjectModified(true)
     console.log(projectModified)
   }
-  function calculateMaxScore(searchEntry) {
-    const values = Object.values(searchEntry);
-    const reducer = (acc, curr) => { return isNumber(curr) ? acc + curr : acc }
-    return values.reduce(reducer, 0)
-  }
+  // function calculateMaxScore(searchEntry) {
+  //   const values = Object.values(searchEntry);
+  //   const reducer = (acc, curr) => { return isNumber(curr) ? acc + curr : acc }
+  //   return values.reduce(reducer, 0)
+  // }
 
+  // function calculateScore(searchEntry) {
+  //   const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+  //   workplacesFound} =searchEntry;
+  //     const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight} = searchEntry;
+  //   let totalScore = 0;
+  //   if (languageFound) totalScore += languageWeight;
+  //   if (previousWorksFound) totalScore += previousWorksWeight;
+  //   if (searchTermFound) totalScore += searchTermWeight;
+  //   if (titlesFound) totalScore += titlesWeight;
+  //   if (universitiesFound) totalScore += universitiesWeight;
+  //   if (workExperienceYearsFound) totalScore += workExperienceYearsWeight;
+  //   if (workplacesFound) totalScore += workplacesWeight
+  //   return totalScore
+  // }
+  // function parametersFound(searchEntry) {
+  //   const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+  //     workplacesFound} = searchEntry;
+  //     let parametersFound = '';
+  //   if (languageFound) parametersFound += 'Idiomas, ';
+  //   if (previousWorksFound) parametersFound += 'Trabajos previos, ';
+  //   if (searchTermFound) parametersFound += 'Términos de búsqueda, ';
+  //   if (titlesFound) parametersFound += 'Títulos, ';
+  //   if (universitiesFound) parametersFound += 'Universidades, ';
+  //   if (workExperienceYearsFound) parametersFound += 'Años de experiencia, ';
+  //   if (workplacesFound) parametersFound += 'Empresas de referencía, '
+  //   parametersFound = parametersFound.trim();
+
+  //   return parametersFound.replace(/.$/,".")
+  // }
   function calculateScore(searchEntry) {
-    const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
-    workplacesFound} =searchEntry;
-      const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight} = searchEntry;
+    const {languagesFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+    workplacesFound, skillsFound, citiesFound} =searchEntry;
+      // const {languageWeight, previousWorksWeight, searchTermWeight, titlesWeight, universitiesWeight, workExperienceYearsWeight, workplacesWeight,skillsWeight} = searchEntry;
+      const {workExperienceYearsWeight} = searchEntry;
+      const {totalLanguages, totalPreviousWorks, totalSearchTerm, totalTitles, totalUniversities, totalWorkplaces, totalSkills, totalCities} = searchEntry;
     let totalScore = 0;
-    if (languageFound) totalScore += languageWeight;
-    if (previousWorksFound) totalScore += previousWorksWeight;
-    if (searchTermFound) totalScore += searchTermWeight;
-    if (titlesFound) totalScore += titlesWeight;
-    if (universitiesFound) totalScore += universitiesWeight;
+    if (languagesFound) totalScore += totalLanguages;
+    if (previousWorksFound) totalScore += totalPreviousWorks;
+    if (searchTermFound) totalScore += totalSearchTerm;
+    if (titlesFound) totalScore += totalTitles;
+    if (universitiesFound) totalScore += totalUniversities;
     if (workExperienceYearsFound) totalScore += workExperienceYearsWeight;
-    if (workplacesFound) totalScore += workplacesWeight
+    if (workplacesFound) totalScore += totalWorkplaces;
+      if (skillsFound) totalScore += totalSkills;
+      if (citiesFound) totalScore += totalCities;
     return totalScore
   }
   function parametersFound(searchEntry) {
-    const {languageFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
-      workplacesFound} = searchEntry;
+    const {languagesFound, previousWorksFound, searchTermFound, titlesFound, universitiesFound, workExperienceYearsFound,
+      workplacesFound, skillsFound, citiesFound} = searchEntry;
+      const {totalLanguages, totalPreviousWorks, totalSearchTerm, totalTitles, totalUniversities, totalWorkplaces, totalSkills, totalCities} = searchEntry;
       let parametersFound = '';
-    if (languageFound) parametersFound += 'Idiomas, ';
-    if (previousWorksFound) parametersFound += 'Trabajos previos, ';
-    if (searchTermFound) parametersFound += 'Términos de búsqueda, ';
-    if (titlesFound) parametersFound += 'Títulos, ';
-    if (universitiesFound) parametersFound += 'Universidades, ';
-    if (workExperienceYearsFound) parametersFound += 'Años de experiencia, ';
-    if (workplacesFound) parametersFound += 'Empresas de referencía, '
+    if (languagesFound) parametersFound += `Idiomas (${totalLanguages}), `;
+    if (previousWorksFound) parametersFound += `Trabajos previos (${totalPreviousWorks}), `;
+    if (searchTermFound) parametersFound += `Términos de búsqueda (${totalSearchTerm}), `;
+    if (titlesFound) parametersFound += `Títulos (${totalTitles}), `;
+    if (universitiesFound) parametersFound += `Universidades (${totalUniversities}), `;
+    if (workExperienceYearsFound) parametersFound += `Años de experiencia, `;
+    if (workplacesFound) parametersFound += `Empresas de referencía (${totalWorkplaces}), `;
+    if (skillsFound) parametersFound += `Habilidades (${totalSkills}), `
+    if (citiesFound) parametersFound += `Ciudad (${totalCities}), `
     parametersFound = parametersFound.trim();
 
     return parametersFound.replace(/.$/,".")
   }
-
   function CloseProjectModal() {
     const toggle = () => setModal(!modal);
 
@@ -174,54 +218,96 @@ export default function ProjectDetails(props) {
 
 
   function AddToProject() {
-    return (<Card>
-      <Row className="d-flex justify-content-between">
-        <Col md={6}>
-          <h4 className="text-center"> Candidatos Recomendados </h4>
-          <Table >
+
+
+
+    if (candidatePool && candidatePool.length !== 0) {
+        return (
+          <Table>
             <thead>
               <tr>
-          <th> Nombre completo </th>
-              <th> Puntuación </th>
-              <th> Det. </th>
-              <th> Agregar </th>
+                <th> Nombre </th>
+                <th> Apellido </th>
+                <th> Puntuación </th>
+                <th> Parámetros cumplidos </th>
+                <th></th>
+                <th> </th>
               </tr>
-              </thead>
-              <tbody>
-              {candidatePool.map((candidate, i) => (
-          <tr key={candidate.id}>
-            <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
-            <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> <FaInfo/> </Button></td>
-            <td> <Button color="primary" onClick={() => {moveCandidate(i, candidatePool, setCandidatePool, potentialCandidates, setPotentialCandidates)}}> <FaArrowRight/> </Button></td>
-          </tr>
-        ))}
-        </tbody>
-              </Table>
-        </Col>
-        <Col md={6}>
-        <h4 className="text-center"> Candidatos Potenciales del Proyecto</h4>
-        <Table >
-          <thead>
-            <tr>
-        <th> Nombre completo </th>
-              <th> Puntuación </th>
-              <th> Det. </th>
-              </tr>
-              </thead>
-              <tbody>
-              {potentialCandidates.map(candidate => (
-          <tr key={candidate.id}>
- <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
-            <td> <Button color="info"> <FaInfo/> </Button></td>
-          </tr>
-        ))}
-        </tbody>
-              </Table>
-        </Col>
-      </Row>
-    </Card>)
+            </thead>
+            <tbody>
+              {candidatePool.map((candidate, i) =>
+               {const {firstName, lastName} = candidate.curriculumData;
+
+                 return (<tr key={candidate.id}>
+                  <td> {firstName} </td>
+                  <td> {lastName} </td>
+                  <td> {calculateScore(candidate)}/{maxScore} ({(calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ): 0).toFixed(2)}%)  </td>
+                  <td> {parametersFound(candidate)} </td>
+                  <td>
+                    <Button color="primary" onClick={() => props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}> Ver más </Button>
+                  </td>
+                  <td>
+                    <Button color="primary" onClick={() => {moveCandidate(i, candidatePool, setCandidatePool, potentialCandidates, setPotentialCandidates)}}> Agregar </Button>
+                  </td>
+                </tr>)}
+              )}
+            </tbody>
+          </Table>
+        );
+              }
+              else {
+                  return (
+                      <p> La búsqueda no tuvo resultados. </p>
+                  )
+              }
+//     return (<Card>
+//       <Row className="d-flex justify-content-between">
+//         <Col md={6}>
+//           <h4 className="text-center"> Candidatos Recomendados </h4>
+//           <Table >
+//             <thead>
+//               <tr>
+//           <th> Nombre completo </th>
+//               <th> Puntuación </th>
+//               <th> Det. </th>
+//               <th> Agregar </th>
+//               </tr>
+//               </thead>
+//               <tbody>
+//               {candidatePool.map((candidate, i) => (
+//           <tr key={candidate.id}>
+//             <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
+//             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+//             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> <FaInfo/> </Button></td>
+//             <td> <Button color="primary" onClick={() => {moveCandidate(i, candidatePool, setCandidatePool, potentialCandidates, setPotentialCandidates)}}> <FaArrowRight/> </Button></td>
+//           </tr>
+//         ))}
+//         </tbody>
+//               </Table>
+//         </Col>
+//         <Col md={6}>
+//         <h4 className="text-center"> Candidatos Potenciales del Proyecto</h4>
+//         <Table >
+//           <thead>
+//             <tr>
+//         <th> Nombre completo </th>
+//               <th> Puntuación </th>
+//               <th> Det. </th>
+//               </tr>
+//               </thead>
+//               <tbody>
+//               {potentialCandidates.map(candidate => (
+//           <tr key={candidate.id}>
+//  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
+//             <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+//             <td> <Button color="info"> <FaInfo/> </Button></td>
+//           </tr>
+//         ))}
+//         </tbody>
+//               </Table>
+//         </Col>
+//       </Row>
+//     </Card>)
   }
 
   function PotentialTable() {
@@ -240,10 +326,10 @@ export default function ProjectDetails(props) {
         {potentialCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> <TiDocumentText size={24}/> </Button></td>
-        {!readOnly && <td>  <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> Seleccionar </Button>}</td> }
+        {!readOnly && <td>  <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> Seleccionar </Button></td> }
             {!readOnly && <td> <Button onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, rejectedCandidates, setRejectedCandidates)}> <FaArrowDown /> Rechazar </Button></td>}
           </tr>
         ))}
@@ -272,11 +358,11 @@ export default function ProjectDetails(props) {
         {rejectedCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
         {!readOnly && <td>  <Button color="primary" onClick={() => moveCandidate(i, rejectedCandidates, setRejectedCandidates, potentialCandidates, setPotentialCandidates)}> <FaArrowUp/> </Button></td> }
-            {!readOnly && <td>  <Button color="danger"> Remover candidato </Button> </td> }
+            {!readOnly && <td>  <Button color="danger" onClick={() => removeRejectedCandidate(i)}> Remover candidato </Button> </td> }
             <td></td>
           </tr>
         ))}
@@ -300,7 +386,7 @@ export default function ProjectDetails(props) {
         {finalCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{calculateMaxScore(candidate)} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / calculateMaxScore(candidate) ): 0}%) </td>
+            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
         {!readOnly && <td> <Button onClick={() => moveCandidate(i, finalCandidates, setFinalCandidates, potentialCandidates, setPotentialCandidates)}><FaArrowDown/></Button> </td> }

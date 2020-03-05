@@ -385,7 +385,7 @@ momentLocalizer()
   <FormGroup>
                     <ListGroup>
 {props.educationTitles && props.educationTitles.map(title => (
-  <ListGroupItem> {title} </ListGroupItem>
+  <ListGroupItem  key={title}> {title} </ListGroupItem>
 ))}
     </ListGroup>
     </FormGroup>
@@ -394,7 +394,7 @@ momentLocalizer()
 <FormGroup>
                     <ListGroup>
   {props.educationInstitutions && props.educationInstitutions.map(institution => (
-    <ListGroupItem> {institution} </ListGroupItem>
+    <ListGroupItem  key={institution}> {institution} </ListGroupItem>
   ))}
     </ListGroup>
     </FormGroup>
@@ -557,8 +557,8 @@ momentLocalizer()
                   <FormGroup>
                     <ListGroup>
                     <CardSubtitle> Lugares de trabajo extraídos: </CardSubtitle>
-{props.workplaces && props.workplaces.map(title => (
-  <ListGroupItem> {title} </ListGroupItem>
+{props.workplaces && props.workplaces.map(workplace => (
+  <ListGroupItem key={workplace}> {workplace} </ListGroupItem>
 ))}
     </ListGroup>
     </FormGroup>
@@ -566,8 +566,8 @@ momentLocalizer()
     <CardSubtitle> Posiciones laborales extraídas: </CardSubtitle>
 <FormGroup>
                     <ListGroup>
-  {props.workPositions && props.workPositions.map(institution => (
-    <ListGroupItem> {institution} </ListGroupItem>
+  {props.workPositions && props.workPositions.map((workPosition, i) => (
+    <ListGroupItem  key={`${workPosition}${i}`}> {workPosition} </ListGroupItem>
   ))}
     </ListGroup>
     </FormGroup>
