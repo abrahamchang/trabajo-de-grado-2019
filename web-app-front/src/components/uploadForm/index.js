@@ -4,7 +4,7 @@ import DateTimePicker from 'react-widgets/lib/DateTimePicker'
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment';
 import { Row, Col, Card, CardBody, CardTitle, CardSubtitle, Form, FormGroup, Input, Label, Button, FormFeedback, ListGroup, ListGroupItem } from 'reactstrap';
-
+import { MdCancel } from "react-icons/md";
 Moment.locale('en')
 momentLocalizer()
 
@@ -23,11 +23,16 @@ momentLocalizer()
      const [age, setAge] = useState('')
      const [ageFlag, setAgeFlag] = useState(false)
      const [submitFlag, setSubmitFlag] = useState(false)
+     const [workplaces, setWorkplaces] = useState([])
+     const [institutions, setInstitutions] = useState([])
+     const [workPositions, setWorkPositions] = useState([])
+     const [titles, setTitles] = useState([])
     useEffect(() => {
 
-      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languages: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray,  age: ageExtracted, ageFlag : ageFlagExtracted } = props;
+      const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languages: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray,  age: ageExtracted, ageFlag : ageFlagExtracted, educationTitles: titlesE, educationInstitutions: institutionsE, workplaces: workplacesE, workPositions: workPositionsE} = props;
 
       console.log(props)
+      console.log(workPositionsE, institutionsE)
       setFirstName(firstNameExtracted ? firstNameExtracted : '')
       setLastName(lastNameExtracted ? lastNameExtracted : '')
       setEmail(emailExtracted ? emailExtracted : '')
@@ -38,6 +43,10 @@ momentLocalizer()
       setTelephones(telephonesArray ? telephonesArray : ['']);
       setWorkExperience(workArray ? workArray : ['']);
       setLanguages(languagesArray ? languagesArray : ['']);
+      setWorkPositions(workPositionsE ? workPositionsE : []);
+      setWorkplaces(workplacesE ? workplacesE : []);
+      setInstitutions(institutionsE ? institutionsE : []);
+      setTitles(titlesE ? titlesE : []);
       if (birthDateExtracted || ageExtracted) {
       if (calculateAge(birthDateExtracted) >= 18 || ageExtracted >= 18 ) {
       setBirthDate(birthDateExtracted ? birthDateExtracted : '')
@@ -45,6 +54,7 @@ momentLocalizer()
       setAgeFlag(ageFlagExtracted ? ageFlagExtracted : false);
       }
       }
+
     }, [props.update])
 
     function removeLanguage() {
@@ -95,8 +105,26 @@ momentLocalizer()
       setEducationExperience(educationExperienceCopy)
     }
 
-
-
+    function removeTitle(i) {
+      const titlesCopy = [...titles]
+      titlesCopy.splice(i, 1)
+      setTitles(titlesCopy)
+    }
+    function removeInstitution(i) {
+      const institutionsCopy = [...institutions]
+      institutionsCopy.splice(i,1)
+      setInstitutions(institutionsCopy)
+    }
+    function removeWorkplace(i) {
+      const workplacesCopy = [...workplaces]
+      workplacesCopy.splice(i, 1)
+      setWorkplaces(workplacesCopy)
+    }
+    function removeWorkPosition(i) {
+      const workPositionsCopy = [...workPositions]
+      workPositionsCopy.splice(i, 1)
+      setWorkPositions(workPositionsCopy)
+    }
     function uploadForm() {
       const curriculumData = {
         firstName: firstName,
@@ -186,7 +214,7 @@ momentLocalizer()
                             setFirstName(e.target.value)
                           }}
                           id="nombres"
-                          placeholder="Luciano"
+                          placeholder="Nombre"
                           disabled={props.readOnly}
                         />
                                 <FormFeedback>Por favor, inserte un nombre</FormFeedback>
@@ -200,7 +228,7 @@ momentLocalizer()
                           type="text"
                           name="Apellidos"
                           id="apellidos"
-                          placeholder="Pinedo"
+                          placeholder="Apellido"
                           value={lastName ? lastName : ''}
                           onChange={e =>
                             {
@@ -384,8 +412,12 @@ momentLocalizer()
                     <CardSubtitle> Títulos educativos extraídos: </CardSubtitle>
   <FormGroup>
                     <ListGroup>
-{props.educationTitles && props.educationTitles.map(title => (
-  <ListGroupItem  key={title}> {title} </ListGroupItem>
+{props.educationTitles && titles.map((title, i) => (
+  <ListGroupItem  key={title} className="d-flex align-items-center justify-content-between"> <div className="w-75">{title}</div>
+  <Button close aria-label="Cancel">
+<MdCancel size={24} color="gray" onClick={() => {removeTitle(i)}}/>
+</Button>
+</ListGroupItem>
 ))}
     </ListGroup>
     </FormGroup>
@@ -393,14 +425,19 @@ momentLocalizer()
     <CardSubtitle> Instituciones educativas extraídas: </CardSubtitle>
 <FormGroup>
                     <ListGroup>
-  {props.educationInstitutions && props.educationInstitutions.map(institution => (
-    <ListGroupItem  key={institution}> {institution} </ListGroupItem>
+                      {console.log(props.educationInstitutions,institutions)}
+  {props.educationInstitutions && institutions.map((institution, i) => (
+
+    <ListGroupItem  key={institution} className="d-flex align-items-center justify-content-between"className="d-flex align-items-center justify-content-between"> <div> {institution} </div> <Button close aria-label="Cancel">
+    <MdCancel size={24} color="gray" onClick={() => {removeInstitution(i)}}/>
+    </Button> </ListGroupItem>
   ))}
     </ListGroup>
     </FormGroup>
 
 
                     {/* Need to think of custom IDs which do not depend on mutable elements from the data. */}
+                    <CardTitle> Información educativa detallada: </CardTitle>
                     {educationExperience.map((education, i) => (
                       <div key={`education${i}`}>
                         <CardSubtitle> Educación {i + 1} </CardSubtitle>
@@ -557,8 +594,10 @@ momentLocalizer()
                   <FormGroup>
                     <ListGroup>
                     <CardSubtitle> Lugares de trabajo extraídos: </CardSubtitle>
-{props.workplaces && props.workplaces.map(workplace => (
-  <ListGroupItem key={workplace}> {workplace} </ListGroupItem>
+{props.workplaces && workplaces.map((workplace,i) => (
+  <ListGroupItem key={workplace} className="d-flex align-items-center justify-content-between"className="d-flex align-items-center justify-content-between"> <div> {workplace} </div> <Button close aria-label="Cancel">
+  <MdCancel size={24} color="gray" onClick={() => {removeWorkplace(i)}}/>
+  </Button>  </ListGroupItem>
 ))}
     </ListGroup>
     </FormGroup>
@@ -566,11 +605,16 @@ momentLocalizer()
     <CardSubtitle> Posiciones laborales extraídas: </CardSubtitle>
 <FormGroup>
                     <ListGroup>
-  {props.workPositions && props.workPositions.map((workPosition, i) => (
-    <ListGroupItem  key={`${workPosition}${i}`}> {workPosition} </ListGroupItem>
+  {props.workPositions && workPositions.map((workPosition, i) => (
+    <ListGroupItem  key={`${workPosition}${i}`} className="d-flex align-items-center justify-content-between"className="d-flex align-items-center justify-content-between"> <div> {workPosition} </div>
+    <Button close aria-label="Cancel" onClick={() => {removeWorkPosition(i)}}> <MdCancel size={24} color="gray" onClick={() => {removeTitle(i)}}/></Button>  </ListGroupItem>
+
   ))}
     </ListGroup>
     </FormGroup>
+    <CardTitle>
+      <b>Información laboral detallada:</b>
+    </CardTitle>
                   {workExperience.map((work, i) => (
                     <div key={`work-${i}`}>
                       <Row form>
