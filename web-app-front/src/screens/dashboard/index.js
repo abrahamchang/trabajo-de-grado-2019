@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Moment from 'moment'
-import { Container, Row, Col, Card, CardBody, CardTitle, Spinner } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardTitle, Spinner, Alert } from 'reactstrap';
 
 import { useDropzone } from 'react-dropzone';
 import Navbar from '../../components/navbar';
@@ -25,11 +25,19 @@ const Dashboard = () => {
   const [firstLoad, setFirstLoad] = useState(true)
   const [loadingUpload, setLoadingUpload] = useState(false)
   const [loadingDiscovery, setLoadingDiscovery] = useState(false)
+
+  //Warning and errors
+  const [warning, setWarning] = useState(false)
+  const [warningMessage, setWarningMessage] = useState('')
+  const [extractionError, setExtractionError] = useState('')
   const onDrop = useCallback((acceptedFiles) => {
     const fileRequests = [];
     setFirstLoad(false)
     setLoadingAnalysis(true)
+    setWarning(false)
+    setExtractionError('')
     acceptedFiles.forEach((file, index) => {
+
       const reader = new FileReader();
       reader.onload = async (event) => {
         let b64 = reader.result.replace(/^data:.+;base64,/, '');
@@ -42,12 +50,15 @@ const Dashboard = () => {
         try {
           const analysisResponse = await fetch(url, postParams);
           const data = await analysisResponse.json();
+
           fileRequests.push(data)
           index + 1 === acceptedFiles.length && console.log(fileRequests);
           index + 1 === acceptedFiles.length && organizeData(fileRequests);
           index + 1 === acceptedFiles.length && setLoadingAnalysis(false);
         } catch (err) {
           console.log(err)
+          setExtractionError('Hubo un error con la extracción del documento. Revise que el texto del documento no sea una imagen (El documento debe contener caracteres legibles).')
+          setLoadingAnalysis(false);
         }
       }
       //Enviar a Watson
@@ -123,7 +134,7 @@ const Dashboard = () => {
         age: '',
         // workExperienceYears: 0,
       }
-      const { entities, relations } = curriculum.analysisResult;
+      const { entities, relations, language } = curriculum.analysisResult;
       entities.forEach(entity => {
         const { type, confidence, text } = entity
         if (confidence > 0.5) {
@@ -341,9 +352,21 @@ const Dashboard = () => {
       result.skills = [...new Set(result.skills)]
       //End of duplicate removal
       extractedData.push(result)
+      console.log(result.language)
+      if (language === 'zh') {
+        setWarning(true);
+        setWarningMessage('El documento parece estar codificado en un idioma distinto al español.')
+      }
+      else if (language !== 'es') {
+      setWarning(true);
+      setWarningMessage('El documento utilizado no se encuentra en español. Esto puede afectar la extracción automática de entidades del curriculum.')
+      }
+
+
     })
     console.log(extractedData)
     setCurriculumsInformation(extractedData)
+
   }
 
 
@@ -376,12 +399,12 @@ const Dashboard = () => {
                   {loadingAnalysis ? (
                     <Spinner className={s.uploadIcon} />
                   ) : (
-                      <img
-                        className={s.uploadIcon}
-                        src={FileUploadIcon}
-                        alt="File upload icon."
-                      />
-                    )}
+                    <img
+                      className={s.uploadIcon}
+                      src={FileUploadIcon}
+                      alt="File upload icon."
+                    />
+                  )}
                   <h5>Arrastre los documentos aquí o Haga clic.</h5>
                   <p className="h6">Solo formatos PDF o DOC.</p>
                 </div>
@@ -390,13 +413,19 @@ const Dashboard = () => {
             <div
               className={firstLoad || loadingAnalysis ? `${s.hidden}` : null}
             >
+              {warning && (
+                <Alert color="warning">
+{warningMessage}
+                </Alert>
+              )}
+              {extractionError && <Alert color="danger"> {extractionError}</Alert>}
               {UploadForm(
                 curriculumsInformation[0]
                   ? {
-                    ...curriculumsInformation[0],
-                    update: true,
-                    onSubmit: uploadDocumentData
-                  }
+                      ...curriculumsInformation[0],
+                      update: true,
+                      onSubmit: uploadDocumentData
+                    }
                   : { update: false }
               )}
             </div>
@@ -418,10 +447,13 @@ const Dashboard = () => {
           : null}
         {loadingDiscovery ? (
           <Row className="justify-content-center">
-            <Col className="d-flex flex-column" lg={8} >
-              <Card >
+            <Col className="d-flex flex-column" lg={8}>
+              <Card>
                 <Col className="d-flex flex-column justify-content-center align-items-center">
-                  <CardTitle> <h3> Cargando Discovery </h3></CardTitle>
+                  <CardTitle>
+                    {' '}
+                    <h3> Cargando Discovery </h3>
+                  </CardTitle>
                   <Spinner />
                 </Col>
               </Card>
