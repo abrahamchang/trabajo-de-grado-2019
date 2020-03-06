@@ -134,7 +134,7 @@ const Dashboard = () => {
         age: '',
         // workExperienceYears: 0,
       }
-      const { entities, relations, language } = curriculum.analysisResult;
+      const { entities, relations, language, warnings } = curriculum.analysisResult;
       entities.forEach(entity => {
         const { type, confidence, text } = entity
         if (confidence > 0.5) {
@@ -353,9 +353,16 @@ const Dashboard = () => {
       //End of duplicate removal
       extractedData.push(result)
       console.log(result.language)
-      if (language === 'zh') {
+      if (language === 'zh' || language === 'ca') {
         setWarning(true);
         setWarningMessage('El documento parece estar codificado en un idioma distinto al español.')
+      }
+       else if (warnings) {
+        if (warnings.some(warning => warning.includes('unsupported text language'))) {
+          setWarning(true);
+          setWarningMessage('El documento parece estar codificado en un idioma distinto al español.')
+        }
+
       }
       else if (language !== 'es') {
       setWarning(true);
