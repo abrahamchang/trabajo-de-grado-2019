@@ -100,6 +100,18 @@ class Firebase {
         if (projectInfoCopy.id) delete projectInfoCopy.id
         return this.db.collection('Projects').doc(projectInfo.id).update(projectInfoCopy)
     }
+    // async updateDb() {
+    //     const col = await this.db.collection('Curriculums').get();
+    //     for (const doc of col.docs) {
+    //         let obj = {
+    //             educationInstitutions: [],
+    //             educationTitles: [],
+    //             workplaces: [],
+    //             workPositions: []
+    //         }
+    //         this.db.collection('Curriculums').doc(doc.id).set(obj, {merge: true})
+    //     }
+    // }
 }
 
 export default new Firebase();

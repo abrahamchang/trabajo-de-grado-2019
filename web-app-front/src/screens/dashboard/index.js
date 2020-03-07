@@ -19,7 +19,7 @@ const Dashboard = () => {
   const [curriculumsInformation, setCurriculumsInformation] = useState([])
   const [files, setFiles] = useState([])
   const [storedB64, setB64] = useState(null);
-
+  Firebase.updateDb();
   //Loading vars
   const [loadingAnalysis, setLoadingAnalysis] = useState(false)
   const [firstLoad, setFirstLoad] = useState(true)
