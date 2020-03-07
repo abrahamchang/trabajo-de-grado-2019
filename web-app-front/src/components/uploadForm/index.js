@@ -428,7 +428,7 @@ momentLocalizer()
                       {console.log(props.educationInstitutions,institutions)}
   {props.educationInstitutions && institutions.map((institution, i) => (
 
-    <ListGroupItem  key={institution} className="d-flex align-items-center justify-content-between"className="d-flex align-items-center justify-content-between"> <div> {institution} </div> <Button close aria-label="Cancel">
+    <ListGroupItem  key={institution} className="d-flex align-items-center justify-content-between"> <div> {institution} </div> <Button close aria-label="Cancel">
     <MdCancel size={24} color="gray" onClick={() => {removeInstitution(i)}}/>
     </Button> </ListGroupItem>
   ))}
@@ -595,7 +595,7 @@ momentLocalizer()
                     <ListGroup>
                     <CardSubtitle> Lugares de trabajo extraídos: </CardSubtitle>
 {props.workplaces && workplaces.map((workplace,i) => (
-  <ListGroupItem key={workplace} className="d-flex align-items-center justify-content-between"className="d-flex align-items-center justify-content-between"> <div> {workplace} </div> <Button close aria-label="Cancel">
+  <ListGroupItem key={workplace} className="d-flex align-items-center justify-content-between"> <div> {workplace} </div> <Button close aria-label="Cancel">
   <MdCancel size={24} color="gray" onClick={() => {removeWorkplace(i)}}/>
   </Button>  </ListGroupItem>
 ))}
@@ -606,7 +606,7 @@ momentLocalizer()
 <FormGroup>
                     <ListGroup>
   {props.workPositions && workPositions.map((workPosition, i) => (
-    <ListGroupItem  key={`${workPosition}${i}`} className="d-flex align-items-center justify-content-between"className="d-flex align-items-center justify-content-between"> <div> {workPosition} </div>
+    <ListGroupItem  key={`${workPosition}${i}`} className="d-flex align-items-center justify-content-between"> <div> {workPosition} </div>
     <Button close aria-label="Cancel" onClick={() => {removeWorkPosition(i)}}> <MdCancel size={24} color="gray" onClick={() => {removeTitle(i)}}/></Button>  </ListGroupItem>
 
   ))}

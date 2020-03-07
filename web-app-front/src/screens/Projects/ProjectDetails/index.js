@@ -2,9 +2,9 @@ import React, {useState, useEffect} from 'react'
 import {CardTitle, CardSubtitle,  Card, Container, Row, Col, Table, Button, Collapse, Spinner} from 'reactstrap'
 import {Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import AdvancedSearch from '../../../components/advancedSearch';
-import {FaArrowUp, FaArrowDown, FaArrowRight, FaInfo} from 'react-icons/fa';
+import {FaArrowUp, FaArrowDown} from 'react-icons/fa';
 import {TiDocumentText} from 'react-icons/ti'
-import {isNumber} from 'util';
+
 import Firebase from '../../../firebase'
 // import Navbar from '../../../components/navbar';
 

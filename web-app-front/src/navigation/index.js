@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 import { Router } from '@reach/router';
 
@@ -10,8 +10,7 @@ import Search from '../screens/search';
 import Projects from '../screens/projects';
 import CandidateDetail from '../screens/search/candidateDetail';
 import ProjectDetails from '../screens/projects/ProjectDetails/';
-import firebase from 'firebase/app';
-import Navbar from '../components/navbar'
+
 const AppStack = () => {
     // const [uid, setUid] = useState(null);
 
