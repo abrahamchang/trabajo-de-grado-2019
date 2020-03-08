@@ -326,7 +326,7 @@ setCandidatePool(candidatePoolCopy)
         {potentialCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ): 0}%) </td>
+            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ).toFixed(2): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> <TiDocumentText size={24}/> </Button></td>
         {!readOnly && <td>  <Button color="primary" onClick={() => moveCandidate(i, potentialCandidates, setPotentialCandidates, finalCandidates, setFinalCandidates)}> <FaArrowUp/> Seleccionar </Button></td> }
@@ -358,7 +358,7 @@ setCandidatePool(candidatePoolCopy)
         {rejectedCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ): 0}%) </td>
+            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ).toFixed(2): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
         {!readOnly && <td>  <Button color="primary" onClick={() => moveCandidate(i, rejectedCandidates, setRejectedCandidates, potentialCandidates, setPotentialCandidates)}> <FaArrowUp/> </Button></td> }
@@ -386,7 +386,7 @@ setCandidatePool(candidatePoolCopy)
         {finalCandidates.map((candidate, i) => (
           <tr key={candidate.id}>
  <td> {`${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`}</td>
-            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ): 0}%) </td>
+            <td> {calculateScore(candidate)}/{maxScore} ({calculateScore(candidate) !== 0 ?(  (calculateScore(candidate)   * 100) / maxScore ).toFixed(2): 0}%) </td>
             <td> {parametersFound(candidate)} </td>
             <td> <Button color="info" onClick={() => {props.navigate(`${candidate.curriculumData.discoveryId}`, {state: candidate})}}> Ver detalles </Button></td>
         {!readOnly && <td> <Button onClick={() => moveCandidate(i, finalCandidates, setFinalCandidates, potentialCandidates, setPotentialCandidates)}><FaArrowDown/></Button> </td> }
