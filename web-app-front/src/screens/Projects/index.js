@@ -90,7 +90,7 @@ const Proyects = (props) => {
                     <Col md={12} className="mb-2 mt-2">
                       <b> Condiciones de búsqueda </b>
                     </Col>
-                    <AdvancedSearch projects onSubmit={createProject} />
+                    <AdvancedSearch projects onSubmit={(pc) => {createProject(pc); setnewProject(!newProject)}} />
                   </Row>
                 </Collapse>
               </Col>
