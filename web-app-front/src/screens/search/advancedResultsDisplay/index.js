@@ -40,6 +40,9 @@ const AdvancedResultsDisplay = ({advancedSearchResults,maxScore,...props}) => {
     if (workplacesFound) totalScore += totalWorkplaces;
       if (skillsFound) totalScore += totalSkills;
       if (citiesFound) totalScore += totalCities;
+      if (isNaN(totalScore)) {
+        console.log(searchEntry)
+      }
     return totalScore
   }
   function parametersFound(searchEntry) {

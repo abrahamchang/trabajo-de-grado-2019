@@ -32,7 +32,7 @@ momentLocalizer()
       const {firstName: firstNameExtracted, lastName: lastNameExtracted, email: emailExtracted, birthDate: birthDateExtracted, municipality: municipalityExtracted, city: cityExtracted, state: stateExtracted, languages: languagesArray, educationExperience: educationArray, workExperience: workArray, telephones: telephonesArray,  age: ageExtracted, ageFlag : ageFlagExtracted, educationTitles: titlesE, educationInstitutions: institutionsE, workplaces: workplacesE, workPositions: workPositionsE} = props;
 
       console.log(props)
-      console.log(workPositionsE, institutionsE)
+
       setFirstName(firstNameExtracted ? firstNameExtracted : '')
       setLastName(lastNameExtracted ? lastNameExtracted : '')
       setEmail(emailExtracted ? emailExtracted : '')
@@ -425,7 +425,7 @@ momentLocalizer()
     <CardSubtitle> Instituciones educativas extraídas: </CardSubtitle>
 <FormGroup>
                     <ListGroup>
-                      {console.log(props.educationInstitutions,institutions)}
+
   {props.educationInstitutions && institutions.map((institution, i) => (
 
     <ListGroupItem  key={institution} className="d-flex align-items-center justify-content-between"> <div> {institution} </div> <Button close aria-label="Cancel">

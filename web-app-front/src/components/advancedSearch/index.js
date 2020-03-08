@@ -114,6 +114,9 @@ import { isNumber } from 'util';
           if (property === 'cities' && request['cities']) {
             totalParams++;
           }
+          else if (property === 'workExperienceYears' && request['workExperienceYears'] && request['workExperienceYears'].value) {
+            totalParams++;
+          }
           else {
           totalParams += request[property] && request[property].value ? request[property].value.length : 0
           }

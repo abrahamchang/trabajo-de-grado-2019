@@ -56,7 +56,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (titles) {
     let titlesOptions = {
       id: 'id',
-      keys: ['curriculumData.educationExperience.educationTitle'],
+      keys: ['curriculumData.educationExperience.educationTitle', 'curriculumData.educationTitles' ],
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
@@ -110,7 +110,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (previousWorks) {
     let previousWorksOptions = {
       id: 'id',
-      keys: ['curriculumData.workExperience.completeWorkPosition'],
+      keys: ['curriculumData.workExperience.completeWorkPosition', 'curriculumData.workPositions'],
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
@@ -137,7 +137,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (workplaces) {
     let workplacesOptions = {
       id: 'id',
-      keys: ['curriculumData.workExperience.workplace'],
+      keys: ['curriculumData.workExperience.workplace', 'curriculumData.workplaces'],
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
@@ -186,7 +186,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (universities) {
     let universitiesOptions = {
       id: 'id',
-      keys: ['curriculumData.educationExperience.educationInstitution'],
+      keys: ['curriculumData.educationExperience.educationInstitution', 'curriculumData.educationInstitutions'],
       shouldSort: true,
       findAllMatches: true,
       includeScore: true,
