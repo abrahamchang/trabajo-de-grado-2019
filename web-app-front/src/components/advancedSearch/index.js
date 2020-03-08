@@ -117,6 +117,9 @@ import { isNumber } from 'util';
           else if (property === 'workExperienceYears' && request['workExperienceYears'] && request['workExperienceYears'].value) {
             totalParams++;
           }
+          else if (property === 'searchTerm' && request['searchTerm'] && request['searchTerm'].value) {
+            totalParams++;
+          }
           else {
           totalParams += request[property] && request[property].value ? request[property].value.length : 0
           }

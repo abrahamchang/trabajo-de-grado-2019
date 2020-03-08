@@ -80,7 +80,7 @@ const AdvancedResultsDisplay = ({advancedSearchResults,maxScore,...props}) => {
           <tbody>
             {searchResult.map((searchEntry) =>
              {const {firstName, lastName} = searchEntry.curriculumData;
-
+              console.log(searchEntry)
                return (<tr key={searchEntry.id}>
                 <td> {firstName} </td>
                 <td> {lastName} </td>

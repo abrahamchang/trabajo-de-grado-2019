@@ -143,7 +143,11 @@ momentLocalizer()
         keywords: props.keywords,
         categories: props.categories,
         age: age ? parseInt(age) : calculateAge(birthDate),
-        workExperienceYears: calculateWorkingYears()
+        workExperienceYears: calculateWorkingYears(),
+        educationInstitutions: institutions,
+        educationTitles: titles,
+        workplaces: workplaces,
+        workPositions: workPositions
       }
       console.log(curriculumData)
       setSubmitFlag(true);
