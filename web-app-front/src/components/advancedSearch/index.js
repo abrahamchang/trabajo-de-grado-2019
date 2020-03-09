@@ -48,6 +48,7 @@ import { isNumber } from 'util';
           if (searchParams.hasExperience) setHasExperience(searchParams.hasExperience);
           if (searchParams.hasTitle) setHasTitle(searchParams.hasTitle)
           if (searchParams.skills) setSkills(searchParams.skills.value)
+          if (searchParams.age) setAge(searchParams.age.value)
         }
       }, [])
 

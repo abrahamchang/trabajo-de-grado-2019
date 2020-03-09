@@ -26,6 +26,7 @@ export default function ProjectDetails(props) {
   const [loadingClosure, setLoadingClosure] = useState(false)
   const [maxScore, setMaxScore] = useState(0)
   const [criteriaChange, setCriteriaChange] = useState(false)
+
   function uploadChanges() {
     let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
     delete changes.startDate;
@@ -51,10 +52,10 @@ export default function ProjectDetails(props) {
 setRejectedCandidates(rejectedCandidates.filter((item, i) => i !== index ))
 setCandidatePool(candidatePoolCopy)
   }
-  function checkAlreadyInProject(recievedArray, fc, pc, rc) {
+  async function checkAlreadyInProject(recievedArray, fc, pc, rc) {
 
     let candidatePoolCopy = recievedArray;
-    const pcFinal = pc.map(potentialCandidate => {
+    let pcFinal = pc.map(potentialCandidate => {
       let candidateUpdated;
       candidatePoolCopy.forEach(candidate => {
         if (candidate.id === potentialCandidate.id) {
@@ -63,7 +64,7 @@ setCandidatePool(candidatePoolCopy)
       })
       return candidateUpdated;
     })
-    const fcFinal = fc.map(potentialCandidate => {
+    let fcFinal = fc.map(potentialCandidate => {
       let candidateUpdated;
       candidatePoolCopy.forEach(candidate => {
         if (candidate.id === potentialCandidate.id) {
@@ -72,7 +73,7 @@ setCandidatePool(candidatePoolCopy)
       })
       return candidateUpdated;
     })
-    const rcFinal = rc.map(potentialCandidate => {
+    let rcFinal = rc.map(potentialCandidate => {
       let candidateUpdated;
       candidatePoolCopy.forEach(candidate => {
         if (candidate.id === potentialCandidate.id) {
@@ -81,15 +82,17 @@ setCandidatePool(candidatePoolCopy)
       })
       return candidateUpdated;
     })
-
-    pc.forEach(potentialCandidate => {
+    pcFinal = pcFinal.filter(candidate => candidate !== undefined)
+    fcFinal = fcFinal.filter(candidate => candidate !== undefined)
+    rcFinal = rcFinal.filter(candidate => candidate !== undefined)
+    pcFinal.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
     })
 
-    fc.forEach(rejectedCandidate => {
+    fcFinal.forEach(rejectedCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== rejectedCandidate.id)
     })
-    rc.forEach(potentialCandidate => {
+    rcFinal.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
     })
 
@@ -97,6 +100,8 @@ setCandidatePool(candidatePoolCopy)
     setFinalCandidates(fcFinal)
     setRejectedCandidates(rcFinal)
     setCandidatePool(candidatePoolCopy)
+
+
   }
   useEffect( () => {
 
@@ -153,7 +158,9 @@ setCandidatePool(candidatePoolCopy)
     removalArraySetter(newRemovalArray);
     additionArraySetter(newAdditionArray);
     setProjectModified(true)
-    console.log(projectModified)
+
+    // await uploadChanges()
+
 
   }
   // function calculateMaxScore(searchEntry) {
@@ -234,7 +241,7 @@ setCandidatePool(candidatePoolCopy)
       <div>
         <Modal isOpen={modal} toggle={toggle} >
           <ModalHeader toggle={toggle}>Culminar Proyecto</ModalHeader>
-          {console.log(finalCandidates)}
+
           <ModalBody>
             {!loadingClosure && (finalCandidates.length > 0 ? `¿Desea culminar este proceso de selección? Los candidatos seleccionados: ${finalCandidates.map(candidate => ` ${candidate.curriculumData.firstName} ${candidate.curriculumData.lastName}`)} seran almacenados como escogidos para el cargo.` : `¿Está seguro que desea culminar el proyecto sin escoger ningún candidato? El proyecto sera almacenado como "Clausurado".`) }
             {loadingClosure && <Container className="d-flex flex-column justify-content-center align-items-center mb-2 mt-2"> <Spinner/> Cerrando Proyecto </Container>}
@@ -443,7 +450,7 @@ setCandidatePool(candidatePoolCopy)
       </Container>
     </Card>)
   }
-  console.log(projectCriteria)
+
   if (projectModified) {
     setProjectModified(false)
     uploadChanges();
