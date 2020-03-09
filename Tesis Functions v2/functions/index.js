@@ -18,6 +18,10 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   if (hasExperience) {
     compoundQuery.where('workExperienceYears', '>', 0)
   }
+  if (age) {
+    let ageQuery = isNaN(age) ? parseInt(age) : age
+    compoundQuery.where('age', '>', ageQuery )
+  }
 
   const queryResult = await compoundQuery.get();
   let baseResult = [];

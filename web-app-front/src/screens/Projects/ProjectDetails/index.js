@@ -25,6 +25,7 @@ export default function ProjectDetails(props) {
   const [modal, setModal] = useState(false);
   const [loadingClosure, setLoadingClosure] = useState(false)
   const [maxScore, setMaxScore] = useState(0)
+  const [criteriaChange, setCriteriaChange] = useState(false)
   function uploadChanges() {
     let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates}
     delete changes.startDate;
@@ -32,12 +33,14 @@ export default function ProjectDetails(props) {
     console.log(changes)
     return Firebase.modifyProject(changes)
   }
-  function modifySearchParams(searchParams) {
+  async function modifySearchParams(searchParams) {
     let changes = {...props.location.state, finalCandidates: finalCandidates, potentialCandidates: potentialCandidates, rejectedCandidates: rejectedCandidates, projectCriteria: searchParams}
     delete changes.startDate;
     delete changes.startDateString;
     console.log(changes)
-    Firebase.modifyProject(changes)
+    setCriteriaChange(true)
+    await Firebase.modifyProject(changes);
+    setCriteriaChange(false)
     return window.location.reload();
   }
   function removeRejectedCandidate(index) {
@@ -51,6 +54,34 @@ setCandidatePool(candidatePoolCopy)
   function checkAlreadyInProject(recievedArray, fc, pc, rc) {
 
     let candidatePoolCopy = recievedArray;
+    const pcFinal = pc.map(potentialCandidate => {
+      let candidateUpdated;
+      candidatePoolCopy.forEach(candidate => {
+        if (candidate.id === potentialCandidate.id) {
+          candidateUpdated = candidate;
+        }
+      })
+      return candidateUpdated;
+    })
+    const fcFinal = fc.map(potentialCandidate => {
+      let candidateUpdated;
+      candidatePoolCopy.forEach(candidate => {
+        if (candidate.id === potentialCandidate.id) {
+          candidateUpdated = candidate;
+        }
+      })
+      return candidateUpdated;
+    })
+    const rcFinal = rc.map(potentialCandidate => {
+      let candidateUpdated;
+      candidatePoolCopy.forEach(candidate => {
+        if (candidate.id === potentialCandidate.id) {
+          candidateUpdated = candidate;
+        }
+      })
+      return candidateUpdated;
+    })
+
     pc.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
     })
@@ -61,9 +92,10 @@ setCandidatePool(candidatePoolCopy)
     rc.forEach(potentialCandidate => {
       candidatePoolCopy = candidatePoolCopy.filter(candidate => candidate.id !== potentialCandidate.id)
     })
-    setPotentialCandidates(pc)
-    setFinalCandidates(fc)
-    setRejectedCandidates(rc)
+
+    setPotentialCandidates(pcFinal)
+    setFinalCandidates(fcFinal)
+    setRejectedCandidates(rcFinal)
     setCandidatePool(candidatePoolCopy)
   }
   useEffect( () => {
@@ -114,8 +146,10 @@ setCandidatePool(candidatePoolCopy)
   }
 
   async function moveCandidate(removalIndex, removalArray, removalArraySetter, additionArray, additionArraySetter) {
-    const newRemovalArray = removalArray.filter((item, i) => i !== removalIndex);
-    const newAdditionArray = [...additionArray, removalArray[removalIndex]];
+    let newRemovalArray = removalArray.filter((item, i) => i !== removalIndex);
+    let newAdditionArray = [...additionArray, removalArray[removalIndex]];
+    newRemovalArray.sort((a,b) => (calculateScore(b) - calculateScore(a)))
+    newAdditionArray.sort((a,b) => (calculateScore(b) - calculateScore(a)))
     removalArraySetter(newRemovalArray);
     additionArraySetter(newAdditionArray);
     setProjectModified(true)
@@ -446,6 +480,7 @@ setCandidatePool(candidatePoolCopy)
             <Button block color="secondary" onClick={() => {setModifyCollapse(!modifyCollapse)}}> Cambiar criterios del proyecto </Button>
             <Collapse isOpen={modifyCollapse}>
             {!loading && <AdvancedSearch searchParams={projectCriteria} onSubmit={modifySearchParams}/>}
+            {criteriaChange &&<div className="d-flex justify-content-center"><Spinner/></div> }
             </Collapse>
           </Card>}
           {!readOnly && <Button block onClick= {() => uploadChanges()} color="success"> Guardar Cambios</Button>}
