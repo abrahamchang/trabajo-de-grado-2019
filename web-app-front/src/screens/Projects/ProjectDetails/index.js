@@ -113,13 +113,14 @@ setCandidatePool(candidatePoolCopy)
 
   }
 
-  function moveCandidate(removalIndex, removalArray, removalArraySetter, additionArray, additionArraySetter) {
+  async function moveCandidate(removalIndex, removalArray, removalArraySetter, additionArray, additionArraySetter) {
     const newRemovalArray = removalArray.filter((item, i) => i !== removalIndex);
     const newAdditionArray = [...additionArray, removalArray[removalIndex]];
     removalArraySetter(newRemovalArray);
     additionArraySetter(newAdditionArray);
     setProjectModified(true)
     console.log(projectModified)
+
   }
   // function calculateMaxScore(searchEntry) {
   //   const values = Object.values(searchEntry);
@@ -409,6 +410,10 @@ setCandidatePool(candidatePoolCopy)
     </Card>)
   }
   console.log(projectCriteria)
+  if (projectModified) {
+    setProjectModified(false)
+    uploadChanges();
+  }
   return (
      <>
      {/* <Navbar/> */}

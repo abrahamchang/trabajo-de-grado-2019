@@ -7,7 +7,7 @@ export default function ProjectTable({projects, navigate, ...props} ) {
     <thead>
       <tr>
         <th>Nombre del Proyecto</th>
-        <th>Nro. de candidatos potenciales</th>
+        <th>Nro. de candidatos considerados</th>
         <th> Fecha de apertura </th>
         <th> Ver proyecto</th>
       </tr>
@@ -16,7 +16,7 @@ export default function ProjectTable({projects, navigate, ...props} ) {
         {projects.map(project => (
           <tr key={project.id}>
             <td> {project.name} </td>
-            <td> {project.totalCandidates}</td>
+            <td> {project.potentialCandidates.length}</td>
             <td> {Moment(project.startDate.toDate()).format('DD/MM/YYYY')}</td>
             <td> <Button onClick={() => navigate(project.id, {state: {...project, startDateString: Moment(project.startDate.toDate()).format('DD/MM/YYYY') }})}> Ver proyecto </Button></td>
           </tr>
