@@ -15,13 +15,11 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   try {
   const { languages, previousWorks, universities, titles, workExperienceYears, workplaces, age, hasTitle, hasExperience, cities, searchTerm, skills} = await JSON.parse(req.body);
   let compoundQuery = admin.firestore().collection('Curriculums');
+  let ageFlag = age ? true : false;
   if (hasExperience) {
     compoundQuery.where('workExperienceYears', '>', 0)
   }
-  if (age) {
-    let ageQuery = isNaN(age) ? parseInt(age) : age
-    compoundQuery.where('age', '>', ageQuery )
-  }
+
 
   const queryResult = await compoundQuery.get();
   let baseResult = [];
@@ -58,6 +56,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
     baseResult = baseResult.filter(result => result.curriculumData.educationExperience.length > 0)
   }
   if (titles) {
+    ageFlag = false;
     let titlesOptions = {
       id: 'id',
       keys: ['curriculumData.educationExperience.educationTitle', 'curriculumData.educationTitles' ],
@@ -82,6 +81,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   }
 
   if (searchTerm) {
+    ageFlag = false;
     const options = {
       id: 'id',
       keys: ['curriculumData.keywords', 'curriculumData.concepts', 'curriculumData.categories'],
@@ -105,6 +105,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   }
 
   if (workExperienceYears) {
+    ageFlag = false;
     baseResult.forEach(arrayItem => {
       arrayItem.curriculumData.workExperienceYears >= workExperienceYears.value ?
       arrayItem.workExperienceYearsFound = true :  arrayItem.workExperienceYearsFound = false
@@ -112,6 +113,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   }
 
   if (previousWorks) {
+    ageFlag = false;
     let previousWorksOptions = {
       id: 'id',
       keys: ['curriculumData.workExperience.completeWorkPosition', 'curriculumData.workPositions'],
@@ -139,6 +141,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   }
 
   if (workplaces) {
+    ageFlag = false;
     let workplacesOptions = {
       id: 'id',
       keys: ['curriculumData.workExperience.workplace', 'curriculumData.workplaces'],
@@ -163,6 +166,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   }
 
   if (languages) {
+    ageFlag = false;
     let languagesOptions = {
       id: 'id',
       keys: ['curriculumData.languages'],
@@ -188,6 +192,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       })
   }
   if (universities) {
+    ageFlag = false;
     let universitiesOptions = {
       id: 'id',
       keys: ['curriculumData.educationExperience.educationInstitution', 'curriculumData.educationInstitutions'],
@@ -213,6 +218,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
   }
 
   if (skills) {
+    ageFlag = false;
     let skillsOptions = {
       id: 'id',
       keys: ['curriculumData.skills'],
@@ -236,6 +242,7 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       })
   }
   if (cities) {
+    ageFlag = false;
     let citiesOptions = {
       id: 'id',
       keys: ['curriculumData.city'],
@@ -262,6 +269,26 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       })
 
   }
+
+  if (age) {
+    let ageQuery = isNaN(age.value) ? parseInt(age.value) : age.value;
+    console.log(baseResult.length)
+    baseResult = baseResult.filter(result => {
+      if (typeof result.curriculumData.age == 'number') {
+        return result.curriculumData.age > ageQuery
+      }
+      else {
+        try {
+          return parseInt(result.curriculumData.age) > ageQuery
+        }
+        catch(err) {
+          return false;
+        }
+      }
+    })
+    console.log(baseResult.length)
+  }
+  console.log(baseResult.length)
   let cleanedResult = baseResult.map(result => {
     const {languagesFound, previousWorksFound, universitiesFound , titlesFound , workExperienceYearsFound ,workplacesFound , citiesFound , searchTermFound , skillsFound} = result;
     if (languagesFound || previousWorksFound || universitiesFound || titlesFound || workExperienceYearsFound || workplacesFound || citiesFound || searchTermFound || skillsFound) {
@@ -270,6 +297,13 @@ exports.advancedSearch = functions.https.onRequest(async (req, res) => {
       newResult.curriculumData = {firstName: firstName, lastName: lastName, discoveryId: discoveryId }
       return newResult;
     }
+    else if (ageFlag) {
+      const {firstName, lastName, discoveryId} = result.curriculumData;
+      let newResult = {...result};
+      newResult.curriculumData = {firstName: firstName, lastName: lastName, discoveryId: discoveryId }
+      return newResult;
+    }
+
   })
   cleanedResult = cleanedResult.filter(result => result)
   cleanedResult.forEach(test => {

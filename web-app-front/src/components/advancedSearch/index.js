@@ -140,6 +140,9 @@ import { isNumber } from 'util';
           else if (property === 'searchTerm' && request['searchTerm'] && request['searchTerm'].value) {
             totalParams++;
           }
+          else if (property === 'age' && request['age'] && request['age'].value) {
+
+          }
           else {
           totalParams += request[property] && request[property].value ? request[property].value.length : 0
           }
