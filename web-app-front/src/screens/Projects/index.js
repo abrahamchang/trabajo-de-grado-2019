@@ -2,15 +2,16 @@ import React, {useState, useEffect} from 'react';
 import ProjectTable from './ProjectTable';
 import ClosedProjectTable from './ClosedProjectTable';
 import AdvancedSearch from '../../components/advancedSearch';
-import {Container, Row, Col, Card, Button, Input, Label, Collapse, Spinner, CardTitle} from 'reactstrap';
+import {Container, Row, Col, Card, Button, Input, Label, Collapse, Spinner, CardTitle, Alert} from 'reactstrap';
 import Firebase from '../../firebase';
 // import Navbar from '../../components/navbar';
 const Proyects = (props) => {
-    const [newProject, setnewProject] = useState(false)
-    const [projectName, setProjectName] = useState('')
+    const [newProject, setnewProject] = useState(false);
+    const [projectName, setProjectName] = useState('');
     const [projects, setProjects] = useState([]);
-    const [closedProjects, setClosedProjects] = useState([])
-    const [loading, setLoading] = useState(true)
+    const [closedProjects, setClosedProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('')
     useEffect(() => {
       (async () => {
         const closedProjectsSnapshot = await Firebase.getClosedProjects();
@@ -34,6 +35,7 @@ const Proyects = (props) => {
     }, [])
 
     function createProject(projectCriteria) {
+      setErrorMessage('')
         const project = {
           projectCriteria: projectCriteria,
           totalCandidates: 0,
@@ -44,8 +46,14 @@ const Proyects = (props) => {
           potentialCandidates: [],
           rejectedCandidates: []
         }
-        console.log(project)
+        if (Object.values(project.projectCriteria).reduce((acc, curr) => acc || curr, false)) {
+          setnewProject(!newProject)
         Firebase.createProject(project)
+        setProjectName('')
+        }
+        else {
+          setErrorMessage('Debe seleccionar por lo menos un criterio.')
+        }
     }
 
 
@@ -77,8 +85,12 @@ const Proyects = (props) => {
               </Button>
               <Col className="ml-1 mr-1">
                 <Collapse isOpen={newProject}>
+
                   <Row className="mb-2 mt-2">
                     <Col md={12}>
+                  { errorMessage &&  <Alert color="danger">
+          {errorMessage}
+      </Alert>}
                       <Label for="nombre">
                         <b>Nombre del Proyecto </b>
                       </Label>
@@ -90,7 +102,7 @@ const Proyects = (props) => {
                     <Col md={12} className="mb-2 mt-2">
                       <b> Condiciones de búsqueda </b>
                     </Col>
-                    <AdvancedSearch projects onSubmit={(pc) => {createProject(pc); setnewProject(!newProject)}} />
+                    <AdvancedSearch projects onSubmit={(pc) => {createProject(pc)}} />
                   </Row>
                 </Collapse>
               </Col>

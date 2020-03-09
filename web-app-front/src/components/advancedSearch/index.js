@@ -27,14 +27,14 @@ import { isNumber } from 'util';
       const [titles, setTitles] = useState([]);
       const [workplaces, setWorkplaces] = useState([]);
       const [cities, setCities] = useState([]);
-      const [cityInput, setCityInput] = useState([]);
+      const [cityInput, setCityInput] = useState('');
       const [workExperienceYears, setWorkExperienceYears] = useState(0);
       const [age, setAge] = useState(0);
       const [hasTitle, setHasTitle] = useState(false);
       const [hasExperience, setHasExperience] = useState(false);
       const [searchTerm, setSearchTerm] = useState('');
       const [skills, setSkills] = useState([]);
-      const [skillInput, setSkillInput] = useState('')
+      const [skillInput, setSkillInput] = useState('');
       useEffect(() => {
         if (searchParams) {
           console.log(searchParams)
@@ -51,7 +51,27 @@ import { isNumber } from 'util';
         }
       }, [])
 
-
+      function resetState() {
+        setLanguageInput('')
+        setLanguages([])
+        setPreviousWorkInput('')
+        setPreviousWorks([])
+        setUniversityInput('')
+        setUniversities([])
+        setWorkplaceInput('')
+        setTitleInput('')
+        setTitles([])
+        setWorkplaces([])
+        setCities([])
+        setCityInput('')
+        setWorkExperienceYears(0)
+        setAge(0)
+        setHasTitle(false)
+        setHasExperience(false)
+        setSearchTerm('')
+        setSkills([])
+        setSkillInput('')
+      }
       function removeLanguage() {
         let newLanguages = [...languages]
         newLanguages.pop();
@@ -306,7 +326,7 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          {setLanguages([...languages, languageInput]);
+                          {languageInput && setLanguages([...languages, languageInput]);
                           setLanguageInput('');}
                         }
                       >
@@ -335,7 +355,7 @@ import { isNumber } from 'util';
                     <Col md={12} className="mt-2">
                       <Button
                         className="mr-2"
-                        onClick={() => {setTitles([...titles, titleInput]);
+                        onClick={() => {titleInput && setTitles([...titles, titleInput]);
                         setTitleInput('')}}
                       >
                         Agregar Título a la lista
@@ -364,7 +384,7 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          {setUniversities([...universities, universityInput])
+                          {universityInput && setUniversities([...universities, universityInput])
                           setUniversityInput('')}
                         }
                       >
@@ -396,7 +416,7 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          {setPreviousWorks([
+                          {previousWorkInput && setPreviousWorks([
                             ...previousWorks,
                             previousWorkInput
                           ])
@@ -429,7 +449,7 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          {setWorkplaces([...workplaces, workplaceInput])
+                          {workplaceInput && setWorkplaces([...workplaces, workplaceInput])
                           setWorkplaceInput('')}
                         }
                       >
@@ -459,7 +479,7 @@ import { isNumber } from 'util';
                       <Button
                         className="mr-2"
                         onClick={() =>
-                          {setSkills([...skills, skillInput]);
+                          {skillInput && setSkills([...skills, skillInput]);
                           setSkillInput('')}
                         }
                       >
@@ -490,7 +510,7 @@ import { isNumber } from 'util';
                     <Col md={12} className="mt-2">
                       <Button
                         className="mr-2"
-                        onClick={() => {setCities([...cities, cityInput]);
+                        onClick={() => {cityInput && setCities([...cities, cityInput]);
                         setCityInput('')}}
                       >
                         Agregar Ciudad
@@ -582,7 +602,7 @@ import { isNumber } from 'util';
           </Card>}
           {searchParams ?           <Button block color="success" className="mb-2 mt-2" onClick={() => submitSearch()}> Modificar y guardar </Button> :
           <Row className={projects ? "d-flex justify-content-center": null}>
-          <Button className={`mt-2`} onClick={() => submitSearch()} color="success">
+          <Button className={`mt-2`} onClick={() => {submitSearch(); props.projects && resetState()}} color="success">
             {projects ? 'Agregar proyecto' : 'Submit'}
           </Button>
           </Row>}
